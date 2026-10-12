@@ -1,0 +1,57 @@
+/* Home page sections: Hero, Search, Shop Ads, Stats, How it works */
+    /* ===== HERO ===== */
+    .hero { position: relative; min-height: 520px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: linear-gradient(135deg,#F5823A 0%,#E86A20 60%,#C95010 100%); }
+    .hero-bg { position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1400&q=70') center/cover no-repeat; opacity: 0.22; }
+    .hero-content { position: relative; text-align: center; padding: 60px 5%; }
+    .hero-content h1 { font-family: 'Baloo 2', cursive; font-size: clamp(2rem,5vw,3.2rem); font-weight: 800; color: white; text-shadow: 0 2px 12px rgba(0,0,0,0.25); margin-bottom: 12px; }
+    .hero-content p { font-size: 1.1rem; color: rgba(255,255,255,0.92); margin-bottom: 32px; max-width: 520px; margin-left: auto; margin-right: auto; }
+    .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: white; color: var(--orange-dark); font-weight: 800; font-size: 1rem; padding: 13px 30px; border-radius: var(--radius-sm); border: none; cursor: pointer; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; display: inline-block; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+    .btn-outline { background: transparent; color: white; font-weight: 700; font-size: 1rem; padding: 13px 30px; border-radius: var(--radius-sm); border: 2px solid white; cursor: pointer; text-decoration: none; transition: background 0.15s; display: inline-block; }
+    .btn-outline:hover { background: rgba(255,255,255,0.15); }
+
+    /* ===== SEARCH ===== */
+    .search-section { background: white; padding: 32px 5%; box-shadow: 0 4px 20px rgba(200,120,60,0.08); }
+    .search-bar { max-width: 800px; margin: 0 auto; display: flex; gap: 10px; flex-wrap: wrap; }
+    .search-bar select, .search-bar input { flex: 1; min-width: 140px; padding: 11px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 0.95rem; background: var(--bg); color: var(--text); outline: none; transition: border-color 0.15s; }
+    .search-bar select:focus, .search-bar input:focus { border-color: var(--orange); }
+    .btn-search { background: var(--orange); color: white; font-weight: 700; padding: 11px 28px; border-radius: var(--radius-sm); border: none; cursor: pointer; font-size: 0.95rem; font-family: 'Nunito', sans-serif; transition: background 0.15s, transform 0.12s; white-space: nowrap; }
+    .btn-search:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+    /* ===== SHOP ADS ===== */
+    .shop-ads-section { background: var(--orange-light); padding: 56px 5%; }
+    .shop-ads-tabs { max-width: 1200px; margin: 0 auto 24px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .shop-ads-tab { padding: 8px 20px; border-radius: 20px; border: 1.5px solid var(--border); background: white; color: var(--text-muted); font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.15s; font-family: 'Nunito', sans-serif; }
+    .shop-ads-tab.active, .shop-ads-tab:hover { background: var(--orange); color: white; border-color: var(--orange); }
+    .shop-ads-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill,minmax(250px,1fr)); gap: 22px; }
+    .shop-ad-card { background: white; border-radius: var(--radius); overflow: hidden; border: 1.5px solid var(--border); box-shadow: var(--shadow); transition: transform 0.18s, box-shadow 0.18s; text-decoration: none; color: var(--text); display: flex; flex-direction: column; cursor: pointer; }
+    .shop-ad-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+    .shop-ad-img { width: 100%; height: 200px; background: #fff; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .shop-ad-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .shop-ad-img .shop-ad-emoji { font-size: 4rem; }
+    .shop-ad-body { padding: 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .shop-ad-brand { font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 1.02rem; color: var(--orange-dark); }
+    .shop-ad-desc { font-size: 0.86rem; color: var(--text); line-height: 1.4; }
+    .shop-ad-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .shop-ad-tag { display: inline-block; background: var(--orange-pale); color: var(--orange-dark); font-size: 0.72rem; font-weight: 800; padding: 2px 10px; border-radius: 20px; width: fit-content; margin-bottom: 2px; }
+    .shop-ad-link-icon { color: var(--orange); font-weight: 800; }
+
+    /* ===== STATS ===== */
+    .stats-section { padding: 52px 5%; background: var(--orange-light); }
+    .stats-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 20px; }
+    .stat-card { background: white; border-radius: var(--radius); padding: 28px 20px; text-align: center; border: 1.5px solid var(--border); box-shadow: var(--shadow); transition: transform 0.18s; }
+    .stat-card:hover { transform: translateY(-4px); }
+    .stat-icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .stat-num { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 800; color: var(--orange); line-height: 1; margin-bottom: 4px; }
+    .stat-label { font-size: 0.88rem; color: var(--text-muted); font-weight: 600; }
+
+    /* ===== HOW IT WORKS ===== */
+    .how-section { background: var(--orange-light); padding: 60px 5%; }
+    .how-grid { max-width: 900px; margin: 36px auto 0; display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 24px; }
+    .step-card { background: white; border-radius: var(--radius); padding: 32px 22px; text-align: center; border: 1.5px solid var(--border); }
+    .step-num { width: 44px; height: 44px; background: var(--orange); color: white; border-radius: 50%; font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+    .step-icon { font-size: 2rem; margin-bottom: 10px; }
+    .step-title { font-weight: 800; font-size: 1rem; margin-bottom: 8px; }
+    .step-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; }
+

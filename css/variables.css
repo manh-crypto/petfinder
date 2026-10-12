@@ -1,0 +1,13 @@
+/* Reset + CSS Variables */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #F5823A; --orange-dark: #D96B25; --orange-light: #FFF3EC;
+      --orange-pale: #FDE8D8; --text: #2C2415; --text-muted: #6B5744;
+      --bg: #FFFAF7; --white: #FFFFFF; --border: #F0D8C8;
+      --green: #3DAB6E; --green-light: #E8F7EF; --red: #E24B4A; --red-light: #FDEAEA;
+      --radius: 14px; --radius-sm: 8px;
+      --shadow: 0 2px 16px rgba(200,120,60,0.10);
+      --shadow-hover: 0 6px 28px rgba(200,120,60,0.18);
+    }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+

@@ -1,0 +1,26 @@
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="#">🐶🐱 PetFinder</a>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Trang chủ</a></li>
+    <li><a href="#pets">Thú cưng</a></li>
+    <li><a href="#map">Bản đồ</a></li>
+    <li><a href="#form">Đăng tin</a></li>
+    <li><a href="pages/veterinary.html">🏥 Cấp cứu 24/7</a></li>
+    <li><a href="#shop-ads">🛍️ Cửa hàng</a></li>
+      <li><a href="pages/contact.html">💌 Liên hệ</a></li>
+  </ul>
+  <div class="nav-auth" id="navAuth">
+    <button class="btn-login" onclick="openAuthModal('login')">Đăng nhập</button>
+    <button class="btn-register" onclick="openAuthModal('register')">Đăng ký</button>
+  </div>
+  <div class="nav-user" id="navUser">
+    <div class="nav-avatar" id="navAvatar" onclick="openAccountSettings()" style="cursor:pointer" title="Cài đặt tài khoản">👤</div>
+    <span class="nav-username" id="navUsername">Người dùng</span>
+    <button class="btn-admin" id="navAdminBtn" onclick="openAdminPanel()" style="display:none">🛠️ Quản trị</button>
+    <button class="btn-login" onclick="openMyPosts()" style="margin-right:4px">📋 Tin của tôi</button>
+    <button class="btn-login" onclick="openAccountSettings()" style="margin-right:4px">⚙️ Cài đặt</button>
+    <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+  </div>
+</nav>
+

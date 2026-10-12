@@ -1,0 +1,79 @@
+/* Navbar */
+    /* ===== NAVBAR ===== */
+    nav {
+      background: var(--orange); padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px; position: sticky; top: 0; z-index: 300;
+      box-shadow: 0 2px 12px rgba(180,80,0,0.18);
+    }
+    .nav-logo { font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 800; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .nav-links { display: flex; gap: 6px; list-style: none; align-items: center; }
+    .nav-links a { color: white; text-decoration: none; font-weight: 700; font-size: 0.9rem; padding: 7px 16px; border-radius: 8px; transition: background 0.18s; }
+    .nav-links a:hover, .nav-links a.active { background: rgba(255,255,255,0.2); }
+    .nav-auth { display: flex; gap: 8px; margin-left: 10px; }
+    .btn-login { background: rgba(255,255,255,0.18) !important; color: white !important; border: 1.5px solid rgba(255,255,255,0.5) !important; border-radius: 8px; padding: 7px 18px; font-weight: 700; font-size: 0.9rem; cursor: pointer; font-family: 'Nunito', sans-serif; transition: background 0.15s; }
+    .btn-login:hover { background: rgba(255,255,255,0.3) !important; }
+    .btn-register { background: white !important; color: var(--orange) !important; border: none; border-radius: 8px; padding: 8px 18px; font-weight: 800; font-size: 0.9rem; cursor: pointer; font-family: 'Nunito', sans-serif; transition: opacity 0.15s; }
+    .btn-register:hover { opacity: 0.88; }
+
+    /* User avatar in nav (shown after login) */
+    .nav-user { display: none; align-items: center; gap: 10px; }
+    .nav-avatar { width: 36px; height: 36px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; border: 2px solid rgba(255,255,255,0.5); }
+    .nav-username { color: white; font-weight: 700; font-size: 0.9rem; }
+    .btn-logout { background: rgba(255,255,255,0.15); color: white; border: 1.5px solid rgba(255,255,255,0.4); border-radius: 8px; padding: 6px 14px; font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: background 0.15s; }
+    .btn-logout:hover { background: rgba(255,255,255,0.28); }
+
+
+
+/* ===== NAVBAR RESPONSIVE FIX ===== */
+@media (max-width: 1150px) {
+  nav { padding: 0 18px; gap: 8px; }
+  .nav-logo { font-size: 1.25rem; flex-shrink: 0; }
+  .nav-links { gap: 2px; flex: 1 1 auto; justify-content: center; min-width: 0; }
+  .nav-links a { padding: 6px 8px; font-size: 0.78rem; white-space: nowrap; }
+  .nav-auth { gap: 5px; margin-left: 2px; flex-shrink: 0; }
+  .nav-auth .btn-login, .nav-auth .btn-register { padding: 6px 9px; font-size: 0.78rem; white-space: nowrap; }
+}
+
+@media (max-width: 900px) {
+  nav { padding: 0 10px; }
+  .nav-logo { font-size: 1.1rem; gap: 4px; }
+  .nav-links { overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { padding: 6px 7px; font-size: 0.75rem; }
+  .nav-auth .btn-register { display: none; }
+  .nav-auth .btn-login { padding: 6px 8px; }
+}
+
+@media (max-width: 700px) {
+  nav { height: auto; min-height: 58px; flex-wrap: wrap; padding: 8px 10px; }
+  .nav-logo { width: auto; }
+  .nav-links { order: 3; width: 100%; flex-basis: 100%; justify-content: flex-start; padding-bottom: 2px; }
+  .nav-links a { font-size: 0.8rem; padding: 6px 10px; }
+}
+
+/* ===== NAVBAR: không xuống dòng, tự thu gọn khi có nhiều mục (menu 7 mục + nút tài khoản/admin) ===== */
+.nav-links a, .nav-auth button, .nav-user button, .nav-username, .admin-tag, .nav-role-badge { white-space: nowrap; }
+.nav-logo { flex-shrink: 0; }
+.nav-user { flex-shrink: 0; gap: 8px; }
+
+@media (max-width: 1750px) {
+  nav { padding: 0 2.5%; }
+  .nav-links { gap: 2px; }
+  .nav-links a { padding: 7px 11px; font-size: 0.86rem; }
+  .nav-user { gap: 6px; }
+  .nav-user .btn-login, .nav-user .btn-admin, .nav-user .btn-logout { padding: 6px 10px !important; font-size: 0.78rem !important; margin-right: 0 !important; }
+}
+@media (max-width: 1550px) { .nav-username { display: none; } }
+@media (max-width: 1360px) { .nav-links a { padding: 7px 9px; font-size: 0.82rem; } }
+@media (max-width: 1250px) {
+  .nav-user .btn-login, .nav-user .btn-admin, .nav-user .btn-logout { padding: 6px 8px !important; font-size: 0.74rem !important; }
+  .nav-links a { padding: 6px 7px; font-size: 0.78rem; }
+  .nav-logo { font-size: 1.2rem; }
+}
+@media (max-width: 1150px) {
+  /* thiếu chỗ thì menu cuộn ngang trong khung của nó, không đè lên nút tài khoản */
+  .nav-links { overflow-x: auto; scrollbar-width: none; }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-user .btn-login, .nav-user .btn-admin, .nav-user .btn-logout { padding: 5px 7px !important; font-size: 0.7rem !important; }
+}

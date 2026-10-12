@@ -1,0 +1,26 @@
+/* Misc/base styles: toast, badges, banners */
+    /* ===== TOAST NOTIFICATION ===== */
+    #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: #2C1F14; color: white; padding: 13px 24px; border-radius: 30px; font-weight: 700; font-size: 0.92rem; z-index: 9999; transition: transform 0.35s cubic-bezier(.2,1.2,.5,1), opacity 0.3s; opacity: 0; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ===== NEW badge on pet card ===== */
+    .badge-new { background: var(--red); color: white; font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 20px; margin-left: 5px; vertical-align: middle; animation: badgePop 0.4s ease; letter-spacing: 0.5px; }
+    @keyframes badgePop { from{transform:scale(0)} to{transform:scale(1)} }
+    .card-new-ring { box-shadow: 0 0 0 3px var(--red), var(--shadow-hover) !important; }
+
+    /* ===== LOCAL AREA BANNER ===== */
+    #localBanner { display: none; background: linear-gradient(90deg, #fff3f3 0%, #ffe8e8 100%); border: 2px solid #ffb3b3; border-radius: var(--radius-sm); padding: 12px 18px; margin-bottom: 18px; align-items: center; gap: 10px; flex-wrap: wrap; }
+    #localBanner.show { display: flex; }
+    .local-banner-icon { font-size: 1.4rem; }
+    .local-banner-text { flex: 1; font-weight: 700; font-size: 0.9rem; color: var(--red); }
+    .local-banner-area { background: var(--red); color: white; padding: 3px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; }
+    .local-change-btn { font-size: 0.8rem; color: var(--text-muted); cursor: pointer; text-decoration: underline; }
+
+    /* ===== PRIORITY indicator on sorted cards ===== */
+    .priority-bar { height: 4px; background: linear-gradient(90deg, var(--red), #ff8a80); border-radius: 0; }
+
+
+/* ===== View switching: chỉ hiện mục đang được chọn ===== */
+.view-hidden { display: none !important; }
+
+.sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }

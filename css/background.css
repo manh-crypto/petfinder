@@ -1,0 +1,53 @@
+/* ===================================================================
+   Nền sinh động tông cam – trắng nhẹ (CSS thuần, không ảnh ngoài)
+   - Lớp 1 (body::before): các đốm sáng cam/kem trôi chậm
+   - Lớp 2 (body::after) : hoa văn dấu chân thú cưng bay lên rất chậm
+   - Tắt chuyển động khi hệ điều hành bật "giảm chuyển động"
+   =================================================================== */
+html { background: linear-gradient(180deg, #FFFBF6 0%, #FFF2E5 50%, #FFF9F2 100%); min-height: 100%; }
+body { background: transparent; }
+
+body::before {
+  content: ''; position: fixed; inset: -25%; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(255, 170, 100, .34) 0, rgba(255, 170, 100, 0) 36%),
+    radial-gradient(circle at 86% 12%, rgba(255, 212, 165, .50) 0, rgba(255, 212, 165, 0) 40%),
+    radial-gradient(circle at 78% 82%, rgba(255, 155, 85, .26) 0, rgba(255, 155, 85, 0) 40%),
+    radial-gradient(circle at 18% 86%, rgba(255, 226, 192, .55) 0, rgba(255, 226, 192, 0) 42%),
+    radial-gradient(circle at 50% 50%, rgba(255, 244, 232, .65) 0, rgba(255, 244, 232, 0) 55%);
+  animation: bgDrift 36s ease-in-out infinite alternate; will-change: transform;
+}
+body::after {
+  content: ''; position: fixed; left: 0; top: 0; width: 100%; height: calc(100% + 440px); z-index: -1; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='%23F5823A' fill-opacity='.10'%3E%3Cg transform='translate(30 36) rotate(-18)'%3E%3Cellipse cx='0' cy='6' rx='9' ry='7.5'/%3E%3Ccircle cx='-9' cy='-6' r='3.6'/%3E%3Ccircle cx='-3' cy='-11' r='3.6'/%3E%3Ccircle cx='4' cy='-11' r='3.6'/%3E%3Ccircle cx='10' cy='-6' r='3.6'/%3E%3C/g%3E%3Cg transform='translate(150 92) rotate(14) scale(.8)'%3E%3Cellipse cx='0' cy='6' rx='9' ry='7.5'/%3E%3Ccircle cx='-9' cy='-6' r='3.6'/%3E%3Ccircle cx='-3' cy='-11' r='3.6'/%3E%3Ccircle cx='4' cy='-11' r='3.6'/%3E%3Ccircle cx='10' cy='-6' r='3.6'/%3E%3C/g%3E%3Cg transform='translate(76 170) rotate(32) scale(1.1)'%3E%3Cellipse cx='0' cy='6' rx='9' ry='7.5'/%3E%3Ccircle cx='-9' cy='-6' r='3.6'/%3E%3Ccircle cx='-3' cy='-11' r='3.6'/%3E%3Ccircle cx='4' cy='-11' r='3.6'/%3E%3Ccircle cx='10' cy='-6' r='3.6'/%3E%3C/g%3E%3Ccircle cx='190' cy='30' r='4'/%3E%3Ccircle cx='120' cy='20' r='2.5'/%3E%3Ccircle cx='24' cy='120' r='3'/%3E%3Ccircle cx='200' cy='180' r='3.5'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 220px 220px; animation: pawRise 80s linear infinite; will-change: transform;
+}
+@keyframes bgDrift {
+  0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  50%  { transform: translate3d(3%, -2.5%, 0) scale(1.08) rotate(2deg); }
+  100% { transform: translate3d(-3%, 3%, 0) scale(1.03) rotate(-2deg); }
+}
+@keyframes pawRise { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -220px, 0); } }
+
+/* các khối trước đây nền trắng/cam đặc → trong mờ để thấy nền động phía sau */
+.search-section  { background: rgba(255, 255, 255, .66); }
+.stories-section { background: rgba(255, 255, 255, .58); }
+.map-section     { background: rgba(255, 255, 255, .60); }
+.stats-section   { background: rgba(255, 236, 220, .55); }
+.shop-ads-section{ background: rgba(255, 243, 236, .42); }
+.how-section     { background: rgba(255, 255, 255, .40); }
+.form-section, .contact-section { background: transparent; }
+.vet-section     { background: linear-gradient(135deg, rgba(255, 248, 245, .55) 0%, rgba(255, 240, 232, .45) 100%); }
+.section         { background: transparent; }
+
+/* trang đăng nhập/đăng ký độc lập đã có nền riêng */
+body.auth-page::before, body.auth-page::after { display: none; }
+
+@media (max-width: 700px) {
+  body::before { inset: -35%; animation-duration: 48s; }
+  body::after { background-size: 170px 170px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after { animation: none; }
+}
+@media print { body::before, body::after { display: none; } html { background: #fff; } }

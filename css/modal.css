@@ -1,0 +1,111 @@
+/* Modals: common, pet detail, lightbox, location prompt, alert popup */
+    /* ===== MODALS COMMON ===== */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55); z-index: 500;
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(3px);
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white; border-radius: var(--radius);
+      padding: 36px 32px; max-width: 440px; width: 90%;
+      position: relative; animation: modalIn 0.22s ease;
+    }
+    @keyframes modalIn { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); line-height: 1; }
+    .modal-close:hover { color: var(--text); }
+
+    /* ===== PET DETAIL MODAL ===== */
+    #petModal .modal { max-width: 420px; }
+    .modal-pet-info { display: flex; gap: 14px; margin-bottom: 18px; }
+    .modal-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
+    .modal-gallery img { width: 100%; height: 64px; object-fit: cover; border-radius: 8px; cursor: pointer; transition: opacity 0.15s, transform 0.15s; border: 1.5px solid var(--border); }
+    .modal-gallery img:hover { opacity: 0.85; transform: scale(1.03); }
+    .modal-gallery-hint { font-size: 0.76rem; color: var(--text-muted); margin: -8px 0 12px; text-align: center; }
+    .lightbox-overlay { display: none; position: fixed; inset: 0; background: rgba(20,12,5,0.92); z-index: 1000; align-items: center; justify-content: center; }
+    .lightbox-overlay.open { display: flex; }
+    .lightbox-img-wrap { position: relative; max-width: 92vw; max-height: 88vh; display: flex; align-items: center; justify-content: center; }
+    .lightbox-img-wrap img { max-width: 92vw; max-height: 88vh; object-fit: contain; border-radius: 10px; box-shadow: 0 10px 50px rgba(0,0,0,0.5); }
+    .lightbox-close { position: absolute; top: 18px; right: 24px; background: rgba(255,255,255,0.15); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+    .lightbox-close:hover { background: rgba(255,255,255,0.3); }
+    .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); color: white; border: none; width: 46px; height: 46px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+    .lightbox-nav:hover { background: rgba(255,255,255,0.3); }
+    .lightbox-prev { left: -64px; }
+    .lightbox-next { right: -64px; }
+    .lightbox-counter { position: absolute; bottom: -36px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.85); font-weight: 700; font-size: 0.9rem; font-family: 'Nunito', sans-serif; }
+    @media (max-width: 640px) { .lightbox-prev { left: 6px; } .lightbox-next { right: 6px; } }
+    .modal-pet-img { width: 90px; height: 90px; border-radius: 10px; background: var(--orange-pale); font-size: 2.5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+    .modal-pet-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+    .modal-detail { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 4px; }
+    .modal-detail strong { color: var(--text); }
+    .modal-contact-row { display: flex; gap: 10px; margin-top: 14px; }
+    .modal-contact-row a { flex: 1; padding: 10px; border-radius: var(--radius-sm); text-align: center; font-weight: 700; font-size: 0.9rem; text-decoration: none; transition: opacity 0.15s; }
+    .modal-contact-row a:hover { opacity: 0.85; }
+    .btn-zalo { background: #006AF5; color: white; }
+    .btn-call { background: var(--green); color: white; }
+
+    /* ===== LOCATION PROMPT MODAL ===== */
+    #locationModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    #locationModal.open { display: flex; }
+    #locationModal .loc-box { background: white; border-radius: 20px; padding: 36px 32px; max-width: 420px; width: 90%; text-align: center; animation: modalIn 0.28s ease; box-shadow: 0 8px 40px rgba(0,0,0,0.2); }
+    .loc-icon { font-size: 3rem; margin-bottom: 10px; }
+    .loc-title { font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .loc-sub { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
+    .loc-select { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 1rem; color: var(--text); outline: none; margin-bottom: 14px; background: var(--bg); }
+    .loc-select:focus { border-color: var(--orange); }
+    .loc-btn { width: 100%; padding: 13px; background: var(--orange); color: white; border: none; border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; cursor: pointer; transition: background 0.15s; }
+    .loc-btn:hover { background: var(--orange-dark); }
+    .loc-skip { font-size: 0.82rem; color: var(--text-muted); margin-top: 10px; cursor: pointer; }
+    .loc-skip:hover { color: var(--text); text-decoration: underline; }
+
+    /* ===== ALERT POPUP (new post notification) ===== */
+    #alertPopup { position: fixed; bottom: 90px; right: 24px; z-index: 9000; max-width: 320px; width: 90%; background: white; border-radius: 16px; box-shadow: 0 8px 32px rgba(226,75,74,0.25); border: 2px solid var(--red); transform: translateX(120%); transition: transform 0.4s cubic-bezier(.2,1.2,.5,1); overflow: hidden; }
+    #alertPopup.show { transform: translateX(0); }
+    .alert-header { background: var(--red); color: white; padding: 10px 14px; display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 0.9rem; }
+    .alert-pulse { width: 10px; height: 10px; background: white; border-radius: 50%; animation: pulse 1.2s infinite; flex-shrink: 0; }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0.6} }
+    .alert-body { padding: 14px; }
+    .alert-pet-row { display: flex; gap: 12px; align-items: center; }
+    .alert-pet-img { width: 54px; height: 54px; border-radius: 10px; background: var(--orange-pale); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; overflow: hidden; flex-shrink: 0; }
+    .alert-pet-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+    .alert-pet-name { font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 1.05rem; color: var(--text); }
+    .alert-pet-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+    .alert-area-badge { display: inline-block; background: var(--red-light); color: var(--red); font-size: 0.75rem; font-weight: 800; padding: 2px 8px; border-radius: 20px; margin-top: 4px; }
+    .alert-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .alert-btn-view { flex: 1; padding: 8px; background: var(--red); color: white; border: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+    .alert-btn-close { padding: 8px 12px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 0.85rem; cursor: pointer; color: var(--text-muted); }
+    .alert-close-x { margin-left: auto; background: none; border: none; color: rgba(255,255,255,0.8); font-size: 1.1rem; cursor: pointer; line-height: 1; }
+
+
+/* ===== Chế độ xem thông tin liên lạc của người đăng tin (trong #petModal) ===== */
+#petContactPane { display: none; }
+#petModal .modal.show-contact > *:not(.modal-close):not(#petContactPane) { display: none !important; }
+#petModal .modal.show-contact #petContactPane { display: block; animation: contactIn .25s ease; }
+@keyframes contactIn { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+.contact-back { background: none; border: none; color: var(--orange-dark); font-weight: 800; font-family: 'Nunito', sans-serif; cursor: pointer; padding: 0; margin-bottom: 14px; font-size: 0.9rem; }
+.contact-head { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
+.contact-avatar { width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(135deg, var(--orange), var(--orange-dark)); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Baloo 2', cursive; font-size: 1.4rem; font-weight: 800; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 14px rgba(245,130,58,.35); }
+.contact-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.contact-label { font-size: .72rem; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--text-muted); }
+.contact-name { font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 800; line-height: 1.15; }
+.contact-sub { font-size: .82rem; color: var(--text-muted); }
+.contact-pet { display: flex; gap: 12px; align-items: center; background: var(--orange-light); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 14px; font-size: .88rem; }
+.contact-pet-icon { font-size: 1.8rem; }
+.contact-list { display: flex; flex-direction: column; gap: 8px; }
+.contact-row { display: flex; align-items: center; gap: 12px; background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; }
+.contact-row .ci { font-size: 1.3rem; }
+.contact-row .cv { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.contact-row .cv small { color: var(--text-muted); font-size: .72rem; font-weight: 700; }
+.contact-row .cv b { font-size: .98rem; word-break: break-all; }
+.contact-copy { border: 1.5px solid var(--border); background: var(--bg); border-radius: 8px; padding: 5px 10px; font-size: .74rem; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; white-space: nowrap; }
+.contact-copy:hover { background: var(--orange-pale); }
+.contact-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.contact-actions a { flex: 1; min-width: 110px; padding: 11px; border-radius: var(--radius-sm); text-align: center; font-weight: 800; font-size: .9rem; text-decoration: none; color: #fff; }
+.contact-actions .btn-mail { background: var(--text); }
+.contact-tip { margin-top: 14px; background: #FFF8E6; border-radius: var(--radius-sm); padding: 10px 12px; font-size: .8rem; color: #7a5a12; }
+
+.contact-actions a { white-space: nowrap; font-size: .84rem !important; padding: 11px 8px !important; }
+
+/* Khung liên hệ chỉ hiển thị thông tin: chọn nhanh cả dòng để sao chép, không có liên kết gọi/nhắn */
+.contact-row .cv b { user-select: all; cursor: text; }

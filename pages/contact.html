@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta name="format-detection" content="telephone=no">
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://apis.google.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://nominatim.openstreetmap.org http://localhost:11434 http://127.0.0.1:11434 https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.google.com https://*.facebook.com https://*.fbcdn.net; frame-src https://*.firebaseapp.com https://accounts.google.com https://*.facebook.com; object-src 'none'; base-uri 'self'; form-action 'self'"/>
+<meta name="referrer" content="strict-origin-when-cross-origin"/>
+<script src="../js/security.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Liên hệ – PetFinder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous"/>
+  <link rel="stylesheet" href="../css/variables.css"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link rel="stylesheet" href="../css/navbar.css"/>
+  <link rel="stylesheet" href="../css/home.css"/>
+  <link rel="stylesheet" href="../css/cards.css"/>
+  <link rel="stylesheet" href="../css/map.css"/>
+  <link rel="stylesheet" href="../css/modal.css"/>
+  <link rel="stylesheet" href="../css/auth.css"/>
+  <link rel="stylesheet" href="../css/profile.css"/>
+  <link rel="stylesheet" href="../css/admin.css"/>
+  <link rel="stylesheet" href="../css/footer.css"/>
+  <link rel="stylesheet" href="../css/responsive.css"/>
+<link rel="stylesheet" href="../css/contact.css"/>
+<link rel="stylesheet" href="../css/chatbot.css"/>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E🐾%3C/text%3E%3C/svg%3E"/>
+<link rel="stylesheet" href="../css/background.css"/>
+</head>
+<body data-components-base="../components/">
+<!-- component: navbar -->
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="../index.html">🐶🐱 PetFinder</a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Trang chủ</a></li>
+    <li><a href="../pages/pets.html">Thú cưng</a></li>
+    <li><a href="../pages/map.html">Bản đồ</a></li>
+    <li><a href="../index.html#form">Đăng tin</a></li>
+    <li><a href="../pages/veterinary.html">🏥 Cấp cứu 24/7</a></li>
+    <li><a href="../index.html#shop-ads">🛍️ Cửa hàng</a></li>
+      <li><a href="contact.html">💌 Liên hệ</a></li>
+  </ul>
+  <div class="nav-auth" id="navAuth">
+    <button class="btn-login" onclick="openAuthModal('login')">Đăng nhập</button>
+    <button class="btn-register" onclick="openAuthModal('register')">Đăng ký</button>
+  </div>
+  <div class="nav-user" id="navUser">
+    <button class="nav-avatar" id="navAvatar" onclick="window.location.href='../pages/profile.html#settings'" style="cursor:pointer" title="Cài đặt tài khoản">👤</button>
+    <span class="nav-username" id="navUsername">Người dùng</span>
+    <button class="btn-admin" id="navAdminBtn" onclick="window.location.href='../pages/admin.html'" style="display:none">🛠️ Quản trị</button>
+    <button class="btn-login" onclick="window.location.href='../pages/profile.html#posts'" style="margin-right:4px">📋 Tin của tôi</button>
+    <button class="btn-login" onclick="window.location.href='../pages/profile.html#settings'" style="margin-right:4px">⚙️ Cài đặt</button>
+    <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+  </div>
+</nav>
+<!-- STORIES -->
+<section class="contact-section" id="contactPage">
+  <div class="ct-head">
+    <h2>Liên hệ với <span>chúng tôi</span> 💌</h2>
+    <p>Gửi yêu cầu hỗ trợ, góp ý, báo lỗi hoặc chia sẻ trải nghiệm của bạn. Mọi phản hồi đều giúp PetFinder đưa thêm nhiều bé về nhà.</p>
+  </div>
+
+  <div class="ct-grid">
+    <div class="ct-col">
+      <div class="ct-card">
+        <h3>Thông tin liên hệ</h3>
+        <div class="ct-info-row"><div class="ct-info-ic">✉️</div><div><small>Email</small><b id="ctInfoEmail"></b></div></div>
+        <div class="ct-info-row"><div class="ct-info-ic">📞</div><div><small>Điện thoại</small><b id="ctInfoPhone"></b></div></div>
+        <div class="ct-info-row"><div class="ct-info-ic">📍</div><div><small>Khu vực hoạt động</small><b id="ctInfoAddress"></b></div></div>
+        <div class="ct-ai-cta"><span class="ai-ic">🤖</span><div><b>Cần câu trả lời ngay?</b><br>Trợ lý AI giải đáp cách dùng web và các câu hỏi liên quan.</div><button type="button" onclick="window.PFChat && PFChat.open()">Hỏi AI</button></div>
+      </div>
+      <div class="ct-card ct-faq">
+        <h3>Câu hỏi thường gặp</h3>
+        <details><summary>Làm sao để đăng tin thú cưng thất lạc?</summary><p>Vào mục <b>Đăng tin</b>, chọn loại tin (thất lạc / nhặt được / nhận nuôi), điền thông tin, thêm ảnh và vị trí rồi bấm đăng.</p></details>
+        <details><summary>Tôi đã tìm thấy thú cưng, cần làm gì?</summary><p>Mở tin của bạn ở mục <b>Tin của tôi</b> và cập nhật trạng thái thành "Đã tìm thấy" để cộng đồng không tìm kiếm nữa.</p></details>
+        <details><summary>Có mất phí khi đăng tin không?</summary><p>Đăng tin cơ bản, tìm kiếm, xem bản đồ và chat là miễn phí. Các gói tăng hiển thị theo kế hoạch kinh doanh hiện chưa mở thanh toán trong bản MVP.</p></details>
+        <details><summary>Tôi nhận được liên hệ đáng ngờ?</summary><p>Hãy hỏi thêm đặc điểm nhận dạng để xác minh, gặp ở nơi công cộng, không chuyển tiền trước. Có thể báo cho chúng tôi qua biểu mẫu bên cạnh.</p></details>
+      </div>
+    </div>
+
+    <div class="ct-card">
+      <div id="ctFormWrap">
+        <h3>Gửi yêu cầu cho chúng tôi</h3>
+        <div class="ct-types" id="ctTypes"></div>
+        <div class="ct-hint" id="ctTypeHint"></div>
+        <div class="ct-row2">
+          <div class="ct-field"><label for="ctName">Họ và tên <em>*</em></label><input id="ctName" type="text" maxlength="80" placeholder="Nguyễn Văn A" autocomplete="name"/></div>
+          <div class="ct-field"><label for="ctEmail">Email <em>*</em></label><input id="ctEmail" type="email" maxlength="120" placeholder="ban@email.com" autocomplete="email"/></div>
+        </div>
+        <div class="ct-field" id="ctRatingRow" style="display:none"><label>Mức độ hài lòng <em>*</em></label><div class="ct-stars"><span id="ctStars" style="display:flex"></span><span id="ctStarLabel"></span></div></div>
+        <div class="ct-field"><label for="ctMessage">Nội dung <em>*</em></label><textarea id="ctMessage" maxlength="2000" placeholder="Nhập nội dung bạn muốn gửi cho chúng tôi..."></textarea></div>
+        <label class="ct-check" id="ctPublicRow" style="display:none"><input type="checkbox" id="ctPublic"/> Cho phép hiển thị đánh giá này công khai (kèm tên của bạn)</label>
+        <div class="hp-field" aria-hidden="true"><label>Website</label><input id="ctWebsite" type="text" tabindex="-1" autocomplete="off"/></div>
+        <div class="ct-error" id="ctError"></div>
+        <button class="ct-submit" type="button" onclick="submitContactForm()">📨 Gửi yêu cầu</button>
+      </div>
+      <div class="ct-success" id="ctSuccess">
+        <div class="big">🎉</div>
+        <h4 id="ctSuccessText">Chúng tôi đã nhận được yêu cầu của bạn.</h4>
+        <div>Mã yêu cầu của bạn</div>
+        <div class="ct-ticket" id="ctTicket"></div>
+        <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:14px">Hãy đăng nhập để theo dõi trạng thái và phản hồi ngay tại trang này.</p>
+        <button class="ct-submit" type="button" onclick="resetContactForm()">Gửi yêu cầu khác</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ct-wide">
+    <div class="ct-card"><h3>⭐ Đánh giá từ cộng đồng</h3><div class="ct-review-summary" id="ctReviewSummary"></div><div id="ctReviews"></div></div>
+    <div class="ct-card"><h3>📬 Yêu cầu của bạn</h3><div id="ctMine"></div></div>
+  </div>
+</section>
+
+
+<!-- component: overlays -->
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- LOCATION PROMPT MODAL -->
+<div id="locationModal">
+  <div class="loc-box">
+    <div class="loc-icon">📍</div>
+    <div class="loc-title">Bạn đang ở khu vực nào?</div>
+    <div class="loc-sub">Chúng tôi sẽ ưu tiên hiển thị và thông báo thú cưng thất lạc <strong>gần bạn nhất</strong></div>
+    <select class="loc-select" id="locSelect">
+      <option value="">-- Chọn khu vực của bạn --</option>
+      <option>Quận 1</option><option>Quận 2</option><option>Quận 3</option>
+      <option>Quận 4</option><option>Quận 5</option><option>Quận 6</option>
+      <option>Quận 7</option><option>Quận 8</option><option>Quận 10</option>
+      <option>Quận 11</option><option>Quận 12</option><option>Bình Thạnh</option>
+      <option>Gò Vấp</option><option>Tân Bình</option><option>Tân Phú</option>
+      <option>Phú Nhuận</option><option>Bình Tân</option><option>Thủ Đức</option>
+      <option>Hóc Môn</option><option>Bình Chánh</option><option>Nhà Bè</option>
+      <option>Củ Chi</option><option>Cần Giờ</option>
+      <option>TP. Hồ Chí Minh (tất cả)</option>
+    </select>
+    <button class="loc-btn" onclick="saveUserLocation()">📍 Xác nhận khu vực</button>
+    <div class="loc-skip" onclick="skipLocation()">Bỏ qua, xem tất cả khu vực</div>
+  </div>
+</div>
+
+<!-- ALERT POPUP (new lost pet notification) -->
+<div id="alertPopup">
+  <div class="alert-header">
+    <div class="alert-pulse"></div>
+    <span>🚨 THÔNG BÁO KHẨN – KHU VỰC CỦA BẠN</span>
+    <button class="alert-close-x" onclick="closeAlertPopup()">✕</button>
+  </div>
+  <div class="alert-body">
+    <div class="alert-pet-row">
+      <div class="alert-pet-img" id="alertImg"></div>
+      <div>
+        <div class="alert-pet-name" id="alertName"></div>
+        <div class="alert-pet-meta" id="alertMeta"></div>
+        <div class="alert-area-badge" id="alertArea"></div>
+      </div>
+    </div>
+    <div class="alert-actions">
+      <button class="alert-btn-view" onclick="scrollToPetAndClose()">👁️ Xem tin ngay</button>
+      <button class="alert-btn-close" onclick="closeAlertPopup()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PET DETAIL MODAL ========== -->
+<div class="modal-overlay" id="petModal" onclick="closeOnBackdrop(event,'petModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('petModal')">✕</button>
+    <h3 id="modalTitle" style="font-family:'Baloo 2',cursive;font-size:1.3rem;margin-bottom:16px">Chi tiết thú cưng</h3>
+    <div class="modal-pet-info">
+      <div class="modal-pet-img" id="modalIcon"></div>
+      <div>
+        <div class="modal-detail"><strong>Giống:</strong> <span id="modalBreed"></span></div>
+        <div class="modal-detail"><strong>Khu vực:</strong> <span id="modalArea"></span></div>
+        <div class="modal-detail"><strong>Ngày đăng:</strong> <span id="modalDate"></span></div>
+        <div class="modal-detail"><strong>📞 SĐT:</strong> <span id="modalPhone" style="color:var(--green);font-weight:700"></span></div>
+      </div>
+    </div>
+    <div class="modal-gallery" id="modalGallery" style="display:none"></div>
+    <div class="modal-gallery-hint" id="modalGalleryHint" style="display:none">📷 Bấm vào ảnh để xem kích thước lớn</div>
+    <div id="modalZaloInfo" style="display:none;background:#EEF5FF;border-radius:8px;padding:10px 14px;margin:10px 0;font-size:0.88rem;">
+      <strong>💬 Link Zalo:</strong> <a id="modalZaloLink" href="#" target="_blank" style="color:#006AF5;word-break:break-all" rel="noopener noreferrer"></a>
+    </div>
+    <div class="modal-contact-row">
+      <a href="#" class="btn-zalo" id="modalZalo" onclick="showZaloLink(event)">💬 Xem Zalo</a>
+      <a href="#" class="btn-call" id="modalCall" onclick="showPhoneNumber(event)">📞 Xem thông tin liên hệ</a>
+    </div>
+    <div id="modalPhoneDisplay" style="display:none;background:var(--green-light);border-radius:8px;padding:10px 14px;margin-top:10px;text-align:center;font-size:1.05rem;font-weight:800;color:var(--green)"></div>
+  </div>
+</div>
+
+<!-- ========== IMAGE LIGHTBOX ========== -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeOnLightboxBackdrop(event)">
+  <div class="lightbox-img-wrap">
+    <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1, event)">‹</button>
+    <img id="lightboxImg" src="" alt="Ảnh thú cưng"/>
+    <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1, event)">›</button>
+    <span class="lightbox-counter" id="lightboxCounter"></span>
+  </div>
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+</div>
+<!-- /component: overlays -->
+<!-- component: modal-post -->
+<!-- FORM -->
+<section class="form-section" id="form">
+  <div class="form-container">
+    <h2 class="section-title" style="margin-bottom:6px">Đăng tin <span>của bạn</span></h2>
+    <p style="color:var(--text-muted);margin-bottom:24px">Giúp cộng đồng tìm kiếm thú cưng nhanh hơn</p>
+    <div class="form-tabs">
+      <button class="form-tab active" onclick="switchFormTab(this,'lost')">📢 Thú cưng thất lạc</button>
+      <button class="form-tab" onclick="switchFormTab(this,'found')">🐾 Thú cưng nhặt được</button>
+      <button class="form-tab" onclick="switchFormTab(this,'adopt')">🏠 Cho nhận nuôi</button>
+    </div>
+    <input type="hidden" id="activeFormType" value="lost"/>
+    <div class="form-grid">
+      <div class="form-group"><label>Tên thú cưng <span>*</span></label><input type="text" id="fName" class="form-control" placeholder="VD: Mochi, Kitty..."/></div>
+      <div class="form-group"><label>Loại thú <span>*</span></label><select id="fType" class="form-control"><option value="">Chọn loại</option><option value="chó">🐶 Chó</option><option value="mèo">🐱 Mèo</option><option value="thỏ">🐰 Thỏ</option><option value="khác">Khác</option></select></div>
+      <div class="form-group"><label>Giống</label><input type="text" id="fBreed" class="form-control" placeholder="VD: Poodle, Mèo Anh..."/></div>
+      <div class="form-group"><label>Giới tính</label><select id="fGender" class="form-control"><option value="">Chọn giới tính</option><option value="Đực">Đực</option><option value="Cái">Cái</option></select></div>
+      <div class="form-group"><label>Ngày thất lạc <span>*</span></label><input type="date" id="fDate" class="form-control"/></div>
+      <div class="form-group"><label>Khu vực <span>*</span></label><select id="fArea" class="form-control"><option value="">Chọn khu vực</option><option>TP. Hồ Chí Minh</option><option>Quận 1</option><option>Quận 3</option><option>Quận 4</option><option>Quận 5</option><option>Quận 6</option><option>Quận 7</option><option>Quận 8</option><option>Quận 10</option><option>Quận 11</option><option>Quận 12</option><option>Bình Thạnh</option><option>Gò Vấp</option><option>Tân Bình</option><option>Tân Phú</option><option>Phú Nhuận</option><option>Bình Tân</option><option>Thủ Đức</option><option>Hà Nội</option><option>Đà Nẵng</option><option>Bình Dương</option></select></div>
+      <div class="form-group full"><label>Địa điểm cụ thể <span>*</span></label><input type="text" id="fLocation" class="form-control" placeholder="VD: Công viên Lê Thị Riêng, Quận 10..."/></div>
+      <div class="form-group full"><label>Mô tả đặc điểm nhận dạng</label><textarea id="fDesc" class="form-control" placeholder="Màu lông, vòng cổ, vết thương, đặc điểm nổi bật..."></textarea></div>
+      <div class="form-group"><label>Số điện thoại <span>*</span></label><input type="tel" id="fPhone" class="form-control" placeholder="0901 234 567"/></div>
+      <div class="form-group"><label>Link Zalo <span>*</span></label><input type="text" id="fZalo" class="form-control" placeholder="VD: https://zalo.me/0901234567"/><small style="color:var(--text-muted);font-size:0.78rem">Bắt buộc – người dùng sẽ liên hệ qua link này</small></div>
+      <div class="form-group full"><label>Ảnh thú cưng</label>
+        <div class="upload-area" onclick="document.getElementById('fImageInput').click()"><div class="upload-icon">📷</div><div class="upload-text"><strong>Nhấn để tải ảnh</strong> hoặc kéo thả vào đây<br><span style="font-size:0.8rem">PNG, JPG tối đa 5MB (tối đa 5 ảnh)</span></div></div>
+        <input type="file" id="fImageInput" accept="image/*" multiple style="display:none" onchange="previewImages(this)"/>
+        <div id="fImagePreview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+      </div>
+      <div id="formError" style="display:none;grid-column:1/-1;background:var(--red-light);color:var(--red);padding:10px 14px;border-radius:var(--radius-sm);font-size:0.88rem;font-weight:700"></div>
+      <div class="form-group full"><button class="submit-btn" onclick="checkAuthBeforePost(event)">🚀 Đăng tin ngay</button></div>
+    </div>
+  </div>
+</section>
+<!-- /component: modal-post -->
+<!-- component: modal-login -->
+<!-- ========== LOGIN MODAL ========== -->
+<div class="modal-overlay" id="loginModal" onclick="closeOnBackdrop(event,'loginModal')">
+  <div class="modal auth-modal">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <div class="auth-logo">🐾</div>
+    <div class="auth-title">Chào mừng trở lại!</div>
+    <div class="auth-sub">Đăng nhập để đăng tin và kết nối cộng đồng</div>
+
+    <div id="loginForm" class="auth-form">
+      <div class="auth-field">
+        <label>Email</label>
+        <input class="auth-input" id="loginEmail" type="text" placeholder="example@email.com" autocomplete="username"/>
+      </div>
+      <div class="auth-field">
+        <label>Mật khẩu</label>
+        <div class="auth-input-wrap">
+          <input class="auth-input" id="loginPw" type="password" placeholder="Nhập mật khẩu..." autocomplete="current-password"/>
+          <button class="toggle-pw" type="button" onclick="togglePw('loginPw',this)">👁️</button>
+        </div>
+        <div class="auth-forgot"><a onclick="forgotPassword()" role="button" tabindex="0">Quên mật khẩu?</a></div>
+      </div>
+      <div id="loginError" style="display:none;background:var(--red-light);color:var(--red);padding:10px 14px;border-radius:var(--radius-sm);font-size:0.88rem;font-weight:700"></div>
+      <button class="auth-btn" onclick="doLogin()">🚀 Đăng nhập</button>
+      <div class="auth-divider">hoặc</div>
+      <div class="auth-social">
+        <button type="button" class="auth-social-btn" data-provider="Google" onclick="socialLogin('Google', this)"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Google</button>
+        <button type="button" class="auth-social-btn" data-provider="Facebook" onclick="socialLogin('Facebook', this)"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.88v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg> Facebook</button>
+      </div>
+      <div class="auth-switch">Chưa có tài khoản? <a onclick="switchAuth('register')">Đăng ký ngay</a></div>
+    </div>
+
+    <div id="loginSuccess" class="auth-success">
+      <div class="auth-success-icon">🎉</div>
+      <h3>Đăng nhập thành công!</h3>
+      <p>Chào mừng bạn trở lại với cộng đồng PetFinder 🐾</p>
+    </div>
+  </div>
+</div>
+<!-- /component: modal-login -->
+<!-- component: modal-register -->
+<!-- ========== REGISTER MODAL ========== -->
+<div class="modal-overlay" id="registerModal" onclick="closeOnBackdrop(event,'registerModal')">
+  <div class="modal auth-modal">
+    <button class="modal-close" onclick="closeModal('registerModal')">✕</button>
+    <div class="auth-logo">🐶🐱</div>
+    <div class="auth-title">Tạo tài khoản mới</div>
+    <div class="auth-sub">Tham gia cộng đồng PetFinder – hoàn toàn miễn phí!</div>
+
+    <div id="registerForm" class="auth-form">
+      <div class="auth-divider">Đăng ký nhanh bằng</div>
+      <div class="auth-social auth-social-top">
+        <button type="button" class="auth-social-btn" data-provider="Google" onclick="socialLogin('Google', this)"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Google</button>
+        <button type="button" class="auth-social-btn" data-provider="Facebook" onclick="socialLogin('Facebook', this)"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.88v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg> Facebook</button>
+      </div>
+      <div class="auth-divider">hoặc điền thông tin</div>
+      <div class="auth-row-2">
+        <div class="auth-field">
+          <label>Họ <span style="color:var(--red)">*</span></label>
+          <input class="auth-input" id="regHo" type="text" placeholder="Nguyễn"/>
+        </div>
+        <div class="auth-field">
+          <label>Tên <span style="color:var(--red)">*</span></label>
+          <input class="auth-input" id="regTen" type="text" placeholder="Văn A"/>
+        </div>
+      </div>
+      <div class="auth-field">
+        <label>Email <span style="color:var(--red)">*</span></label>
+        <input class="auth-input" id="regEmail" type="email" placeholder="example@email.com" autocomplete="email"/>
+      </div>
+      <div class="auth-field">
+        <label>Số điện thoại <span style="color:var(--red)">*</span></label>
+        <input class="auth-input" id="regPhone" type="tel" placeholder="0901 234 567" autocomplete="tel"/>
+      </div>
+      <div class="auth-field">
+        <label>Quận / Thành phố</label>
+        <select class="auth-input" id="regCity">
+          <option value="">Chọn khu vực của bạn</option>
+          <option>TP. Hồ Chí Minh</option>
+          <option>Quận 1, 3, 4</option>
+          <option>Quận 6, Quận 8, Quận 11</option>
+          <option>Quận Tân Bình, Quận Tân Phú, Quận Bình Tân</option>
+          <option>Quận Bình Thạnh, Quận Gò Vấp, Quận Phú Nhuận</option>
+          <option>Thành phố Thủ Đức</option>
+          <option>Quận 12</option> 
+        </select>
+      </div>
+      <div class="auth-field">
+        <label>Mật khẩu <span style="color:var(--red)">*</span></label>
+        <div class="auth-input-wrap">
+          <input class="auth-input" id="regPw" type="password" placeholder="Ít nhất 8 ký tự..." oninput="checkPwStrength(this.value)" autocomplete="new-password"/>
+          <button class="toggle-pw" type="button" onclick="togglePw('regPw',this)">👁️</button>
+        </div>
+        <div class="pw-strength"><div class="pw-strength-bar" id="pwBar"></div></div>
+        <div class="pw-hint" id="pwHint">Nhập mật khẩu để kiểm tra độ mạnh</div>
+      </div>
+      <div class="auth-field">
+        <label>Xác nhận mật khẩu <span style="color:var(--red)">*</span></label>
+        <div class="auth-input-wrap">
+          <input class="auth-input" id="regPw2" type="password" placeholder="Nhập lại mật khẩu..." autocomplete="new-password"/>
+          <button class="toggle-pw" type="button" onclick="togglePw('regPw2',this)">👁️</button>
+        </div>
+      </div>
+      <div id="regError" style="display:none;background:var(--red-light);color:var(--red);padding:10px 14px;border-radius:var(--radius-sm);font-size:0.88rem;font-weight:700"></div>
+      <button class="auth-btn" onclick="doRegister()">✨ Tạo tài khoản</button>
+      <div class="auth-terms">Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a> của PetFinder.</div>
+      <div class="auth-switch">Đã có tài khoản? <a onclick="switchAuth('login')">Đăng nhập</a></div>
+    </div>
+
+    <div id="registerSuccess" class="auth-success">
+      <div class="auth-success-icon">🎊</div>
+      <h3>Đăng ký thành công!</h3>
+      <p>Chào mừng bạn đến với cộng đồng PetFinder! Hãy bắt đầu bằng cách đăng tin thú cưng của bạn 🐾</p>
+    </div>
+  </div>
+</div>
+<!-- /component: modal-register -->
+<!-- component: footer -->
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">🐾 PetFinder</div>
+      <p>Kết nối cộng đồng yêu thú cưng, giúp những người bạn nhỏ tìm lại được ngôi nhà thân yêu.</p>
+      <div class="footer-socials">
+        <a class="social-btn" href="https://www.facebook.com/share/g/1Db11cVRdx/" target="_blank" rel="noopener noreferrer" title="Cộng đồng PetFinder trên Facebook" aria-label="Facebook">f</a><a class="social-btn" href="#">Z</a>
+        <a class="social-btn" href="#">📷</a><a class="social-btn" href="#">▶</a>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Dịch vụ</h4><ul><li><a href="../index.html#form">Đăng tin thất lạc</a></li><li><a href="../index.html#form">Đăng tin nhặt được</a></li><li><a href="../index.html#form">Cho nhận nuôi</a></li><li><a href="../index.html#form">Tìm kiếm nâng cao</a></li></ul></div>
+    <div class="footer-col"><h4>Cộng đồng</h4><ul><li><a href="https://www.facebook.com/share/g/1Db11cVRdx/" target="_blank" rel="noopener noreferrer">Diễn đàn</a></li><li><a href="#">Tin tức thú cưng</a></li><li><a href="#">Chia sẻ câu chuyện</a></li><li><a href="#">Tình nguyện viên</a></li></ul></div>
+    <div class="footer-col"><h4>Liên hệ</h4><ul><li><a href="#">📧 petfinder@email.com</a></li><li><a href="#">📞 1800 xxxx</a></li><li><a href="#">📍 TP. Hồ Chí Minh</a></li><li><a href="#">Chính sách bảo mật</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 PetFinder. Bảo lưu mọi quyền.</span>
+    <span>Được xây dựng với 🧡 cho cộng đồng yêu thú cưng Việt Nam</span>
+  </div>
+</footer>
+<!-- /component: footer -->
+
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/services/social-auth.js"></script>
+<script src="../js/db.js"></script>
+<script src="../js/services/geocoding.js"></script>
+<script src="../js/location.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/favorite.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/feedback.js"></script>
+<script src="../js/chatbot.js"></script>
+</body>
+</html>

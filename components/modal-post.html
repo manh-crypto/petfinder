@@ -1,0 +1,33 @@
+<!-- FORM -->
+<section class="form-section" id="form">
+  <div class="form-container">
+    <h2 class="section-title" style="margin-bottom:6px">Đăng tin <span>của bạn</span></h2>
+    <p style="color:var(--text-muted);margin-bottom:24px">Giúp cộng đồng tìm kiếm thú cưng nhanh hơn</p>
+    <div class="form-tabs">
+      <button class="form-tab active" onclick="switchFormTab(this,'lost')">📢 Thú cưng thất lạc</button>
+      <button class="form-tab" onclick="switchFormTab(this,'found')">🐾 Thú cưng nhặt được</button>
+      <button class="form-tab" onclick="switchFormTab(this,'adopt')">🏠 Cho nhận nuôi</button>
+    </div>
+    <input type="hidden" id="activeFormType" value="lost"/>
+    <div class="form-grid">
+      <div class="form-group"><label>Tên thú cưng <span>*</span></label><input type="text" id="fName" class="form-control" placeholder="VD: Mochi, Kitty..."/></div>
+      <div class="form-group"><label>Loại thú <span>*</span></label><select id="fType" class="form-control"><option value="">Chọn loại</option><option value="chó">🐶 Chó</option><option value="mèo">🐱 Mèo</option><option value="thỏ">🐰 Thỏ</option><option value="khác">Khác</option></select></div>
+      <div class="form-group"><label>Giống</label><input type="text" id="fBreed" class="form-control" placeholder="VD: Poodle, Mèo Anh..."/></div>
+      <div class="form-group"><label>Giới tính</label><select id="fGender" class="form-control"><option value="">Chọn giới tính</option><option value="Đực">Đực</option><option value="Cái">Cái</option></select></div>
+      <div class="form-group"><label>Ngày thất lạc <span>*</span></label><input type="date" id="fDate" class="form-control"/></div>
+      <div class="form-group"><label>Khu vực <span>*</span></label><select id="fArea" class="form-control"><option value="">Chọn khu vực</option><option>TP. Hồ Chí Minh</option><option>Quận 1</option><option>Quận 3</option><option>Quận 4</option><option>Quận 5</option><option>Quận 6</option><option>Quận 7</option><option>Quận 8</option><option>Quận 10</option><option>Quận 11</option><option>Quận 12</option><option>Bình Thạnh</option><option>Gò Vấp</option><option>Tân Bình</option><option>Tân Phú</option><option>Phú Nhuận</option><option>Bình Tân</option><option>Thủ Đức</option><option>Hà Nội</option><option>Đà Nẵng</option><option>Bình Dương</option></select></div>
+      <div class="form-group full"><label>Địa điểm cụ thể <span>*</span></label><input type="text" id="fLocation" class="form-control" placeholder="VD: Công viên Lê Thị Riêng, Quận 10..."/></div>
+      <div class="form-group full"><label>Mô tả đặc điểm nhận dạng</label><textarea id="fDesc" class="form-control" placeholder="Màu lông, vòng cổ, vết thương, đặc điểm nổi bật..."></textarea></div>
+      <div class="form-group"><label>Số điện thoại <span>*</span></label><input type="tel" id="fPhone" class="form-control" placeholder="0901 234 567"/></div>
+      <div class="form-group"><label>Link Zalo <span>*</span></label><input type="text" id="fZalo" class="form-control" placeholder="VD: https://zalo.me/0901234567"/><small style="color:var(--text-muted);font-size:0.78rem">Bắt buộc – người dùng sẽ liên hệ qua link này</small></div>
+      <div class="form-group full"><label>Ảnh thú cưng</label>
+        <div class="upload-area" onclick="document.getElementById('fImageInput').click()"><div class="upload-icon">📷</div><div class="upload-text"><strong>Nhấn để tải ảnh</strong> hoặc kéo thả vào đây<br><span style="font-size:0.8rem">PNG, JPG tối đa 5MB (tối đa 5 ảnh)</span></div></div>
+        <input type="file" id="fImageInput" accept="image/*" multiple style="display:none" onchange="previewImages(this)"/>
+        <div id="fImagePreview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+      </div>
+      <div id="formError" style="display:none;grid-column:1/-1;background:var(--red-light);color:var(--red);padding:10px 14px;border-radius:var(--radius-sm);font-size:0.88rem;font-weight:700"></div>
+      <div class="form-group full"><button class="submit-btn" onclick="checkAuthBeforePost(event)">🚀 Đăng tin ngay</button></div>
+    </div>
+  </div>
+</section>
+

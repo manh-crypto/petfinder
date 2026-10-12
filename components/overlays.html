@@ -1,0 +1,87 @@
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- LOCATION PROMPT MODAL -->
+<div id="locationModal">
+  <div class="loc-box">
+    <div class="loc-icon">📍</div>
+    <div class="loc-title">Bạn đang ở khu vực nào?</div>
+    <div class="loc-sub">Chúng tôi sẽ ưu tiên hiển thị và thông báo thú cưng thất lạc <strong>gần bạn nhất</strong></div>
+    <select class="loc-select" id="locSelect">
+      <option value="">-- Chọn khu vực của bạn --</option>
+      <option>Quận 1</option><option>Quận 2</option><option>Quận 3</option>
+      <option>Quận 4</option><option>Quận 5</option><option>Quận 6</option>
+      <option>Quận 7</option><option>Quận 8</option><option>Quận 10</option>
+      <option>Quận 11</option><option>Quận 12</option><option>Bình Thạnh</option>
+      <option>Gò Vấp</option><option>Tân Bình</option><option>Tân Phú</option>
+      <option>Phú Nhuận</option><option>Bình Tân</option><option>Thủ Đức</option>
+      <option>Hóc Môn</option><option>Bình Chánh</option><option>Nhà Bè</option>
+      <option>Củ Chi</option><option>Cần Giờ</option>
+      <option>TP. Hồ Chí Minh (tất cả)</option>
+    </select>
+    <button class="loc-btn" onclick="saveUserLocation()">📍 Xác nhận khu vực</button>
+    <div class="loc-skip" onclick="skipLocation()">Bỏ qua, xem tất cả khu vực</div>
+  </div>
+</div>
+
+<!-- ALERT POPUP (new lost pet notification) -->
+<div id="alertPopup">
+  <div class="alert-header">
+    <div class="alert-pulse"></div>
+    <span>🚨 THÔNG BÁO KHẨN – KHU VỰC CỦA BẠN</span>
+    <button class="alert-close-x" onclick="closeAlertPopup()">✕</button>
+  </div>
+  <div class="alert-body">
+    <div class="alert-pet-row">
+      <div class="alert-pet-img" id="alertImg"></div>
+      <div>
+        <div class="alert-pet-name" id="alertName"></div>
+        <div class="alert-pet-meta" id="alertMeta"></div>
+        <div class="alert-area-badge" id="alertArea"></div>
+      </div>
+    </div>
+    <div class="alert-actions">
+      <button class="alert-btn-view" onclick="scrollToPetAndClose()">👁️ Xem tin ngay</button>
+      <button class="alert-btn-close" onclick="closeAlertPopup()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PET DETAIL MODAL ========== -->
+<div class="modal-overlay" id="petModal" onclick="closeOnBackdrop(event,'petModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('petModal')">✕</button>
+    <h3 id="modalTitle" style="font-family:'Baloo 2',cursive;font-size:1.3rem;margin-bottom:16px">Chi tiết thú cưng</h3>
+    <div class="modal-pet-info">
+      <div class="modal-pet-img" id="modalIcon"></div>
+      <div>
+        <div class="modal-detail"><strong>Giống:</strong> <span id="modalBreed"></span></div>
+        <div class="modal-detail"><strong>Khu vực:</strong> <span id="modalArea"></span></div>
+        <div class="modal-detail"><strong>Ngày đăng:</strong> <span id="modalDate"></span></div>
+        <div class="modal-detail"><strong>📞 SĐT:</strong> <span id="modalPhone" style="color:var(--green);font-weight:700"></span></div>
+      </div>
+    </div>
+    <div class="modal-gallery" id="modalGallery" style="display:none"></div>
+    <div class="modal-gallery-hint" id="modalGalleryHint" style="display:none">📷 Bấm vào ảnh để xem kích thước lớn</div>
+    <div id="modalZaloInfo" style="display:none;background:#EEF5FF;border-radius:8px;padding:10px 14px;margin:10px 0;font-size:0.88rem;">
+      <strong>💬 Link Zalo:</strong> <a id="modalZaloLink" href="#" target="_blank" style="color:#006AF5;word-break:break-all" rel="noopener noreferrer"></a>
+    </div>
+    <div class="modal-contact-row">
+      <a href="#" class="btn-zalo" id="modalZalo" onclick="showZaloLink(event)">💬 Xem Zalo</a>
+      <a href="#" class="btn-call" id="modalCall" onclick="showPhoneNumber(event)">📞 Xem thông tin liên hệ</a>
+    </div>
+    <div id="modalPhoneDisplay" style="display:none;background:var(--green-light);border-radius:8px;padding:10px 14px;margin-top:10px;text-align:center;font-size:1.05rem;font-weight:800;color:var(--green)"></div>
+  </div>
+</div>
+
+<!-- ========== IMAGE LIGHTBOX ========== -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeOnLightboxBackdrop(event)">
+  <div class="lightbox-img-wrap">
+    <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1, event)">‹</button>
+    <img id="lightboxImg" src="" alt="Ảnh thú cưng"/>
+    <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1, event)">›</button>
+    <span class="lightbox-counter" id="lightboxCounter"></span>
+  </div>
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+</div>
+
