@@ -1,0 +1,11 @@
+# Header bảo mật HTTP – dùng được trên Netlify / Cloudflare Pages (GitHub Pages KHÔNG hỗ trợ file này).
+# GitHub Pages không cho đặt header, nên ứng dụng đã có thẻ <meta> CSP + chống nhúng khung bằng JS; nếu có thể, hãy đặt web sau Cloudflare
+# (hoặc chuyển sang Cloudflare Pages/Netlify) để có header thật, đặc biệt `frame-ancestors` và HSTS mà thẻ meta không làm được.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://apis.google.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://nominatim.openstreetmap.org http://localhost:11434 http://127.0.0.1:11434 https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.google.com https://*.facebook.com https://*.fbcdn.net; frame-src https://*.firebaseapp.com https://accounts.google.com https://*.facebook.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
