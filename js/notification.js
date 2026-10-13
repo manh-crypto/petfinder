@@ -23,9 +23,9 @@ function showAlertPopup(pet) {
   } else {
     imgEl.textContent = pet.icon || '🐾';
   }
-  document.getElementById('alertName').textContent = '🐾 ' + pet.name + ' – ' + (pet.breed || pet.type);
-  document.getElementById('alertMeta').textContent = '📍 ' + (pet.location || pet.area) + ' · ' + pet.date;
-  document.getElementById('alertArea').textContent = '📍 ' + (pet.area || '');
+  document.getElementById('alertName').textContent = '' + pet.name + ' – ' + (pet.breed || pet.type);
+  document.getElementById('alertMeta').textContent = '' + (pet.location || pet.area) + ' · ' + pet.date;
+  document.getElementById('alertArea').textContent = '' + (pet.area || '');
   const popup = document.getElementById('alertPopup');
   popup.classList.add('show');
   // Auto-hide after 12s

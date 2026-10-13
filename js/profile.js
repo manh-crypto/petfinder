@@ -21,16 +21,16 @@ function renderMyPosts() {
       <div class="mini-info">
         <div class="mini-name">${PFSec.esc(p.name)}</div>
         <div class="mini-meta">${PFSec.esc(p.location || p.area)} · ${PFSec.esc(statusLabelMap[p.status] || '')}</div>
-        <div class="mini-meta">📅 ${PFSec.esc(p.date)}</div>
+        <div class="mini-meta">${PFSec.esc(p.date)}</div>
       </div>
-      <button class="mini-delete" data-id="${PFSec.esc(p.id)}" onclick="deleteMyPost(this.dataset.id)">🗑️ Xóa</button>
+      <button class="mini-delete" data-id="${PFSec.esc(p.id)}" onclick="deleteMyPost(this.dataset.id)">Xóa</button>
     </div>
   `).join('');
 }
 function deleteMyPost(id) {
   if (!currentUser) { openAuthModal('login'); return; }
   const target = loadPets().find(p => p.id === id);
-  if (!canModifyPet(target)) { PFSec.log('access_denied', 'xóa tin của người khác: ' + PFSec.cleanText(id, 40)); showToast('⛔ Bạn chỉ có thể xóa tin do chính mình đăng.'); return; }
+  if (!canModifyPet(target)) { PFSec.log('access_denied', 'xóa tin của người khác: ' + PFSec.cleanText(id, 40)); showToast('Bạn chỉ có thể xóa tin do chính mình đăng.'); return; }
   if (!confirm('Bạn có chắc muốn xóa tin này không?')) return;
   savePets(loadPets().filter(p => p.id !== id));
   PFSec.log('pet_deleted', target.name, currentUser.email);
@@ -38,13 +38,13 @@ function deleteMyPost(id) {
   if (card) card.remove();
   renderMyPosts();
   if (typeof updateStats === 'function') updateStats();
-  showToast('🗑️ Đã xóa tin');
+  showToast('Đã xóa tin');
 }
 
 // ========== ACCOUNT SETTINGS ==========
 let pendingAvatarData = null;
 function openAccountSettings() {
-  if (!currentUser) { showToast('⚠️ Vui lòng đăng nhập để vào cài đặt!'); openAuthModal('login'); return; }
+  if (!currentUser) { showToast('Vui lòng đăng nhập để vào cài đặt!'); openAuthModal('login'); return; }
   pendingAvatarData = null;
   document.getElementById('accName').value = currentUser.name || '';
   document.getElementById('accPhone').value = currentUser.phone || '';
@@ -90,9 +90,9 @@ async function handleAvatarUpload(input) {
     const data = await PFSec.processImage(file, { maxDim: 320, quality: 0.85, maxOutBytes: 90 * 1024 });   // kiểm tra loại thật, thu nhỏ, xóa EXIF
     pendingAvatarData = { type: 'photo', value: data };
     renderAccountAvatarPreview(data, null);
-    showToast('✅ Đã chọn ảnh đại diện mới!');
+    showToast('Đã chọn ảnh đại diện mới!');
   } catch (e) {
-    showToast('⚠️ ' + e.message);
+    showToast('' + e.message);
   } finally { input.value = ''; }
 }
 function saveAccountSettings(event) {
@@ -102,9 +102,9 @@ function saveAccountSettings(event) {
   const name = t(document.getElementById('accName').value, 80);
   const err = document.getElementById('accountError');
   const fail = m => { err.textContent = m; err.style.display = 'block'; return false; };
-  if (!name) return fail('⚠️ Vui lòng nhập họ tên.');
+  if (!name) return fail('Vui lòng nhập họ tên.');
   const phone = t(document.getElementById('accPhone').value, 40);
-  if (phone && !PFSec.isPhone(phone)) return fail('⚠️ Số điện thoại không hợp lệ.');
+  if (phone && !PFSec.isPhone(phone)) return fail('Số điện thoại không hợp lệ.');
   err.style.display = 'none';
   const area = t(document.getElementById('accArea').value, 80);
   const bio = t(document.getElementById('accBio').value, 300);
@@ -112,7 +112,7 @@ function saveAccountSettings(event) {
   // chỉ cập nhật các trường được phép trên bản ghi của CHÍNH người dùng này (không trộn nguyên đối tượng phiên)
   const users = loadUsers();
   const idx = users.findIndex(u => u.uid === currentUser.uid);
-  if (idx === -1) return fail('⚠️ Không tìm thấy tài khoản.');
+  if (idx === -1) return fail('Không tìm thấy tài khoản.');
   const rec = users[idx];
   rec.name = name; rec.phone = phone; rec.area = area; rec.bio = bio;
   if (pendingAvatarData) {
@@ -130,7 +130,7 @@ function saveAccountSettings(event) {
   if (changed) savePets(pets);
 
   pendingAvatarData = null;
-  showToast('✅ Đã lưu thông tin tài khoản!');
+  showToast('Đã lưu thông tin tài khoản!');
   closeModal('accountModal');
   return false;
 }
@@ -150,11 +150,11 @@ function renderAccountPosts() {
       <div class="mini-info">
         <div class="mini-name">${PFSec.esc(p.name)}</div>
         <div class="mini-meta">${PFSec.esc(p.location || p.area)} · ${PFSec.esc(statusLabelMap[p.status] || '')}</div>
-        <div class="mini-meta">📅 ${PFSec.esc(p.date)}</div>
+        <div class="mini-meta">${PFSec.esc(p.date)}</div>
       </div>
       <div class="mini-card-actions">
-        <button class="mini-edit" data-id="${PFSec.esc(p.id)}" onclick="openAdminEditPet(this.dataset.id)">✏️ Sửa</button>
-        <button class="mini-delete" data-id="${PFSec.esc(p.id)}" onclick="deleteAccountPost(this.dataset.id)">🗑️ Xóa</button>
+        <button class="mini-edit" data-id="${PFSec.esc(p.id)}" onclick="openAdminEditPet(this.dataset.id)">Sửa</button>
+        <button class="mini-delete" data-id="${PFSec.esc(p.id)}" onclick="deleteAccountPost(this.dataset.id)">Xóa</button>
       </div>
     </div>`;
   }).join('');
@@ -162,7 +162,7 @@ function renderAccountPosts() {
 function deleteAccountPost(id) {
   if (!currentUser) { openAuthModal('login'); return; }
   const target = loadPets().find(p => p.id === id);
-  if (!canModifyPet(target)) { PFSec.log('access_denied', 'xóa tin của người khác: ' + PFSec.cleanText(id, 40)); showToast('⛔ Bạn chỉ có thể xóa tin do chính mình đăng.'); return; }
+  if (!canModifyPet(target)) { PFSec.log('access_denied', 'xóa tin của người khác: ' + PFSec.cleanText(id, 40)); showToast('Bạn chỉ có thể xóa tin do chính mình đăng.'); return; }
   if (!confirm('Bạn có chắc muốn xóa tin này không?')) return;
   savePets(loadPets().filter(p => p.id !== id));
   PFSec.log('pet_deleted', target.name, currentUser.email);
@@ -170,7 +170,7 @@ function deleteAccountPost(id) {
   if (card) card.remove();
   renderAccountPosts();
   if (typeof updateStats === 'function') updateStats();
-  showToast('🗑️ Đã xóa tin');
+  showToast('Đã xóa tin');
 }
 
 
@@ -187,7 +187,7 @@ function ensurePasswordSection() {
   sec = document.createElement('div');
   sec.id = 'accPwSection';
   sec.className = 'acc-card';
-  sec.innerHTML = `<div class="acc-card-title">🔑 Đổi mật khẩu</div>
+  sec.innerHTML = `<div class="acc-card-title">Đổi mật khẩu</div>
     <div class="auth-field"><label for="accPwOld">Mật khẩu hiện tại</label><input class="auth-input" id="accPwOld" type="password" autocomplete="current-password" maxlength="128"/></div>
     <div class="auth-field"><label for="accPwNew">Mật khẩu mới</label><input class="auth-input" id="accPwNew" type="password" autocomplete="new-password" maxlength="128"/></div>
     <div class="auth-field"><label for="accPwNew2">Nhập lại mật khẩu mới</label><input class="auth-input" id="accPwNew2" type="password" autocomplete="new-password" maxlength="128"/></div>
@@ -201,25 +201,25 @@ async function changePassword() {
   const say = (m, good) => { msg.textContent = m; msg.style.display = 'block'; msg.style.background = good ? 'var(--green-light)' : 'var(--red-light)'; msg.style.color = good ? 'var(--green)' : 'var(--red)'; };
   if (!currentUser) return;
   const oldPw = document.getElementById('accPwOld').value, newPw = document.getElementById('accPwNew').value, newPw2 = document.getElementById('accPwNew2').value;
-  if (!oldPw || !newPw || !newPw2) return say('⚠️ Vui lòng điền đủ các ô.');
+  if (!oldPw || !newPw || !newPw2) return say('Vui lòng điền đủ các ô.');
   const key = 'pwchange:' + currentUser.email, th = PFSec.throttle.check(key);
-  if (th.locked) return say(`⛔ Quá nhiều lần thử sai. Thử lại sau ${Math.ceil(th.remainingMs / 1000)} giây.`);
+  if (th.locked) return say(`Quá nhiều lần thử sai. Thử lại sau ${Math.ceil(th.remainingMs / 1000)} giây.`);
   const issues = PFSec.passwordIssues(newPw, { email: currentUser.email, level: currentUser.role === 'admin' ? 'admin' : 'user' });
-  if (issues.length) return say('⚠️ ' + issues[0]);
-  if (newPw !== newPw2) return say('⚠️ Mật khẩu xác nhận không khớp.');
-  if (newPw === oldPw) return say('⚠️ Mật khẩu mới phải khác mật khẩu hiện tại.');
+  if (issues.length) return say('' + issues[0]);
+  if (newPw !== newPw2) return say('Mật khẩu xác nhận không khớp.');
+  if (newPw === oldPw) return say('Mật khẩu mới phải khác mật khẩu hiện tại.');
   try {
     const fu = PFDB.auth().currentUser;
-    if (!fu || !fu.email) return say('⚠️ Không tìm thấy tài khoản.');
+    if (!fu || !fu.email) return say('Không tìm thấy tài khoản.');
     try { await fu.reauthenticateWithCredential(PFDB.fb().auth.EmailAuthProvider.credential(fu.email, oldPw)); }
     catch (e) {
-      if (e && (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential')) { PFSec.throttle.fail(key); PFSec.log('password_change_failed', 'sai mật khẩu hiện tại', fu.email); return say('⚠️ Mật khẩu hiện tại không đúng.'); }
+      if (e && (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential')) { PFSec.throttle.fail(key); PFSec.log('password_change_failed', 'sai mật khẩu hiện tại', fu.email); return say('Mật khẩu hiện tại không đúng.'); }
       throw e;
     }
     PFSec.throttle.reset(key);
     await fu.updatePassword(newPw);
     PFSec.log('password_changed', '', fu.email);
     ['accPwOld', 'accPwNew', 'accPwNew2'].forEach(id => { document.getElementById(id).value = ''; });
-    say('✅ Đã đổi mật khẩu.', true);
-  } catch (e) { say('⚠️ ' + e.message); }
+    say('Đã đổi mật khẩu.', true);
+  } catch (e) { say('' + e.message); }
 }

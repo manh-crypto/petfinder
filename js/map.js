@@ -17,7 +17,7 @@ function initMap() {
   const mapEl = document.getElementById('leafletMap');
   if (!mapEl || leafletMap) return;
   if (typeof L === 'undefined') {
-    mapEl.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;color:#888;font-weight:700">⚠️ Không tải được bản đồ. Vui lòng kiểm tra kết nối mạng rồi tải lại trang.</div>';
+    mapEl.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;color:#888;font-weight:700">Không tải được bản đồ. Vui lòng kiểm tra kết nối mạng rồi tải lại trang.</div>';
     return;
   }
   leafletMap = L.map('leafletMap', { zoomControl: true, scrollWheelZoom: true }).setView([10.7769, 106.7009], 12);
@@ -43,7 +43,7 @@ function initMap() {
         <strong style="font-size:1rem">${escapeHtml(p.name)}</strong><br>
         <span style="font-size:0.82rem;color:#666">${escapeHtml(p.type)}</span><br>
         <span style="display:inline-block;margin:5px 0;padding:2px 8px;border-radius:10px;font-size:0.78rem;font-weight:700;background:${color}22;color:${color}">${escapeHtml(statusLabel[p.status] || '')}</span><br>
-        <span style="font-size:0.82rem;color:#888">📍 ${escapeHtml(p.district)}</span>
+        <span style="font-size:0.82rem;color:#888">${escapeHtml(p.district)}</span>
       </div>`)
       .addTo(leafletMap);
     m._petStatus = p.status;
@@ -59,7 +59,6 @@ function initMap() {
 
 // ---------- Ảnh nền bản đồ: thử lần lượt nhiều nguồn, tự chuyển khi tải lỗi ----------
 const BASEMAPS = [
-  { name: 'CARTO', url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', opts: { subdomains: 'abcd', maxZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>' } },
   { name: 'OpenStreetMap', url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', opts: { maxZoom: 19, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' } },
   { name: 'Esri', url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', opts: { maxZoom: 19, attribution: 'Tiles © Esri' } }
 ];
@@ -76,7 +75,7 @@ function setupBaseMap(map, mapEl) {
     idx++;
     if (layer) map.removeLayer(layer);
     if (idx >= BASEMAPS.length) {
-      notice.innerHTML = '⚠️ Không tải được ảnh nền bản đồ.<br><small>Hãy kiểm tra kết nối mạng và mở trang qua http(s):// (GitHub Pages) thay vì mở file trực tiếp.</small>';
+      notice.innerHTML = 'Không tải được ảnh nền bản đồ.<br><small>Hãy kiểm tra kết nối mạng và mở trang qua http(s):// (GitHub Pages) thay vì mở file trực tiếp.</small>';
       notice.style.display = 'block';
       return;
     }
@@ -122,7 +121,7 @@ function addProvinceControl() {
       const div = L.DomUtil.create('div', 'map-region-ctl');
       const opts = ['<option value="-1">🇻🇳 Toàn quốc (63 tỉnh thành)</option>'].concat(PF_PROVINCES.map((p, i) =>
         `<option value="${i}">${escapeHtml(p[0])}${counts[i] ? ' (' + counts[i] + ')' : ''}</option>`));
-      div.innerHTML = `<label class="map-province-label">📍 Tỉnh / thành phố</label><select class="map-province-select" aria-label="Lọc theo tỉnh thành">${opts.join('')}</select>`;
+      div.innerHTML = `<label class="map-province-label">Tỉnh / thành phố</label><select class="map-province-select" aria-label="Lọc theo tỉnh thành">${opts.join('')}</select>`;
       L.DomEvent.disableClickPropagation(div);
       L.DomEvent.disableScrollPropagation(div);
       div.querySelector('select').addEventListener('change', e => { mapProvinceFilter = Number(e.target.value); applyMapFilters(true); });
@@ -143,7 +142,7 @@ function showMapSearchMarker(lat, lng, label) {
   if (!leafletMap) initMap();
   if (!leafletMap) return;
   if (mapSearchMarker) leafletMap.removeLayer(mapSearchMarker);
-  mapSearchMarker = L.marker([lat, lng]).addTo(leafletMap).bindPopup(`<strong>📍 ${escapeHtml(label)}</strong>`).openPopup();
+  mapSearchMarker = L.marker([lat, lng]).addTo(leafletMap).bindPopup(`<strong>${escapeHtml(label)}</strong>`).openPopup();
   leafletMap.setView([lat, lng], 16);
 }
 
@@ -391,7 +390,7 @@ function renderVetGrid() {
     const isEmergency = c.tags.includes('emergency');
     const isHospital = c.tags.includes('hospital');
     const img = vetImages(c);
-    const distText = c._dist ? `<span class="vet-dist">📍 ${c._dist.toFixed(1)} km</span>` : '';
+    const distText = c._dist ? `<span class="vet-dist">${c._dist.toFixed(1)} km</span>` : '';
     const cover = img.cover
       ? `<img src="${vetImgUrl(img.cover)}" alt="${c.shortName}" loading="lazy" style="object-position:${img.coverPos || '50% 50%'}" onerror="this.remove()"/>`
       : '';
@@ -405,12 +404,12 @@ function renderVetGrid() {
         ${cover}
         <div class="vet-card-media-shade"></div>
         <div class="vet-card-media-badges">
-          ${is24h ? '<span class="vet-badge vet-badge-24h">🕐 24/7</span>' : ''}
-          ${isEmergency ? '<span class="vet-badge vet-badge-emergency">🚨 Cấp cứu</span>' : ''}
-          ${isHospital ? '<span class="vet-badge vet-badge-hospital">🏨 Bệnh viện</span>' : ''}
+          ${is24h ? '<span class="vet-badge vet-badge-24h">24/7</span>' : ''}
+          ${isEmergency ? '<span class="vet-badge vet-badge-emergency">Cấp cứu</span>' : ''}
+          ${isHospital ? '<span class="vet-badge vet-badge-hospital">Bệnh viện</span>' : ''}
         </div>
-        ${photoCount ? `<span class="vet-photo-count">📷 ${photoCount}</span>` : ''}
-        ${isNearest ? '<span class="vet-nearest-tag vet-nearest-float">📍 GẦN NHẤT</span>' : ''}
+        ${photoCount ? `<span class="vet-photo-count">${photoCount}</span>` : ''}
+        ${isNearest ? '<span class="vet-nearest-tag vet-nearest-float">GẦN NHẤT</span>' : ''}
       </div>
       <div class="vet-card-logo ${is24h ? 'open24' : ''}">${logo}</div>
       <div class="vet-card-body">
@@ -424,8 +423,8 @@ function renderVetGrid() {
           ${distText}
         </div>
         <div class="vet-card-actions">
-          <a class="vet-call-btn" href="tel:${c.phone}" onclick="event.stopPropagation()">📞 ${c.phoneDisplay}</a>
-          <a class="vet-map-btn" href="${c.mapUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">🗺️ Bản đồ</a>
+          <a class="vet-call-btn" href="tel:${c.phone}" onclick="event.stopPropagation()">${c.phoneDisplay}</a>
+          <a class="vet-map-btn" href="${c.mapUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Bản đồ</a>
         </div>
       </div>
     </div>`;
@@ -450,14 +449,14 @@ function findNearestVet() {
     pos => {
       userVetLat = pos.coords.latitude;
       userVetLng = pos.coords.longitude;
-      btn.textContent = '✅ Đã tìm vị trí';
+      btn.textContent = 'Đã tìm vị trí';
       renderVetGrid();
       document.getElementById('vet-clinics').scrollIntoView({ behavior: 'smooth' });
-      showToast('📍 Đã sắp xếp theo khoảng cách gần nhất!');
-      setTimeout(() => { btn.innerHTML = '📍 Tìm gần nhất'; }, 3000);
+      showToast('Đã sắp xếp theo khoảng cách gần nhất!');
+      setTimeout(() => { btn.innerHTML = 'Tìm gần nhất'; }, 3000);
     },
     err => {
-      btn.innerHTML = '📍 Tìm gần nhất';
+      btn.innerHTML = 'Tìm gần nhất';
       showToast('Không thể lấy vị trí – vui lòng cho phép truy cập GPS');
     }
   );
@@ -474,9 +473,9 @@ function openVetModal(id) {
   const img = vetImages(c);
   document.getElementById('vetModalName').textContent = c.name;
   const tags = [];
-  if (c.tags.includes('24h')) tags.push('<span class="vet-badge vet-badge-24h">🕐 Mở 24/7</span>');
-  if (c.tags.includes('emergency')) tags.push('<span class="vet-badge vet-badge-emergency">🚨 Cấp cứu</span>');
-  if (c.tags.includes('hospital')) tags.push('<span class="vet-badge vet-badge-hospital">🏨 Bệnh viện thú y</span>');
+  if (c.tags.includes('24h')) tags.push('<span class="vet-badge vet-badge-24h">Mở 24/7</span>');
+  if (c.tags.includes('emergency')) tags.push('<span class="vet-badge vet-badge-emergency">Cấp cứu</span>');
+  if (c.tags.includes('hospital')) tags.push('<span class="vet-badge vet-badge-hospital">Bệnh viện thú y</span>');
   document.getElementById('vetModalBadges').innerHTML = tags.join('');
   document.getElementById('vetModalAddress').textContent = c.address;
   document.getElementById('vetModalRating').textContent = `${getStars(c.rating)} ${c.rating} (${c.ratingCount} đánh giá)`;

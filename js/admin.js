@@ -36,7 +36,7 @@ function renderFlaggedTable() {
   const body = document.getElementById('adminFlaggedBody');
   if (!body) return;
   if (flagged.length === 0) {
-    body.innerHTML = '<tr class="admin-empty-row"><td colspan="5">✅ Không có tin đăng nào bị đánh dấu nghi vấn.</td></tr>';
+    body.innerHTML = '<tr class="admin-empty-row"><td colspan="5">Không có tin đăng nào bị đánh dấu nghi vấn.</td></tr>';
     return;
   }
   const E = PFSec.esc;
@@ -48,9 +48,9 @@ function renderFlaggedTable() {
         <td><span class="pill pill-${E(p.status)}">${E(statusLabelMap[p.status] || p.status)}</span></td>
         <td>
           <div class="admin-action-btns" data-id="${E(p.id)}">
-            <button class="abtn abtn-edit" onclick="openAdminEditPet(this.parentNode.dataset.id)">✏️ Sửa</button>
-            <button class="abtn abtn-unflag" onclick="toggleFlagPet(this.parentNode.dataset.id)">✅ Bỏ cờ</button>
-            <button class="abtn abtn-delete" onclick="adminDeletePet(this.parentNode.dataset.id)">🗑️ Xóa</button>
+            <button class="abtn abtn-edit" onclick="openAdminEditPet(this.parentNode.dataset.id)">Sửa</button>
+            <button class="abtn abtn-unflag" onclick="toggleFlagPet(this.parentNode.dataset.id)">Bỏ cờ</button>
+            <button class="abtn abtn-delete" onclick="adminDeletePet(this.parentNode.dataset.id)">Xóa</button>
           </div>
         </td>
       </tr>
@@ -90,14 +90,14 @@ function renderAdminUsers() {
         <td>
           <div class="admin-action-btns" data-email="${E(u.email)}">
             ${role === 'admin'
-              ? `<button class="abtn abtn-demote" onclick="setUserRole(this.parentNode.dataset.email,'user')" ${isSelf ? 'disabled title="Không thể tự hạ quyền"' : ''}>⬇️ Hạ quyền</button>`
-              : `<button class="abtn abtn-promote" onclick="setUserRole(this.parentNode.dataset.email,'admin')">⬆️ Cấp quyền admin</button>`
+              ? `<button class="abtn abtn-demote" onclick="setUserRole(this.parentNode.dataset.email,'user')" ${isSelf ? 'disabled title="Không thể tự hạ quyền"' : ''}>Hạ quyền</button>`
+              : `<button class="abtn abtn-promote" onclick="setUserRole(this.parentNode.dataset.email,'admin')">Cấp quyền admin</button>`
             }
             ${u.banned
-              ? `<button class="abtn abtn-unflag" onclick="toggleBanUser(this.parentNode.dataset.email)">✅ Mở khóa</button>`
-              : `<button class="abtn abtn-flag" onclick="toggleBanUser(this.parentNode.dataset.email)" ${isSelf ? 'disabled' : ''}>⛔ Khóa TK</button>`
+              ? `<button class="abtn abtn-unflag" onclick="toggleBanUser(this.parentNode.dataset.email)">Mở khóa</button>`
+              : `<button class="abtn abtn-flag" onclick="toggleBanUser(this.parentNode.dataset.email)" ${isSelf ? 'disabled' : ''}>Khóa TK</button>`
             }
-            <button class="abtn abtn-delete" onclick="adminDeleteUser(this.parentNode.dataset.email)" ${isSelf ? 'disabled title="Không thể tự xóa"' : ''}>🗑️ Xóa</button>
+            <button class="abtn abtn-delete" onclick="adminDeleteUser(this.parentNode.dataset.email)" ${isSelf ? 'disabled title="Không thể tự xóa"' : ''}>Xóa</button>
           </div>
         </td>
       </tr>
@@ -111,15 +111,15 @@ function setUserRole(email, role) {
   const users = loadUsers();
   const u = users.find(x => x.email === email);
   if (!u) return;
-  if (currentUser && u.email === currentUser.email && role !== 'admin') { showToast('⛔ Bạn không thể tự hạ quyền của chính mình'); return; }
+  if (currentUser && u.email === currentUser.email && role !== 'admin') { showToast('Bạn không thể tự hạ quyền của chính mình'); return; }
   if (role === 'admin') {
-    if (u.banned) { showToast('⛔ Hãy mở khóa tài khoản trước khi cấp quyền admin.'); return; }
+    if (u.banned) { showToast('Hãy mở khóa tài khoản trước khi cấp quyền admin.'); return; }
     if (!confirm(`Cấp QUYỀN QUẢN TRỊ cho "${u.name}" (${u.email})? Người này sẽ xem và sửa được toàn bộ dữ liệu.`)) return;
   }
   u.role = role;
   saveUsers(users);
   PFSec.log('admin_role_change', `${u.email} → ${role}`);
-  showToast(role === 'admin' ? `⬆️ Đã cấp quyền quản trị cho ${u.name}` : `⬇️ Đã hạ quyền ${u.name} xuống người dùng thường`);
+  showToast(role === 'admin' ? `Đã cấp quyền quản trị cho ${u.name}` : `Đã hạ quyền ${u.name} xuống người dùng thường`);
   renderAdminUsers();
 }
 
@@ -128,13 +128,13 @@ function toggleBanUser(email) {
   const users = loadUsers();
   const u = users.find(x => x.email === email);
   if (!u) return;
-  if (currentUser && u.email === currentUser.email) { showToast('⛔ Bạn không thể tự khóa tài khoản của chính mình'); return; }
-  if (u.role === 'admin' && !u.banned && users.filter(x => x.role === 'admin' && !x.banned).length <= 1) { showToast('⛔ Không thể khóa quản trị viên cuối cùng.'); return; }
+  if (currentUser && u.email === currentUser.email) { showToast('Bạn không thể tự khóa tài khoản của chính mình'); return; }
+  if (u.role === 'admin' && !u.banned && users.filter(x => x.role === 'admin' && !x.banned).length <= 1) { showToast('Không thể khóa quản trị viên cuối cùng.'); return; }
   if (!u.banned && !confirm(`Khóa tài khoản "${u.name}" do nghi vấn lừa đảo / vi phạm?`)) return;
   u.banned = !u.banned;
   saveUsers(users);
   PFSec.log('admin_ban', `${u.email} ${u.banned ? 'bị khóa' : 'được mở khóa'}`);
-  showToast(u.banned ? `⛔ Đã khóa tài khoản ${u.name}` : `✅ Đã mở khóa tài khoản ${u.name}`);
+  showToast(u.banned ? `Đã khóa tài khoản ${u.name}` : `Đã mở khóa tài khoản ${u.name}`);
   renderAdminUsers();
   renderAdminOverview();
 }
@@ -145,13 +145,13 @@ function adminDeleteUser(email) {
   const idx = users.findIndex(x => x.email === email);
   if (idx === -1) return;
   const u = users[idx];
-  if (currentUser && u.email === currentUser.email) { showToast('⛔ Bạn không thể tự xóa tài khoản của chính mình'); return; }
-  if (u.role === 'admin' && users.filter(x => x.role === 'admin').length <= 1) { showToast('⛔ Không thể xóa quản trị viên cuối cùng.'); return; }
+  if (currentUser && u.email === currentUser.email) { showToast('Bạn không thể tự xóa tài khoản của chính mình'); return; }
+  if (u.role === 'admin' && users.filter(x => x.role === 'admin').length <= 1) { showToast('Không thể xóa quản trị viên cuối cùng.'); return; }
   if (!confirm(`Xóa hồ sơ "${u.name}" (${u.email}) khỏi cơ sở dữ liệu? Hành động này không thể hoàn tác.`)) return;
   users.splice(idx, 1);
   saveUsers(users);
   PFSec.log('admin_delete_user', u.email);
-  showToast(`🗑️ Đã xóa hồ sơ ${u.name}. Để xóa hẳn tài khoản đăng nhập, hãy xóa trong Firebase Console → Authentication.`, 6000);
+  showToast(`Đã xóa hồ sơ ${u.name}. Để xóa hẳn tài khoản đăng nhập, hãy xóa trong Firebase Console → Authentication.`, 6000);
   renderAdminUsers();
   renderAdminOverview();
 }
@@ -181,15 +181,15 @@ function renderAdminPets() {
       <td>${E(p.area || p.location || '—')}</td>
       <td><span class="pill pill-${E(p.status)}">${E(statusLabelMap[p.status] || p.status)}</span></td>
       <td>${E(p.date || '—')}</td>
-      <td>${p.flagged ? '<span class="pill pill-flagged">⚠️ Nghi vấn</span>' : '<span class="pill pill-ok">Bình thường</span>'}</td>
+      <td>${p.flagged ? '<span class="pill pill-flagged">Nghi vấn</span>' : '<span class="pill pill-ok">Bình thường</span>'}</td>
       <td>
         <div class="admin-action-btns" data-id="${E(p.id)}">
-          <button class="abtn abtn-edit" onclick="openAdminEditPet(this.parentNode.dataset.id)">✏️ Sửa</button>
+          <button class="abtn abtn-edit" onclick="openAdminEditPet(this.parentNode.dataset.id)">Sửa</button>
           ${p.flagged
-            ? `<button class="abtn abtn-unflag" onclick="toggleFlagPet(this.parentNode.dataset.id)">✅ Bỏ cờ</button>`
-            : `<button class="abtn abtn-flag" onclick="toggleFlagPet(this.parentNode.dataset.id)">⚠️ Đánh dấu nghi vấn</button>`
+            ? `<button class="abtn abtn-unflag" onclick="toggleFlagPet(this.parentNode.dataset.id)">Bỏ cờ</button>`
+            : `<button class="abtn abtn-flag" onclick="toggleFlagPet(this.parentNode.dataset.id)">Đánh dấu nghi vấn</button>`
           }
-          <button class="abtn abtn-delete" onclick="adminDeletePet(this.parentNode.dataset.id)">🗑️ Xóa</button>
+          <button class="abtn abtn-delete" onclick="adminDeletePet(this.parentNode.dataset.id)">Xóa</button>
         </div>
       </td>
     </tr>
@@ -204,7 +204,7 @@ function toggleFlagPet(id) {
   p.flagged = !p.flagged;
   savePets(pets);
   PFSec.log('admin_flag_pet', `${p.id} ${p.flagged ? 'nghi vấn' : 'bỏ cờ'}`);
-  showToast(p.flagged ? `⚠️ Đã đánh dấu tin "${p.name}" là nghi vấn` : `✅ Đã bỏ cờ tin "${p.name}"`);
+  showToast(p.flagged ? `Đã đánh dấu tin "${p.name}" là nghi vấn` : `Đã bỏ cờ tin "${p.name}"`);
   renderAdminPets();
   renderAdminOverview();
 }
@@ -219,7 +219,7 @@ function adminDeletePet(id) {
   PFSec.log('admin_delete_pet', `${p.id} (${p.ownerEmail})`);
   const card = document.querySelector('.pet-card[data-id="' + CSS.escape(id) + '"]');
   if (card) card.remove();
-  showToast(`🗑️ Đã xóa tin đăng "${p.name}"`);
+  showToast(`Đã xóa tin đăng "${p.name}"`);
   renderAdminPets();
   renderAdminOverview();
   if (typeof updateStats === 'function') updateStats();
@@ -240,17 +240,17 @@ function addNewsItem() {
     date: document.getElementById('newsDate').value,
     desc: document.getElementById('newsDesc').value, createdAt: Date.now()
   });
-  if (!item || !item.desc) { showToast('⚠️ Vui lòng điền tiêu đề và nội dung tin tức'); return; }
+  if (!item || !item.desc) { showToast('Vui lòng điền tiêu đề và nội dung tin tức'); return; }
   const news = loadNews();
   if (adminEditingNewsId) {
     const idx = news.findIndex(n => n.id === adminEditingNewsId);
     if (idx !== -1) news[idx] = { ...news[idx], title: item.title, icon: item.icon, date: item.date, desc: item.desc };
     adminEditingNewsId = null;
     document.getElementById('newsCancelEditBtn').style.display = 'none';
-    showToast('💾 Đã cập nhật tin tức');
+    showToast('Đã cập nhật tin tức');
   } else {
     news.unshift(item);
-    showToast('✅ Đã thêm tin tức mới');
+    showToast('Đã thêm tin tức mới');
   }
   saveNews(news);
   PFSec.log('admin_news', item.id);
@@ -286,7 +286,7 @@ function deleteNewsItem(id) {
   if (!confirm('Xóa tin tức này?')) return;
   saveNews(loadNews().filter(n => n.id !== id));
   PFSec.log('admin_news_delete', id);
-  showToast('🗑️ Đã xóa tin tức');
+  showToast('Đã xóa tin tức');
   renderAdminNews();
   renderAdminOverview();
 }
@@ -303,12 +303,12 @@ function renderAdminNews() {
       <div class="news-icon">${E(n.icon)}</div>
       <div class="news-body">
         <div class="news-title">${E(n.title)}</div>
-        <div class="news-meta">📅 ${E(n.date || '')}</div>
+        <div class="news-meta">${E(n.date || '')}</div>
         <div class="news-desc">${E(n.desc)}</div>
       </div>
       <div class="admin-action-btns" data-id="${E(n.id)}">
-        <button class="abtn abtn-edit" onclick="editNewsItem(this.parentNode.dataset.id)">✏️ Sửa</button>
-        <button class="abtn abtn-delete" onclick="deleteNewsItem(this.parentNode.dataset.id)">🗑️ Xóa</button>
+        <button class="abtn abtn-edit" onclick="editNewsItem(this.parentNode.dataset.id)">Sửa</button>
+        <button class="abtn abtn-delete" onclick="deleteNewsItem(this.parentNode.dataset.id)">Xóa</button>
       </div>
     </div>
   `).join('');

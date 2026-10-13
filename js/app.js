@@ -125,7 +125,7 @@ function filterShopAds(cat, btn) {
 // Báo lỗi kết nối cơ sở dữ liệu (để người dùng/quản trị biết vì sao không có tin)
 function showDbStatus() {
   if (typeof PFDB === 'undefined' || PFDB.ok) return;
-  const msg = PFDB.error === 'no-config' ? '⚠️ Chưa cấu hình Firebase (js/config.js) nên chưa có dữ liệu.' : '⚠️ Chưa kết nối được máy chủ dữ liệu. Kiểm tra mạng rồi tải lại trang.';
+  const msg = PFDB.error === 'no-config' ? 'Chưa cấu hình Firebase (js/config.js) nên chưa có dữ liệu.' : 'Chưa kết nối được máy chủ dữ liệu. Kiểm tra mạng rồi tải lại trang.';
   if (typeof showToast === 'function') showToast(msg, 7000);
 }
 

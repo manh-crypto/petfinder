@@ -230,7 +230,7 @@ function deltaBadge(cur, prev, invert) {
 // ---------- banner dữ liệu mẫu ----------
 function demoBannerHtml(tx) {
   if (!tx.some(t => t.demo)) return '';
-  return `<div class="demo-banner">🧪 <span>Đang hiển thị <b>dữ liệu giao dịch mẫu</b> để minh họa dashboard (hệ thống chưa tích hợp cổng thanh toán). Bạn có thể ghi nhận giao dịch thật ở mục <a onclick="switchAdminView('cashflow')">Dòng tiền</a>.</span><button class="abtn abtn-delete" onclick="clearDemoTx()">Xóa dữ liệu mẫu</button></div>`;
+  return `<div class="demo-banner"><span>Đang hiển thị <b>dữ liệu giao dịch mẫu</b> để minh họa dashboard (hệ thống chưa tích hợp cổng thanh toán). Bạn có thể ghi nhận giao dịch thật ở mục <a onclick="switchAdminView('cashflow')">Dòng tiền</a>.</span><button class="abtn abtn-delete" onclick="clearDemoTx()">Xóa dữ liệu mẫu</button></div>`;
 }
 function clearDemoTx() {
   if (!requireAdmin('xóa dữ liệu mẫu')) return;
@@ -248,10 +248,10 @@ function restoreDemoTx() {
 }
 function seedSampleData() {
   if (!requireAdmin('nạp dữ liệu mẫu')) return;
-  if (!window.PFSeed) return showToast('⚠️ Không tìm thấy dữ liệu mẫu.');
+  if (!window.PFSeed) return showToast('Không tìm thấy dữ liệu mẫu.');
   if (!confirm('Đưa ' + PFSeed.count + ' tin thú cưng mẫu lên cơ sở dữ liệu? (Tin đã có sẽ không bị tạo trùng.)')) return;
   const n = PFSeed.run();
-  showToast(n ? '✅ Đã nạp ' + n + ' tin mẫu.' : 'ℹ️ Không có tin mẫu nào mới để nạp.');
+  showToast(n ? 'Đã nạp ' + n + ' tin mẫu.' : 'ℹ️ Không có tin mẫu nào mới để nạp.');
   refreshDashboards();
 }
 function refreshDashboards() {
@@ -295,7 +295,7 @@ function renderDashboardOverview() {
   root.innerHTML = `
     ${demoBannerHtml(tx)}
     <div class="dash-hello"><div><h3>${hello}, ${escapeHtml(name)} 👋</h3><p>Tổng quan hoạt động &amp; dòng tiền PetFinder – tháng ${new Date().getMonth() + 1}/${new Date().getFullYear()}</p></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="abtn abtn-edit" onclick="seedSampleData()" title="Đưa các tin thú cưng mẫu lên cơ sở dữ liệu (không tạo trùng)">📥 Nạp dữ liệu mẫu</button><button class="abtn abtn-edit" onclick="renderDashboardOverview()">🔄 Làm mới</button></div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="abtn abtn-edit" onclick="seedSampleData()" title="Đưa các tin thú cưng mẫu lên cơ sở dữ liệu (không tạo trùng)">Nạp dữ liệu mẫu</button><button class="abtn abtn-edit" onclick="renderDashboardOverview()">Làm mới</button></div></div>
 
     <div class="kpi-grid kpi-grid-6">
       ${kpi('k-orange', '💰', 'Doanh thu tháng này', fmtVND(rev), deltaBadge(rev, revP))}
@@ -326,7 +326,7 @@ function renderDashboardOverview() {
     </div>
 
     <div class="dash-card flag-card">
-      <div class="dash-card-head"><h4>⚠️ Tin đăng bị đánh dấu nghi vấn <span class="count-pill">${flagged}</span></h4></div>
+      <div class="dash-card-head"><h4>Tin đăng bị đánh dấu nghi vấn <span class="count-pill">${flagged}</span></h4></div>
       <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Tên thú cưng</th><th>Người đăng</th><th>Khu vực</th><th>Trạng thái</th><th>Hành động</th></tr></thead><tbody id="adminFlaggedBody"></tbody></table></div>
     </div>`;
 
@@ -401,10 +401,10 @@ function renderCashflow() {
       <select onchange="setCf('type', this.value)">${opt('', cf.type, 'Thu & Chi')}${opt('in', cf.type, 'Chỉ khoản thu')}${opt('out', cf.type, 'Chỉ khoản chi')}</select>
       <select onchange="setCf('category', this.value)">${catOpts}</select>
       <select onchange="setCf('status', this.value)">${opt('', cf.status, 'Mọi trạng thái')}${Object.keys(TX_STATUS).map(k => opt(k, cf.status, TX_STATUS[k])).join('')}</select>
-      <input type="text" id="cfSearch" placeholder="🔍 Tìm mô tả giao dịch..." value="${escapeHtml(cf.q)}" oninput="cfSearchInput(this.value)"/>
-      <button class="abtn abtn-promote cf-btn" onclick="toggleTxForm()">➕ Ghi nhận giao dịch</button>
-      <button class="abtn abtn-edit cf-btn" onclick="exportTxCsv()">⬇️ Xuất CSV</button>
-      <button class="abtn abtn-flag cf-btn" onclick="restoreDemoTx()">🧪 Dữ liệu mẫu</button>
+      <input type="text" id="cfSearch" placeholder="Tìm mô tả giao dịch..." value="${escapeHtml(cf.q)}" oninput="cfSearchInput(this.value)"/>
+      <button class="abtn abtn-promote cf-btn" onclick="toggleTxForm()">Ghi nhận giao dịch</button>
+      <button class="abtn abtn-edit cf-btn" onclick="exportTxCsv()">Xuất CSV</button>
+      <button class="abtn abtn-flag cf-btn" onclick="restoreDemoTx()">Dữ liệu mẫu</button>
     </div>
 
     <div class="tx-form" id="txForm" style="display:none">
@@ -419,7 +419,7 @@ function renderCashflow() {
         <label class="full">Mô tả<input type="text" id="txDesc" placeholder="VD: Boost tin 'Bé Bi' – Bình Chiểu"/></label>
       </div>
       <div id="txFormError" class="tx-form-error" style="display:none"></div>
-      <div class="tx-form-actions"><button class="abtn abtn-promote cf-btn" onclick="saveTxFromForm()">💾 Lưu giao dịch</button><button class="abtn abtn-edit cf-btn" onclick="toggleTxForm(false)">Hủy</button></div>
+      <div class="tx-form-actions"><button class="abtn abtn-promote cf-btn" onclick="saveTxFromForm()">Lưu giao dịch</button><button class="abtn abtn-edit cf-btn" onclick="toggleTxForm(false)">Hủy</button></div>
     </div>
 
     <div class="kpi-grid">
@@ -470,7 +470,7 @@ function renderCashflow() {
       <td style="text-align:right;white-space:nowrap" class="tx-amt ${t.type === 'in' ? 'c-in' : 'c-out'}${t.status === 'refunded' ? ' strike' : ''}">${t.type === 'in' ? '+' : '-'}${fmtVND(t.amount)}</td>
       <td><span class="pill st-${t.status}">${TX_STATUS[t.status]}</span></td>
       <td><div class="admin-action-btns">
-        ${t.status === 'pending' ? `<button class="abtn abtn-unflag" onclick="setTxStatus('${t.id}','paid')">✅ Đã thu</button>` : ''}
+        ${t.status === 'pending' ? `<button class="abtn abtn-unflag" onclick="setTxStatus('${t.id}','paid')">Đã thu</button>` : ''}
         ${t.type === 'in' && t.status === 'paid' ? `<button class="abtn abtn-flag" onclick="setTxStatus('${t.id}','refunded')">↩️ Hoàn</button>` : ''}
         <button class="abtn abtn-delete" onclick="deleteTx('${t.id}')">🗑️</button>
       </div></td></tr>`;
@@ -515,13 +515,13 @@ function saveTxFromForm() {
   const status = document.getElementById('txStatus').value;
   let desc = document.getElementById('txDesc').value.trim();
   const qty = Math.max(1, Number(document.getElementById('txQty').value) || 1);
-  if (!amount || amount <= 0) { err.textContent = '⚠️ Vui lòng nhập số tiền hợp lệ.'; err.style.display = 'block'; return; }
-  if (!date) { err.textContent = '⚠️ Vui lòng chọn ngày giao dịch.'; err.style.display = 'block'; return; }
+  if (!amount || amount <= 0) { err.textContent = 'Vui lòng nhập số tiền hợp lệ.'; err.style.display = 'block'; return; }
+  if (!date) { err.textContent = 'Vui lòng chọn ngày giao dịch.'; err.style.display = 'block'; return; }
   if (!desc) desc = (type === 'in' ? REVENUE_STREAMS[category] : COST_BUCKETS[category]).label + (type === 'in' && qty > 1 ? ' ×' + qty : '');
   const arr = loadTx();
   arr.push({ id: 'tx_' + Date.now() + '_' + Math.floor(Math.random() * 1000), date, type, category, desc, amount, status });
   saveTx(arr);
-  showToast('✅ Đã ghi nhận giao dịch');
+  showToast('Đã ghi nhận giao dịch');
   renderCashflow();
 }
 function setTxStatus(id, status) {

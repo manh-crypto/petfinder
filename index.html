@@ -47,9 +47,9 @@
   <div class="nav-user" id="navUser">
     <button class="nav-avatar" id="navAvatar" onclick="window.location.href='pages/profile.html#settings'" style="cursor:pointer" title="Cài đặt tài khoản">👤</button>
     <span class="nav-username" id="navUsername">Người dùng</span>
-    <button class="btn-admin" id="navAdminBtn" onclick="window.location.href='pages/admin.html'" style="display:none">🛠️ Quản trị</button>
-    <button class="btn-login" onclick="window.location.href='pages/profile.html#posts'" style="margin-right:4px">📋 Tin của tôi</button>
-    <button class="btn-login" onclick="window.location.href='pages/profile.html#settings'" style="margin-right:4px">⚙️ Cài đặt</button>
+    <button class="btn-admin" id="navAdminBtn" onclick="window.location.href='pages/admin.html'" style="display:none">Quản trị</button>
+    <button class="btn-login" onclick="window.location.href='pages/profile.html#posts'" style="margin-right:4px">Tin của tôi</button>
+    <button class="btn-login" onclick="window.location.href='pages/profile.html#settings'" style="margin-right:4px">Cài đặt</button>
     <button class="btn-logout" onclick="logout()">Đăng xuất</button>
   </div>
 </nav>
@@ -57,11 +57,11 @@
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-content">
-    <h1>🐾 Tìm kiếm thú cưng đi lạc</h1>
+    <h1>Tìm kiếm thú cưng đi lạc</h1>
     <p>Kết nối những người yêu động vật và giúp thú cưng trở về nhà.</p>
     <div class="hero-btns">
-      <a href="#form" class="btn-primary">📢 Đăng tin thất lạc</a>
-      <a href="#form" class="btn-outline">🏠 Đăng tin nhận nuôi</a>
+      <a href="#form" class="btn-primary">Đăng tin thất lạc</a>
+      <a href="#form" class="btn-outline">Đăng tin nhận nuôi</a>
     </div>
   </div>
 </section>
@@ -69,15 +69,15 @@
 <!-- SEARCH -->
 <section class="search-section">
   <div class="search-bar">
-    <input type="text" id="sType" list="petTypeList" maxlength="30" placeholder="🐾 Loại thú" autocomplete="off"/><datalist id="petTypeList"><option value="Chó"><option value="Mèo"><option value="Thỏ"><option value="Hamster"><option value="Chuột lang (guinea pig)"><option value="Sóc"><option value="Nhím"><option value="Chinchilla"><option value="Chim"><option value="Vẹt"><option value="Cá"><option value="Rùa"><option value="Thằn lằn"><option value="Rắn"><option value="Ếch"><option value="Nhện"><option value="Chồn sương"><option value="Cáo"><option value="Gà"><option value="Vịt"><option value="Heo"><option value="Dê"><option value="Ngựa"></datalist>
-    <select id="sArea"><option value="">📍 Khu vực</option><option>TP. Hồ Chí Minh</option>
+    <input type="text" id="sType" list="petTypeList" maxlength="30" placeholder="Loại thú" autocomplete="off"/><datalist id="petTypeList"><option value="Chó"><option value="Mèo"><option value="Thỏ"><option value="Hamster"><option value="Chuột lang (guinea pig)"><option value="Sóc"><option value="Nhím"><option value="Chinchilla"><option value="Chim"><option value="Vẹt"><option value="Cá"><option value="Rùa"><option value="Thằn lằn"><option value="Rắn"><option value="Ếch"><option value="Nhện"><option value="Chồn sương"><option value="Cáo"><option value="Gà"><option value="Vịt"><option value="Heo"><option value="Dê"><option value="Ngựa"></datalist>
+    <select id="sArea"><option value="">Khu vực</option><option>TP. Hồ Chí Minh</option>
       <option>Quận 1</option><option>Quận 2</option><option>Quận 3</option><option>Quận 4</option>
       <option>Quận 5</option><option>Quận 6</option><option>Quận 7</option><option>Quận 8</option>
       <option>Quận 10</option><option>Quận 11</option><option>Quận 12</option>
       <option>Bình Thạnh</option><option>Gò Vấp</option><option>Tân Bình</option><option>Tân Phú</option>
       <option>Phú Nhuận</option><option>Bình Tân</option><option>Thủ Đức</option></select>
-    <select id="sStatus"><option value="">📋 Trạng thái</option><option value="lost">Đang thất lạc</option><option value="found">Đã tìm thấy</option><option value="adopt">Chờ nhận nuôi</option></select>
-    <input type="text" id="sKeyword" placeholder="🔍 Tìm theo tên, giống, đặc điểm..." onkeydown="if(event.key==='Enter')doSearch()"/>
+    <select id="sStatus"><option value="">Trạng thái</option><option value="lost">Đang thất lạc</option><option value="found">Đã tìm thấy</option><option value="adopt">Chờ nhận nuôi</option></select>
+    <input type="text" id="sKeyword" placeholder="Tìm theo tên, giống, đặc điểm..." onkeydown="if(event.key==='Enter')doSearch()"/>
     <button class="btn-search" onclick="doSearch()">Tìm kiếm</button>
   </div>
 </section>
@@ -126,9 +126,9 @@
   </div>
   <div class="shop-ads-tabs">
     <button class="shop-ads-tab active" onclick="filterShopAds('all', this)">Tất cả</button>
-    <button class="shop-ads-tab" onclick="filterShopAds('food', this)">🍖 Thức ăn</button>
-    <button class="shop-ads-tab" onclick="filterShopAds('toy', this)">🧸 Đồ chơi & phụ kiện</button>
-    <button class="shop-ads-tab" onclick="filterShopAds('spa', this)">🛁 Spa & Chăm sóc</button>
+    <button class="shop-ads-tab" onclick="filterShopAds('food', this)">Thức ăn</button>
+    <button class="shop-ads-tab" onclick="filterShopAds('toy', this)">Đồ chơi & phụ kiện</button>
+    <button class="shop-ads-tab" onclick="filterShopAds('spa', this)">Spa & Chăm sóc</button>
   </div>
   <div class="shop-ads-grid" id="shopAdsGrid">
       <div class="shop-ad-card" data-cat="food" onclick="window.open('https://meo-petcare.com','_blank','noopener,noreferrer')">
@@ -282,7 +282,7 @@
       <option>Củ Chi</option><option>Cần Giờ</option>
       <option>TP. Hồ Chí Minh (tất cả)</option>
     </select>
-    <button class="loc-btn" onclick="saveUserLocation()">📍 Xác nhận khu vực</button>
+    <button class="loc-btn" onclick="saveUserLocation()">Xác nhận khu vực</button>
     <div class="loc-skip" onclick="skipLocation()">Bỏ qua, xem tất cả khu vực</div>
   </div>
 </div>
@@ -291,7 +291,7 @@
 <div id="alertPopup">
   <div class="alert-header">
     <div class="alert-pulse"></div>
-    <span>🚨 THÔNG BÁO KHẨN – KHU VỰC CỦA BẠN</span>
+    <span>THÔNG BÁO KHẨN – KHU VỰC CỦA BẠN</span>
     <button class="alert-close-x" onclick="closeAlertPopup()">✕</button>
   </div>
   <div class="alert-body">
@@ -304,7 +304,7 @@
       </div>
     </div>
     <div class="alert-actions">
-      <button class="alert-btn-view" onclick="scrollToPetAndClose()">👁️ Xem tin ngay</button>
+      <button class="alert-btn-view" onclick="scrollToPetAndClose()">Xem tin ngay</button>
       <button class="alert-btn-close" onclick="closeAlertPopup()">Đóng</button>
     </div>
   </div>
@@ -321,17 +321,17 @@
         <div class="modal-detail"><strong>Giống:</strong> <span id="modalBreed"></span></div>
         <div class="modal-detail"><strong>Khu vực:</strong> <span id="modalArea"></span></div>
         <div class="modal-detail"><strong>Ngày đăng:</strong> <span id="modalDate"></span></div>
-        <div class="modal-detail"><strong>📞 SĐT:</strong> <span id="modalPhone" style="color:var(--green);font-weight:700"></span></div>
+        <div class="modal-detail"><strong>SĐT:</strong> <span id="modalPhone" style="color:var(--green);font-weight:700"></span></div>
       </div>
     </div>
     <div class="modal-gallery" id="modalGallery" style="display:none"></div>
-    <div class="modal-gallery-hint" id="modalGalleryHint" style="display:none">📷 Bấm vào ảnh để xem kích thước lớn</div>
+    <div class="modal-gallery-hint" id="modalGalleryHint" style="display:none">Bấm vào ảnh để xem kích thước lớn</div>
     <div id="modalZaloInfo" style="display:none;background:#EEF5FF;border-radius:8px;padding:10px 14px;margin:10px 0;font-size:0.88rem;">
-      <strong>💬 Link Zalo:</strong> <a id="modalZaloLink" href="#" target="_blank" style="color:#006AF5;word-break:break-all" rel="noopener noreferrer"></a>
+      <strong>Link Zalo:</strong> <a id="modalZaloLink" href="#" target="_blank" style="color:#006AF5;word-break:break-all" rel="noopener noreferrer"></a>
     </div>
     <div class="modal-contact-row">
-      <a href="#" class="btn-zalo" id="modalZalo" onclick="showZaloLink(event)">💬 Xem Zalo</a>
-      <a href="#" class="btn-call" id="modalCall" onclick="showPhoneNumber(event)">📞 Xem thông tin liên hệ</a>
+      <a href="#" class="btn-zalo" id="modalZalo" onclick="showZaloLink(event)">Xem Zalo</a>
+      <a href="#" class="btn-call" id="modalCall" onclick="showPhoneNumber(event)">Xem thông tin liên hệ</a>
     </div>
     <div id="modalPhoneDisplay" style="display:none;background:var(--green-light);border-radius:8px;padding:10px 14px;margin-top:10px;text-align:center;font-size:1.05rem;font-weight:800;color:var(--green)"></div>
   </div>
@@ -355,9 +355,9 @@
     <h2 class="section-title" style="margin-bottom:6px">Đăng tin <span>của bạn</span></h2>
     <p style="color:var(--text-muted);margin-bottom:24px">Giúp cộng đồng tìm kiếm thú cưng nhanh hơn</p>
     <div class="form-tabs">
-      <button class="form-tab active" onclick="switchFormTab(this,'lost')">📢 Thú cưng thất lạc</button>
-      <button class="form-tab" onclick="switchFormTab(this,'found')">🐾 Thú cưng nhặt được</button>
-      <button class="form-tab" onclick="switchFormTab(this,'adopt')">🏠 Cho nhận nuôi</button>
+      <button class="form-tab active" onclick="switchFormTab(this,'lost')">Thú cưng thất lạc</button>
+      <button class="form-tab" onclick="switchFormTab(this,'found')">Thú cưng nhặt được</button>
+      <button class="form-tab" onclick="switchFormTab(this,'adopt')">Cho nhận nuôi</button>
     </div>
     <input type="hidden" id="activeFormType" value="lost"/>
     <div class="form-grid">
@@ -377,7 +377,7 @@
         <div id="fImagePreview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
       </div>
       <div id="formError" style="display:none;grid-column:1/-1;background:var(--red-light);color:var(--red);padding:10px 14px;border-radius:var(--radius-sm);font-size:0.88rem;font-weight:700"></div>
-      <div class="form-group full"><button class="submit-btn" onclick="checkAuthBeforePost(event)">🚀 Đăng tin ngay</button></div>
+      <div class="form-group full"><button class="submit-btn" onclick="checkAuthBeforePost(event)">Đăng tin ngay</button></div>
     </div>
   </div>
 </section>
@@ -405,7 +405,7 @@
         <div class="auth-forgot"><a onclick="forgotPassword()" role="button" tabindex="0">Quên mật khẩu?</a></div>
       </div>
       <div id="loginError" style="display:none;background:var(--red-light);color:var(--red);padding:10px 14px;border-radius:var(--radius-sm);font-size:0.88rem;font-weight:700"></div>
-      <button class="auth-btn" onclick="doLogin()">🚀 Đăng nhập</button>
+      <button class="auth-btn" onclick="doLogin()">Đăng nhập</button>
       <div class="auth-divider">hoặc</div>
       <div class="auth-social">
         <button type="button" class="auth-social-btn" data-provider="Google" onclick="socialLogin('Google', this)"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Google</button>
@@ -484,7 +484,7 @@
         </div>
       </div>
       <div id="regError" style="display:none;background:var(--red-light);color:var(--red);padding:10px 14px;border-radius:var(--radius-sm);font-size:0.88rem;font-weight:700"></div>
-      <button class="auth-btn" onclick="doRegister()">✨ Tạo tài khoản</button>
+      <button class="auth-btn" onclick="doRegister()">Tạo tài khoản</button>
       <div class="auth-terms">Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a> của PetFinder.</div>
       <div class="auth-switch">Đã có tài khoản? <a onclick="switchAuth('login')">Đăng nhập</a></div>
     </div>
@@ -502,7 +502,7 @@
 <footer id="contact">
   <div class="footer-grid">
     <div class="footer-brand">
-      <div class="footer-logo">🐾 PetFinder</div>
+      <div class="footer-logo">PetFinder</div>
       <p>Kết nối cộng đồng yêu thú cưng, giúp những người bạn nhỏ tìm lại được ngôi nhà thân yêu.</p>
       <div class="footer-socials">
         <a class="social-btn" href="https://www.facebook.com/share/g/1Db11cVRdx/" target="_blank" rel="noopener noreferrer" title="Cộng đồng PetFinder trên Facebook" aria-label="Facebook">f</a><a class="social-btn" href="#">Z</a>
@@ -511,7 +511,7 @@
     </div>
     <div class="footer-col"><h4>Dịch vụ</h4><ul><li><a href="index.html#form">Đăng tin thất lạc</a></li><li><a href="index.html#form">Đăng tin nhặt được</a></li><li><a href="index.html#form">Cho nhận nuôi</a></li><li><a href="index.html#form">Tìm kiếm nâng cao</a></li></ul></div>
     <div class="footer-col"><h4>Cộng đồng</h4><ul><li><a href="https://www.facebook.com/share/g/1Db11cVRdx/" target="_blank" rel="noopener noreferrer">Diễn đàn</a></li><li><a href="#">Tin tức thú cưng</a></li><li><a href="#">Chia sẻ câu chuyện</a></li><li><a href="#">Tình nguyện viên</a></li></ul></div>
-    <div class="footer-col"><h4>Liên hệ</h4><ul><li><a href="mailto:petfinder254@gmail.com">📧 petfinder254@gmail.com</a></li><li><a href="pages/privacy.html">Chính sách bảo mật</a></li><li><a href="pages/data-deletion.html">Xóa dữ liệu</a></li></ul></div>
+    <div class="footer-col"><h4>Liên hệ</h4><ul><li><a href="mailto:petfinder254@gmail.com">petfinder254@gmail.com</a></li><li><a href="pages/privacy.html">Chính sách bảo mật</a></li><li><a href="pages/data-deletion.html">Xóa dữ liệu</a></li></ul></div>
   </div>
   <div class="footer-bottom">
     <span>© 2024 PetFinder. Bảo lưu mọi quyền.</span>

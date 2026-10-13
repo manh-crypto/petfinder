@@ -1,70 +1,85 @@
-# PetFinder – bản sửa điều hướng
+# PetFinder – Tìm kiếm thú cưng đi lạc
 
-Bản này giữ nguyên phần Cấp cứu 24/7 và toàn bộ hình ảnh bệnh viện.
+PetFinder là website cộng đồng giúp người nuôi thú cưng đăng tin tìm thú cưng thất lạc, và giúp người nhặt được hoặc có nhu cầu cho nhận nuôi kết nối với nhau. Website là trang tĩnh (HTML, CSS, JavaScript), dùng Firebase để đăng nhập Google và lưu dữ liệu, không cần máy chủ riêng.
 
-Điều hướng navbar đã được sửa để các mục hoạt động khi mở trực tiếp bằng file://:
-- Trang chủ → index.html
-- Thú cưng → pages/pets.html
-- Bản đồ → pages/map.html
-- Đăng tin → index.html#form
-- Cấp cứu 24/7 → pages/veterinary.html
-- Cửa hàng → index.html#shop-ads
-- Tin của tôi → pages/profile.html#posts
-- Cài đặt → pages/profile.html#settings
-- Quản trị → pages/admin.html
+Địa chỉ: https://petfinder-ebon.vercel.app
+Liên hệ: petfinder254@gmail.com
 
-Không cần chạy server để các liên kết trên hoạt động.
+## Chức năng
 
+**Dành cho mọi người**
+- **Trang chủ:** tin mới nhất, thống kê, tin tức và gợi ý cửa hàng.
+- **Thú cưng:** danh sách tin theo ba nhóm: đang thất lạc, đã tìm thấy, chờ nhận nuôi. Tìm kiếm theo tên, loại, màu lông, khu vực.
+- **Bản đồ:** xem vị trí các tin trên bản đồ, lọc theo tỉnh/thành phố, tìm địa chỉ, dùng "Vị trí của tôi", xem bệnh viện thú y gần bạn.
+- **Cấp cứu 24/7:** danh sách phòng khám, bệnh viện thú y kèm thông tin liên hệ.
+- **Cửa hàng:** các thương hiệu và cửa hàng thức ăn, đồ chơi, spa cho thú cưng.
+- **Tin tức, Liên hệ, Góp ý:** gửi góp ý trực tiếp đến quản trị viên.
+- **Trợ lý chat:** trả lời nhanh các câu hỏi về cách dùng web và chăm sóc thú cưng.
 
-## Cập nhật (đợt 5) – hợp nhất với petfinder(2)
+**Dành cho thành viên (đăng nhập Google)**
+- Đăng tin thất lạc, nhặt được hoặc cho nhận nuôi, kèm ảnh, mô tả, vị trí, số điện thoại, Zalo.
+- Loại thú cưng nhập tự do (chó, mèo, thỏ, hamster, bò sát, ...).
+- Quản lý tin của tôi: sửa, xóa, đổi trạng thái khi đã tìm thấy.
+- Lưu tin yêu thích và nhận thông báo tin gần khu vực của bạn.
+- Cài đặt tài khoản: ảnh đại diện, tên, thông tin liên hệ.
 
-**Đã ghép từ petfinder(2):** Firebase Auth (đăng nhập Google), tìm địa chỉ → tọa độ (Nominatim), tìm địa chỉ/“Vị trí của tôi” trên bản đồ, tin đã đăng hiện trên bản đồ, `js/location.js`, hộp chọn khu vực chỉ hiện ở trang chủ/Thú cưng/Bản đồ.
+**Dành cho quản trị viên**
+- Bảng điều khiển, duyệt và xóa tin, quản lý người dùng, tin tức, góp ý.
+- Cấp hoặc gỡ quyền quản trị cho người khác.
+- Nạp dữ liệu mẫu để thử nghiệm.
 
-**Cấu hình tập trung ở `js/config.js`:** Firebase (đăng nhập Google), geocoding, trợ lý **AI local (Ollama)** và link nhóm Facebook cộng đồng.
+## Hướng dẫn sử dụng
 
-### Việc cần làm trước khi đưa lên mạng
-1. Firebase Console → Authentication → Settings → **Authorized domains**: thêm domain GitHub Pages và `localhost`. Bật nhà cung cấp Google.
-2. Trợ lý AI **chạy local** (không dùng API đám mây): cài [Ollama](https://ollama.com), chạy `ollama pull qwen2.5:3b`, đặt biến môi trường `OLLAMA_ORIGINS` = domain/trang web của bạn (vd `http://localhost:8123`) rồi khởi động lại Ollama. Cấu hình ở `ai` trong `js/config.js`. Không có Ollama thì chat tự chuyển sang chế độ trả lời nhanh. Lưu ý: AI chạy trên máy của *người đang mở web*, nên khi deploy công khai mỗi người dùng cần có Ollama riêng, nếu không sẽ thấy chế độ trả lời nhanh.
-3. **Đổi tài khoản quản trị mặc định** (`admin` / `123` được tạo sẵn trong `js/auth.js`, mật khẩu đang lưu dạng chữ thường trong localStorage).
-4. Đổi email/điện thoại thật trong `CONTACT_INFO` (`js/feedback.js`).
+**Đăng tin**
+1. Bấm **Đăng nhập** và chọn tài khoản Google.
+2. Bấm **Đăng tin**, chọn loại tin (thất lạc, nhặt được, cho nhận nuôi).
+3. Điền loại thú cưng, đặc điểm nhận dạng, ngày, khu vực, nơi thất lạc, thêm ảnh rõ mặt.
+4. Điền số điện thoại hoặc Zalo, rồi bấm đăng. Tin xuất hiện ở mục Thú cưng và trên Bản đồ.
 
-### Thay đổi về bảo mật
-- Bỏ chế độ đăng nhập “demo” (từng cho phép nhập email bất kỳ, kể cả `admin`, để vào tài khoản); đăng nhập bằng mật khẩu với tài khoản chưa tồn tại bị từ chối.
-- Đăng nhập Google **không bao giờ** liên kết vào tài khoản quản trị và không cấp quyền admin; tài khoản bị khóa không đăng nhập được.
-- Nội dung tin đăng hiển thị trong popup bản đồ đã được escape.
+**Tìm thú cưng**
+1. Vào **Thú cưng** để lọc theo trạng thái và tìm kiếm theo từ khóa.
+2. Hoặc vào **Bản đồ**, chọn tỉnh/thành phố ở góc trên bên phải để chỉ xem tin trong khu vực.
+3. Bấm vào một tin để xem chi tiết, rồi bấm **Liên hệ** để lấy số điện thoại, Zalo, email của người đăng.
 
-### Lỗi có sẵn đã sửa
-- Đăng tin bị văng lỗi vì thiếu `typeIconMap` và (trên trang Thú cưng) thiếu `getUserArea` → thêm `typeIconMap` vào `utils.js`, tách hàm khu vực ra `location.js`.
-- Thanh điều hướng thu gọn đúng ở mọi độ rộng với menu 7 mục.
+**An toàn khi liên hệ:** hãy hỏi thêm đặc điểm nhận dạng để xác minh, hẹn gặp ở nơi công cộng và không chuyển tiền trước cho người lạ.
 
-### Khung liên hệ người đăng tin
-Bấm “Liên hệ” chỉ **hiển thị** tên, số điện thoại, Zalo, email của người đăng (kèm nút Sao chép). Trang không có liên kết gọi/nhắn/gửi mail.
+**Khi đã tìm thấy thú cưng:** vào **Tin của tôi**, mở tin và đổi trạng thái thành "Đã tìm thấy" hoặc xóa tin.
 
+## Công nghệ
 
-## Cập nhật (đợt 6) – rà soát lỗi & tăng cường bảo mật (OWASP Top 10)
+- HTML, CSS, JavaScript thuần, không cần build.
+- Firebase Authentication (Google) và Firestore (lưu tin, hồ sơ, góp ý).
+- Bản đồ Leaflet với nền OpenStreetMap, tìm địa chỉ bằng Nominatim.
+- Triển khai trên Vercel (`vercel.json` đã cấu hình các header bảo mật).
 
-Xem **`SECURITY.md`** (bảng đối chiếu OWASP, phần còn lại cần backend, danh sách kiểm tra trước khi triển khai) và `_headers` (header HTTP cho Netlify/Cloudflare Pages).
+## Cấu trúc thư mục
 
-- Lõi bảo mật dùng chung `js/security.js` (nạp đầu tiên): escape, làm sạch dữ liệu, URL/ảnh an toàn, băm mật khẩu PBKDF2, chống dò mật khẩu, nhật ký, xử lý ảnh tải lên, chống nhúng khung.
-- **Lần đầu đăng nhập `admin` bạn phải tự đặt mật khẩu mạnh** (không còn `admin/123`). Có chức năng **đổi mật khẩu** ở Tài khoản (trang hồ sơ).
-- Admin → **🛡️ Bảo mật**: nhật ký sự kiện + kiểm tra cấu hình.
-- Lỗi chức năng đã sửa: ô tìm kiếm ở trang chủ (chuyển sang trang Thú cưng kèm bộ lọc), nút “Sửa” tin ở trang hồ sơ (thiếu mã/hộp thoại), thao tác admin trên trang không nạp `pets.js`, lướt ảnh thú y, liên kết `#form` ở trang không có mã đăng tin, `submitPost`/`updateStats` thiếu bảo vệ, favicon 404.
-- Phiên cũ (đăng nhập từ trước) sẽ bị đăng xuất một lần vì định dạng phiên đã đổi.
+```
+index.html        Trang chủ
+pages/            Các trang: thú cưng, bản đồ, cấp cứu, tin tức, liên hệ, hồ sơ, quản trị, chính sách
+components/       Thành phần dùng chung (menu, chân trang, hộp thoại)
+css/              Giao diện
+js/               Mã chạy trên trình duyệt (config.js là nơi cấu hình)
+data/             Dữ liệu mẫu và ảnh
+assets/           Logo, biểu tượng ứng dụng
+firestore.rules   Luật bảo mật Firestore
+```
 
+## Cài đặt và triển khai
 
-## Cập nhật (đợt 7) – nền sinh động
-- `css/background.css` (nạp ở mọi trang): nền tông cam–trắng nhẹ gồm các đốm sáng trôi chậm và hoa văn dấu chân bay lên, thuần CSS (không ảnh ngoài, không ảnh hưởng CSP). Tự tắt khi hệ điều hành bật “giảm chuyển động”.
-- Các khối trước đây nền trắng/cam đặc (tìm kiếm, thống kê, cách hoạt động, câu chuyện, bản đồ, cửa hàng…) được làm trong mờ để thấy nền. Muốn đổi màu/tốc độ: sửa các giá trị `rgba(...)` và `animation` trong file này.
+1. **Firebase:** tạo project, bật Authentication (Google) và Firestore. Điền thông tin vào `js/config.js`.
+2. **Luật bảo mật:** Firestore Database, tab Rules, dán nội dung `firestore.rules` rồi Publish.
+3. **Tên miền:** Authentication, Settings, Authorized domains, thêm tên miền Vercel và `localhost`.
+4. **Quản trị viên đầu tiên:** trong Firestore tạo collection `admins`, Document ID là UID của tài khoản bạn (xem ở Authentication, Users), thêm một field bất kỳ. Đăng xuất rồi đăng nhập lại.
+5. **Chạy thử trên máy:** chạy `python -m http.server 8000` trong thư mục dự án rồi mở http://localhost:8000. Không nên mở file trực tiếp vì đăng nhập Google cần địa chỉ http.
+6. **Triển khai:** đưa mã lên GitHub và kết nối repository với Vercel, mỗi lần cập nhật Vercel sẽ tự triển khai lại.
 
+## Trợ lý AI chạy trên máy (tùy chọn)
 
-## Cơ sở dữ liệu: Firebase Firestore (miễn phí – gói Spark)
+Trợ lý chat có thể dùng mô hình chạy cục bộ qua [Ollama](https://ollama.com), không gửi dữ liệu ra dịch vụ đám mây. Cài Ollama, chạy `ollama pull qwen2.5:3b`, đặt biến môi trường `OLLAMA_ORIGINS` thành địa chỉ trang web rồi khởi động lại Ollama. Nếu không có Ollama, trợ lý tự chuyển sang trả lời nhanh theo mẫu.
 
-Dữ liệu (tin thú cưng, tin tức, hồ sơ người dùng, góp ý, giao dịch) lưu trên **Firestore**; đăng nhập qua **Firebase Authentication**. Mật khẩu do Google quản lý, web không lưu mật khẩu. Quyền truy cập do `firestore.rules` quyết định trên máy chủ. Yêu thích và khu vực vẫn lưu riêng trong trình duyệt.
+## Bảo mật và quyền riêng tư
 
-Cài đặt một lần trong [Firebase Console](https://console.firebase.google.com) (dự án khai báo ở `js/config.js`):
-1. **Build → Firestore Database → Create database** (chọn vị trí gần Việt Nam, vd `asia-southeast1`).
-2. **Rules**: dán toàn bộ nội dung `firestore.rules` → **Publish**.
-3. **Authentication → Sign-in method**: bật **Email/Password** và **Google**; **Settings → Authorized domains**: thêm domain Vercel và `localhost`.
-4. **Tạo admin đầu tiên**: đăng ký một tài khoản trên web, copy **UID** của nó (Authentication → Users), rồi trong Firestore tạo collection `admins` với **Document ID = UID đó** (nội dung tùy ý, vd `{ "ok": true }`). Sau đó admin mới cấp/gỡ quyền được trong trang quản trị.
-
-Lưu ý: gói Spark giới hạn khoảng 50.000 lượt đọc và 20.000 lượt ghi mỗi ngày, 1 GiB lưu trữ. Ảnh được nén và lưu trực tiếp trong tài liệu (tối đa 5 ảnh/tin) vì Cloud Storage không còn miễn phí.
+- Quyền quản trị do Firestore quyết định (`admins/{uid}`) và được kiểm tra ở phía máy chủ bằng luật Firestore.
+- Số điện thoại, Zalo, email chỉ là thông tin người dùng tự nguyện đăng; hãy chỉ đăng thông tin bạn muốn công khai.
+- Xem thêm `SECURITY.md`, trang Chính sách bảo mật và trang Xóa dữ liệu.

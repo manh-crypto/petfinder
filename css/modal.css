@@ -109,3 +109,11 @@
 
 /* Khung liên hệ chỉ hiển thị thông tin: chọn nhanh cả dòng để sao chép, không có liên kết gọi/nhắn */
 .contact-row .cv b { user-select: all; cursor: text; }
+
+/* Cửa sổ thông tin liên hệ rộng hơn */
+#petModal .modal.show-contact { max-width: 620px; width: 94vw; padding-left: 34px; padding-right: 34px; }
+.contact-row { padding: 14px 16px; }
+.contact-row .cv b { font-size: 1.05rem; overflow-wrap: anywhere; word-break: normal; }
+.contact-avatar { width: 72px; height: 72px; }
+.contact-tip { font-size: .9rem; line-height: 1.55; }
+@media (max-width: 520px) { #petModal .modal.show-contact { padding-left: 18px; padding-right: 18px; } }

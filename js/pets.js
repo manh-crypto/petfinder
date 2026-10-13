@@ -14,9 +14,9 @@ async function previewImages(input) {
       const img = document.createElement('img');
       img.src = data; img.alt = 'Ảnh xem trước'; img.className = 'img-preview-item';
       container.appendChild(img); ok++;
-    } catch (e) { showToast('⚠️ ' + (file.name ? PFSec.cleanText(file.name, 40) + ': ' : '') + e.message); }
+    } catch (e) { showToast('' + (file.name ? PFSec.cleanText(file.name, 40) + ': ' : '') + e.message); }
   }
-  if (ok) showToast('✅ Đã tải ' + ok + ' ảnh thành công!');
+  if (ok) showToast('Đã tải ' + ok + ' ảnh thành công!');
   input.value = '';
 }
 
@@ -47,20 +47,20 @@ async function submitPost() {
   err.style.display = 'none';
 
   if (!name || !type || !date || !area || !phone) {
-    err.textContent = '⚠️ Vui lòng điền đầy đủ các trường bắt buộc (*)';
+    err.textContent = 'Vui lòng điền đầy đủ các trường bắt buộc (*)';
     err.style.display = 'block';
     return;
   }
   const fail = m => { err.textContent = m; err.style.display = 'block'; };
   if (!currentUser) { openAuthModal('login'); return; }
-  if (!PFSec.isPhone(phone)) return fail('⚠️ Số điện thoại không hợp lệ.');
-  if (zalo && !/^(https?:\/\/[^\s]+|[0-9+().\-\s]{8,40})$/.test(zalo)) return fail('⚠️ Zalo phải là số điện thoại hoặc đường dẫn https.');
-  if (Number.isNaN(new Date(date).getTime())) return fail('⚠️ Ngày không hợp lệ.');
+  if (!PFSec.isPhone(phone)) return fail('Số điện thoại không hợp lệ.');
+  if (zalo && !/^(https?:\/\/[^\s]+|[0-9+().\-\s]{8,40})$/.test(zalo)) return fail('Zalo phải là số điện thoại hoặc đường dẫn https.');
+  if (Number.isNaN(new Date(date).getTime())) return fail('Ngày không hợp lệ.');
   const lastPost = Number(sessionStorage.getItem('pf_last_post') || 0);
   if (Date.now() - lastPost < 15000) return fail('⏳ Bạn đăng tin quá nhanh. Vui lòng đợi vài giây rồi thử lại.');
   const submitButton = document.querySelector('#form .submit-btn');
   const originalButtonText = submitButton ? submitButton.textContent : '';
-  if (submitButton) { submitButton.disabled = true; submitButton.textContent = '📍 Đang xác định vị trí...'; }
+  if (submitButton) { submitButton.disabled = true; submitButton.textContent = 'Đang xác định vị trí...'; }
   const coordinates = await geocodePetLocation(location, area);
   if (submitButton) { submitButton.disabled = false; submitButton.textContent = originalButtonText; }
   const icon = petIcon(type);
@@ -69,7 +69,7 @@ async function submitPost() {
   const imageData = pendingImageData.filter(Boolean);
   const rawPet = { id, name, type, breed, gender, date: displayDate, area, location, desc, phone, zalo, status, icon, imageData, ...coordinates, ownerEmail: currentUser.email, ownerUid: currentUser.uid, ownerName: currentUser.name, createdAt: Date.now() };
   const pet = PFSec.sanitizePet(rawPet);                           // chuẩn hóa/giới hạn mọi trường trước khi lưu
-  if (!pet) return fail('⚠️ Dữ liệu tin đăng không hợp lệ.');
+  if (!pet) return fail('Dữ liệu tin đăng không hợp lệ.');
   sessionStorage.setItem('pf_last_post', String(Date.now()));
   PFSec.log('pet_posted', pet.status + ': ' + pet.name, currentUser.email);
 
@@ -111,7 +111,7 @@ async function submitPost() {
   resetForm();
   // Show alert popup if matches user area
   showAlertPopup(pet);
-  showToast('✅ Đăng tin thành công! Cộng đồng đã nhận được.');
+  showToast('Đăng tin thành công! Cộng đồng đã nhận được.');
   goToPetsList();
 }
 function resetForm() {
@@ -129,7 +129,7 @@ function addPetCardToGrid(pet, prepend = false) {
   const badgeClass = pet.status === 'lost' ? 'badge-lost' : pet.status === 'found' ? 'badge-found' : 'badge-adopt';
   const badgeLabel = pet.status === 'lost' ? '🔴 Đang thất lạc' : pet.status === 'found' ? '🟢 Đã tìm thấy' : '🟡 Chờ nhận nuôi';
   const btnStyle = pet.status === 'found' ? 'style="background:var(--green)"' : pet.status === 'adopt' ? 'style="background:var(--orange-dark)"' : '';
-  const btnLabel = pet.status === 'found' ? '📞 Liên hệ' : pet.status === 'adopt' ? '🏠 Nhận nuôi' : '📞 Liên hệ ngay';
+  const btnLabel = pet.status === 'found' ? 'Liên hệ' : pet.status === 'adopt' ? 'Nhận nuôi' : 'Liên hệ ngay';
   const isOwner = isMyPet(pet);
   const card = document.createElement('div');
   card.className = 'pet-card';
@@ -148,8 +148,8 @@ function addPetCardToGrid(pet, prepend = false) {
       <span class="pet-badge ${badgeClass}">${badgeLabel}</span>${isOwner ? '<span class="my-post-badge">Của tôi</span>' : ''}
       <div class="pet-name">${E(pet.name)}</div>
       <div class="pet-meta">${E(pet.icon)} ${E(pet.breed || pet.type)}${pet.gender ? ' · ' + E(pet.gender) : ''}</div>
-      <div class="pet-meta">📍 ${E(pet.location || pet.area)}</div>
-      <div class="pet-date"><span>📅 ${E(pet.date)}</span><span style="color:${statusColor};font-weight:700">${E(statusLabelMap[pet.status] || '')}</span></div>
+      <div class="pet-meta">${E(pet.location || pet.area)}</div>
+      <div class="pet-date"><span>${E(pet.date)}</span><span style="color:${statusColor};font-weight:700">${E(statusLabelMap[pet.status] || '')}</span></div>
       <button class="contact-btn" ${btnStyle}>${btnLabel}</button>
     </div>`;
   const openDetail = () => openPetModal(pet.name, `${pet.breed || pet.type}${pet.gender?', '+pet.gender:''}`, pet.location || pet.area, pet.phone, pet.date, pet.icon, pet.desc, pet.zalo, pet.imageData, pet);
@@ -218,7 +218,7 @@ function doSearch(params) {
   const bannerText = document.getElementById('searchBannerText');
   if (keyword || type || area || status) {
     if (banner) banner.style.display = 'flex';
-    if (bannerText) bannerText.textContent = `🔍 Tìm thấy ${count} / ${total} tin phù hợp`;
+    if (bannerText) bannerText.textContent = `Tìm thấy ${count} / ${total} tin phù hợp`;
   } else {
     if (banner) banner.style.display = 'none';
     document.querySelectorAll('.pet-card').forEach(c => c.style.display = 'block');
@@ -290,7 +290,7 @@ document.addEventListener('keydown', e => {
 function openPetModal(name, breed, area, phone, date, icon, desc, zalo, imageData, pet) {
   currentModalPet = pet || { name, phone, zalo, area, date, icon };
   backToPetDetail();
-  document.getElementById('modalTitle').textContent = '🐾 ' + name;
+  document.getElementById('modalTitle').textContent = '' + name;
   document.getElementById('modalBreed').textContent = breed;
   document.getElementById('modalArea').textContent = area;
   document.getElementById('modalDate').textContent = date;
@@ -400,20 +400,18 @@ function showPetContact() {
     </div>
     <div class="contact-pet">
       <span class="contact-pet-icon">${escapeHtml(pet.icon || '🐾')}</span>
-      <div><strong>${escapeHtml(pet.name || '')}</strong><br><small>📍 ${escapeHtml(pet.location || pet.area || '—')} · 📅 ${escapeHtml(pet.date || '—')}</small></div>
+      <div><strong>${escapeHtml(pet.name || '')}</strong><br><small>${escapeHtml(pet.location || pet.area || '—')} · ${escapeHtml(pet.date || '—')}</small></div>
     </div>
     <div class="contact-list">
       <div class="contact-row">
-        <span class="ci">📞</span>
         <div class="cv"><small>Số điện thoại</small><b>${escapeHtml(phone || 'Chưa cung cấp')}</b></div>
         ${phone ? `<button type="button" class="contact-copy" data-copy="${escapeHtml(phone)}" onclick="copyContactValue(this.dataset.copy, this)">Sao chép</button>` : ''}
       </div>
       <div class="contact-row">
-        <span class="ci">💬</span>
         <div class="cv"><small>Zalo</small><b>${zaloUrl ? escapeHtml(zaloUrl.replace(/^https?:\/\//, '')) : 'Chưa cung cấp'}</b></div>
         ${zaloUrl ? `<button type="button" class="contact-copy" data-copy="${escapeHtml(zaloUrl)}" onclick="copyContactValue(this.dataset.copy, this)">Sao chép</button>` : ''}
       </div>
-      ${email ? `<div class="contact-row"><span class="ci">✉️</span><div class="cv"><small>Email</small><b>${escapeHtml(email)}</b></div><button type="button" class="contact-copy" data-copy="${escapeHtml(email)}" onclick="copyContactValue(this.dataset.copy, this)">Sao chép</button></div>` : ''}
+      ${email ? `<div class="contact-row"><div class="cv"><small>Email</small><b>${escapeHtml(email)}</b></div><button type="button" class="contact-copy" data-copy="${escapeHtml(email)}" onclick="copyContactValue(this.dataset.copy, this)">Sao chép</button></div>` : ''}
     </div>
     <div class="contact-tip">ℹ️ Đây chỉ là thông tin liên lạc của người đăng tin. Hãy tự liên hệ, hỏi thêm đặc điểm nhận dạng để xác minh, hẹn gặp ở nơi công cộng và không chuyển tiền trước cho người lạ.</div>`;
 
@@ -426,7 +424,7 @@ function backToPetDetail() {
 }
 
 function copyContactValue(val, btn) {
-  const done = () => { const t = btn.textContent; btn.textContent = '✓ Đã chép'; setTimeout(() => btn.textContent = t, 1500); };
+  const done = () => { const t = btn.textContent; btn.textContent = 'Đã chép'; setTimeout(() => btn.textContent = t, 1500); };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(val).then(done, done);
   else { const ta = document.createElement('textarea'); ta.value = val; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} ta.remove(); done(); }
 }

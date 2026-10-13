@@ -61,9 +61,9 @@ function renderSecurityAdmin() {
     </div>
     <div class="admin-toolbar">
       <select onchange="setSecFilter('type', this.value)"><option value="">Mọi loại sự kiện</option>${types.map(k => `<option value="${k}" ${secState.type === k ? 'selected' : ''}>${SEC_EVENT_LABELS[k][0]} ${E(SEC_EVENT_LABELS[k][1])}</option>`).join('')}</select>
-      <input type="text" id="secSearch" placeholder="🔍 Tìm theo tài khoản, nội dung..." value="${E(secState.q)}" oninput="secSearchInput(this.value)"/>
-      <button class="abtn abtn-edit" onclick="exportSecurityLog()">⬇️ Xuất CSV</button>
-      <button class="abtn abtn-delete" onclick="clearSecurityLog()">🗑️ Xóa nhật ký</button>
+      <input type="text" id="secSearch" placeholder="Tìm theo tài khoản, nội dung..." value="${E(secState.q)}" oninput="secSearchInput(this.value)"/>
+      <button class="abtn abtn-edit" onclick="exportSecurityLog()">Xuất CSV</button>
+      <button class="abtn abtn-delete" onclick="clearSecurityLog()">Xóa nhật ký</button>
     </div>
     <div class="dash-card"><div class="dash-card-head"><h4>Nhật ký sự kiện <span class="count-pill">${filtered.length}</span></h4></div>
       <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Thời gian</th><th>Sự kiện</th><th>Tài khoản</th><th>Chi tiết</th></tr></thead><tbody>

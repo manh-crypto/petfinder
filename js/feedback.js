@@ -83,11 +83,11 @@ function submitContactForm() {
   const email = document.getElementById('ctEmail').value.trim();
   const message = document.getElementById('ctMessage').value.trim();
   const type = contactState.type, rating = type === 'review' ? contactState.rating : 0;
-  if (name.length < 2) { contactError('⚠️ Vui lòng nhập họ tên (ít nhất 2 ký tự).'); return; }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { contactError('⚠️ Email chưa hợp lệ, chúng tôi cần email để phản hồi bạn.'); return; }
-  if (type === 'review' && !rating) { contactError('⚠️ Vui lòng chọn số sao đánh giá.'); return; }
-  if (message.length < 10) { contactError('⚠️ Nội dung quá ngắn, vui lòng mô tả chi tiết hơn (ít nhất 10 ký tự).'); return; }
-  if (message.length > 2000) { contactError('⚠️ Nội dung tối đa 2000 ký tự.'); return; }
+  if (name.length < 2) { contactError('Vui lòng nhập họ tên (ít nhất 2 ký tự).'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { contactError('Email chưa hợp lệ, chúng tôi cần email để phản hồi bạn.'); return; }
+  if (type === 'review' && !rating) { contactError('Vui lòng chọn số sao đánh giá.'); return; }
+  if (message.length < 10) { contactError('Nội dung quá ngắn, vui lòng mô tả chi tiết hơn (ít nhất 10 ký tự).'); return; }
+  if (message.length > 2000) { contactError('Nội dung tối đa 2000 ký tự.'); return; }
 
   const u = (typeof currentUser !== 'undefined') ? currentUser : null;
   const entry = {
@@ -139,7 +139,7 @@ function renderMyRequests() {
   box.innerHTML = mine.map(f => `<div class="ct-mine-item">
       <div class="ct-mine-head"><span class="cat-chip">${FB_TYPES[f.type].icon} ${FB_TYPES[f.type].label}</span><b>${fbEsc(f.id)}</b><span class="ct-status st-${f.status}">${FB_STATUS[f.status]}</span><small>${fbDate(f.createdAt)}</small></div>
       <p>${fbEsc(f.message)}</p>
-      ${f.reply ? `<div class="ct-reply"><b>💬 Phản hồi từ PetFinder:</b><p>${fbEsc(f.reply)}</p></div>` : '<div class="ct-wait">Chúng tôi chưa phản hồi yêu cầu này.</div>'}
+      ${f.reply ? `<div class="ct-reply"><b>Phản hồi từ PetFinder:</b><p>${fbEsc(f.reply)}</p></div>` : '<div class="ct-wait">Chúng tôi chưa phản hồi yêu cầu này.</div>'}
     </div>`).join('');
 }
 
@@ -177,7 +177,7 @@ function renderFeedbackAdmin() {
     <div class="admin-toolbar">
       <select onchange="setFbAdmin('type', this.value)">${opt('', fbAdmin.type, 'Tất cả loại')}${Object.keys(FB_TYPES).map(k => opt(k, fbAdmin.type, FB_TYPES[k].icon + ' ' + FB_TYPES[k].label)).join('')}</select>
       <select onchange="setFbAdmin('status', this.value)">${opt('', fbAdmin.status, 'Mọi trạng thái')}${Object.keys(FB_STATUS).map(k => opt(k, fbAdmin.status, FB_STATUS[k])).join('')}</select>
-      <input type="text" id="fbSearch" placeholder="🔍 Tìm theo nội dung, tên, email, mã..." value="${fbEsc(fbAdmin.q)}" oninput="fbSearchInput(this.value)"/>
+      <input type="text" id="fbSearch" placeholder="Tìm theo nội dung, tên, email, mã..." value="${fbEsc(fbAdmin.q)}" oninput="fbSearchInput(this.value)"/>
     </div>
     <div id="fbList">${list.length ? list.map(fbAdminCard).join('') : `<div class="dash-card"><div class="chart-empty">${all.length ? 'Không có yêu cầu phù hợp bộ lọc.' : 'Chưa có yêu cầu nào. Người dùng gửi từ trang <b>Liên hệ</b> sẽ hiện ở đây.'}</div></div>`}</div>`;
   updateFeedbackBadge();
@@ -193,14 +193,14 @@ function fbAdminCard(f) {
       ${f.type === 'review' ? `<span class="pill ${f.public ? 'pill-ok' : 'pill-flagged'}">${f.public ? 'Công khai' : 'Riêng tư'}</span>` : ''}
       <span class="fb-time">${fbDate(f.createdAt)}</span>
     </div>
-    <div class="fb-from">👤 <b>${fbEsc(f.name)}</b> · ✉️ <a href="mailto:${fbEsc(f.email)}">${fbEsc(f.email)}</a></div>
+    <div class="fb-from"><b>${fbEsc(f.name)}</b> · <a href="mailto:${fbEsc(f.email)}">${fbEsc(f.email)}</a></div>
     <p class="fb-msg">${fbEsc(f.message)}</p>
     <textarea class="fb-reply-box" id="fbReply-${f.id}" rows="2" placeholder="Nhập phản hồi cho người dùng (họ sẽ thấy khi đăng nhập ở trang Liên hệ)...">${fbEsc(f.reply)}</textarea>
     <div class="fb-actions">
       <select onchange="setFbStatus('${f.id}', this.value)">${Object.keys(FB_STATUS).map(k => `<option value="${k}" ${k === f.status ? 'selected' : ''}>${FB_STATUS[k]}</option>`).join('')}</select>
-      <button class="abtn abtn-promote" onclick="saveFbReply('${f.id}')">💬 Lưu phản hồi</button>
-      ${f.type === 'review' ? `<button class="abtn abtn-edit" onclick="toggleFbPublic('${f.id}')">${f.public ? '🙈 Ẩn đánh giá' : '👁️ Hiện công khai'}</button>` : ''}
-      <button class="abtn abtn-delete" onclick="deleteFeedback('${f.id}')">🗑️ Xóa</button>
+      <button class="abtn abtn-promote" onclick="saveFbReply('${f.id}')">Lưu phản hồi</button>
+      ${f.type === 'review' ? `<button class="abtn abtn-edit" onclick="toggleFbPublic('${f.id}')">${f.public ? 'Ẩn đánh giá' : 'Hiện công khai'}</button>` : ''}
+      <button class="abtn abtn-delete" onclick="deleteFeedback('${f.id}')">Xóa</button>
     </div>
   </div>`;
 }
@@ -211,7 +211,7 @@ function saveFbReply(id) { if (!requireAdmin('phản hồi góp ý')) return;
   const txt = document.getElementById('fbReply-' + id).value.trim();
   f.reply = txt; f.repliedAt = txt ? Date.now() : null;
   if (txt && f.status === 'new') f.status = 'processing';
-  saveFeedback(a); if (typeof showToast === 'function') showToast('✅ Đã lưu phản hồi'); renderFeedbackAdmin();
+  saveFeedback(a); if (typeof showToast === 'function') showToast('Đã lưu phản hồi'); renderFeedbackAdmin();
 }
 function toggleFbPublic(id) { if (!requireAdmin('ẩn/hiện đánh giá')) return; const a = loadFeedback(); const f = a.find(x => x.id === id); if (!f) return; f.public = !f.public; saveFeedback(a); renderFeedbackAdmin(); }
 function deleteFeedback(id) { if (!requireAdmin('xóa góp ý')) return; if (!confirm('Xóa yêu cầu này?')) return; saveFeedback(loadFeedback().filter(f => f.id !== id)); renderFeedbackAdmin(); }

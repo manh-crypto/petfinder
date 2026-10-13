@@ -97,14 +97,14 @@
   // ---- ghi: so sánh với bản cũ rồi gửi phần thay đổi lên Firestore
   const MAX_DOC = 950000;
   function write(col, nextArr) {
-    if (!db) { toast('⚠️ Chưa kết nối được cơ sở dữ liệu.'); return false; }
+    if (!db) { toast('Chưa kết nối được cơ sở dữ liệu.'); return false; }
     const ops = []; const nextIds = new Set();
     for (const raw of nextArr) {
       const id = idOf[col](raw); if (!id) continue;
       nextIds.add(id);
       const doc = toDoc[col](raw); const json = JSON.stringify(doc);
       if (base[col].get(id) === json) continue;
-      if (json.length > MAX_DOC) { toast('⚠️ Dữ liệu quá lớn để lưu (thường do ảnh). Hãy bỏ bớt ảnh rồi thử lại.'); return false; }
+      if (json.length > MAX_DOC) { toast('Dữ liệu quá lớn để lưu (thường do ảnh). Hãy bỏ bớt ảnh rồi thử lại.'); return false; }
       ops.push({ type: 'set', id, doc, json });
     }
     base[col].forEach((_, id) => { if (!nextIds.has(id)) ops.push({ type: 'delete', id }); });
@@ -121,7 +121,7 @@
     })().catch(err => {
       console.error('Firestore write failed:', err);
       S[col] = shallow(snap[col]); emit();            // hoàn tác thay đổi trên giao diện
-      toast(err && err.code === 'permission-denied' ? '⛔ Bạn không có quyền thực hiện thao tác này.' : '⚠️ Không lưu được lên máy chủ. Hãy kiểm tra mạng rồi thử lại.');
+      toast(err && err.code === 'permission-denied' ? 'Bạn không có quyền thực hiện thao tác này.' : 'Không lưu được lên máy chủ. Hãy kiểm tra mạng rồi thử lại.');
     });
     return true;
   }

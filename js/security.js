@@ -89,7 +89,7 @@
     try { w.localStorage.setItem(key, JSON.stringify(value)); return true; }
     catch (e) {
       PFSec.log('storage_error', key + ': ' + (e && e.name));
-      if (typeof w.showToast === 'function') w.showToast('⚠️ Không lưu được dữ liệu (bộ nhớ trình duyệt đã đầy). Hãy xóa bớt ảnh hoặc tin cũ.');
+      if (typeof w.showToast === 'function') w.showToast('Không lưu được dữ liệu (bộ nhớ trình duyệt đã đầy). Hãy xóa bớt ảnh hoặc tin cũ.');
       return false;
     }
   };

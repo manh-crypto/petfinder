@@ -4,9 +4,9 @@
     <h2 class="section-title" style="margin-bottom:6px">Đăng tin <span>của bạn</span></h2>
     <p style="color:var(--text-muted);margin-bottom:24px">Giúp cộng đồng tìm kiếm thú cưng nhanh hơn</p>
     <div class="form-tabs">
-      <button class="form-tab active" onclick="switchFormTab(this,'lost')">📢 Thú cưng thất lạc</button>
-      <button class="form-tab" onclick="switchFormTab(this,'found')">🐾 Thú cưng nhặt được</button>
-      <button class="form-tab" onclick="switchFormTab(this,'adopt')">🏠 Cho nhận nuôi</button>
+      <button class="form-tab active" onclick="switchFormTab(this,'lost')">Thú cưng thất lạc</button>
+      <button class="form-tab" onclick="switchFormTab(this,'found')">Thú cưng nhặt được</button>
+      <button class="form-tab" onclick="switchFormTab(this,'adopt')">Cho nhận nuôi</button>
     </div>
     <input type="hidden" id="activeFormType" value="lost"/>
     <div class="form-grid">
@@ -26,7 +26,7 @@
         <div id="fImagePreview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
       </div>
       <div id="formError" style="display:none;grid-column:1/-1;background:var(--red-light);color:var(--red);padding:10px 14px;border-radius:var(--radius-sm);font-size:0.88rem;font-weight:700"></div>
-      <div class="form-group full"><button class="submit-btn" onclick="checkAuthBeforePost(event)">🚀 Đăng tin ngay</button></div>
+      <div class="form-group full"><button class="submit-btn" onclick="checkAuthBeforePost(event)">Đăng tin ngay</button></div>
     </div>
   </div>
 </section>
