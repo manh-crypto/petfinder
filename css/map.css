@@ -15,10 +15,10 @@
     .map-info { font-size: 0.85rem; color: var(--text-muted); margin-left: auto; }
 
 
-    .map-region-ctl { display: flex; gap: 4px; background: #fff; padding: 4px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.2); }
-    .map-region-btn { border: none; background: transparent; padding: 6px 12px; border-radius: 9px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .8rem; color: #6B5744; cursor: pointer; }
-    .map-region-btn:hover { background: #FDE8D8; }
-    .map-region-btn.active { background: #F5823A; color: #fff; }
+    .map-region-ctl { display: flex; flex-direction: column; gap: 4px; background: #fff; padding: 8px 10px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.2); min-width: 210px; max-width: calc(100vw - 80px); }
+    .map-province-label { font: 800 .72rem 'Nunito', sans-serif; color: #6B5744; }
+    .map-province-select { width: 100%; padding: 7px 8px; border: 1.5px solid #F0D8C8; border-radius: 9px; background: #FFFAF7; font: 700 .85rem 'Nunito', sans-serif; color: #2C2415; cursor: pointer; }
+    .map-province-select:focus { outline: none; border-color: #F5823A; }
     .map-notice { position: absolute; z-index: 1000; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; padding: 16px 20px; border-radius: 12px; box-shadow: 0 6px 24px rgba(0,0,0,.2); text-align: center; font-weight: 800; color: #6B5744; max-width: 80%; }
     .map-notice small { font-weight: 600; color: #8b7766; }
     .leaflet-container { font-family: 'Nunito', sans-serif; }

@@ -1,4 +1,4 @@
-// Firebase adapter: nạp SDK (Auth + Firestore) và đăng nhập Google / Facebook (qua Firebase Authentication).
+// Firebase adapter: nạp SDK (Auth + Firestore) và đăng nhập Google (qua Firebase Authentication).
 (function createSocialAuthService(global) {
   const FIREBASE_VERSION = '10.14.1';
   let firebaseReadyPromise = null;
@@ -59,11 +59,6 @@
   }
 
   function createProvider(providerName) {
-    if (providerName === 'facebook') {
-      const fb = new global.firebase.auth.FacebookAuthProvider();
-      fb.addScope('email');
-      return fb;
-    }
     if (providerName !== 'google') {
       throw new Error('Nhà cung cấp đăng nhập không được hỗ trợ.');
     }

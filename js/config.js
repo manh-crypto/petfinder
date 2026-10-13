@@ -15,12 +15,6 @@ window.PETFINDER_CONFIG = Object.freeze({
     measurementId: 'G-QCRJZD4NN0'
   }),
 
-  // --- Đăng nhập Facebook (tuỳ chọn) ---
-  // Điền App ID từ developers.facebook.com để bật nút Facebook. Để trống thì nút Facebook tự ẩn.
-  facebook: Object.freeze({
-    appId: '965484892684473'
-  }),
-
   // --- Tìm địa chỉ → tọa độ trên bản đồ (OpenStreetMap Nominatim, không cần khóa) ---
   geocoding: Object.freeze({
     endpoint: 'https://nominatim.openstreetmap.org/search',

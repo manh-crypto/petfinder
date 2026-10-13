@@ -48,15 +48,13 @@ function checkPwStrength(v) {
   hint.textContent = score > 0 ? 'Độ mạnh: ' + (labels[score - 1] || '') : 'Nhập mật khẩu để kiểm tra độ mạnh';
   hint.style.color = colors[score - 1] || 'var(--text-muted)';
 }
-// ========== SOCIAL LOGIN (Google / Facebook qua Firebase Authentication) ==========
+// ========== SOCIAL LOGIN (Google qua Firebase Authentication) ==========
 // Cấu hình nằm ở js/config.js (PETFINDER_CONFIG). Nút của nhà cung cấp chưa cấu hình sẽ tự ẩn.
 function pfConfig() { return window.PETFINDER_CONFIG || {}; }
 function isFirebaseConfigured() {
   const f = pfConfig().firebase;
   return !!(f && ['apiKey', 'authDomain', 'projectId', 'appId'].every(k => f[k]));
 }
-// Facebook: bật nhà cung cấp Facebook trong Firebase Console rồi điền appId vào config để hiện nút.
-function isFacebookConfigured() { const f = pfConfig().facebook; return !!(f && f.appId) && isFirebaseConfigured(); }
 
 function getSocialAuthError(error) {
   const messages = {
@@ -75,7 +73,7 @@ function getSocialAuthError(error) {
 // Tạo hồ sơ (nếu chưa có) trên Firestore rồi trả về hồ sơ. KHÔNG bao giờ nhận role từ nhà cung cấp: role luôn do admins/{uid} quyết định.
 async function completeSocialLogin(input) {
   const t = PFSec.cleanText;
-  const provider = input.provider === 'facebook' ? 'facebook' : input.provider === 'google' ? 'google' : '';
+  const provider = input.provider === 'google' ? 'google' : '';
   const email = t(input.email, 120).toLowerCase();
   const uid = t(input.uid, 128);
   if (!provider || !uid || !PFSec.isEmail(email)) { PFSec.log('social_rejected', 'hồ sơ không hợp lệ', ''); throw new Error('Hồ sơ đăng nhập không hợp lệ (cần có email).'); }
@@ -93,8 +91,7 @@ async function socialLogin(provider, button) {
   if (button) { button.disabled = true; button.textContent = 'Đang kết nối...'; }
   try {
     if (!window.PetFinderSocialAuth || !isFirebaseConfigured()) throw new Error('Đăng nhập chưa được cấu hình. Hãy điền Firebase trong js/config.js.');
-    if (p !== 'google' && p !== 'facebook') throw new Error('Nhà cung cấp đăng nhập không được hỗ trợ.');
-    if (p === 'facebook' && !isFacebookConfigured()) throw new Error('Đăng nhập Facebook chưa được cấu hình.');
+    if (p !== 'google') throw new Error('Nhà cung cấp đăng nhập không được hỗ trợ.');
     await PFDB.ready;
     const profile = await window.PetFinderSocialAuth.signIn(p);
     const user = await completeSocialLogin(profile);
@@ -110,7 +107,6 @@ async function socialLogin(provider, button) {
 
 // Khởi động: ẩn nút của nhà cung cấp chưa cấu hình
 function initSocialProviders() {
-  document.querySelectorAll('.auth-social-btn[data-provider="Facebook"]').forEach(b => { b.style.display = isFacebookConfigured() ? '' : 'none'; });
   document.querySelectorAll('.auth-social-btn[data-provider="Google"]').forEach(b => { b.style.display = isFirebaseConfigured() ? '' : 'none'; });
 }
 window.addEventListener('load', () => setTimeout(initSocialProviders, 30));

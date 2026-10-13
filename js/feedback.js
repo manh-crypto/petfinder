@@ -3,9 +3,7 @@
 
 // >>> Đổi thành thông tin liên hệ thật của nhóm <<<
 const CONTACT_INFO = {
-  email: 'petfinder@email.com',
-  phone: '1800 xxxx',
-  address: 'TP. Hồ Chí Minh'
+  email: 'petfinder254@gmail.com'
 };
 
 const FB_KEY = 'pf_feedback';
@@ -34,9 +32,8 @@ function initContactPage() {
   const root = document.getElementById('contactPage');
   if (!root) return;
 
-  document.getElementById('ctInfoEmail').textContent = CONTACT_INFO.email;
-  document.getElementById('ctInfoPhone').textContent = CONTACT_INFO.phone;
-  document.getElementById('ctInfoAddress').textContent = CONTACT_INFO.address;
+  const ctMail = document.getElementById('ctInfoEmail');
+  if (ctMail) { ctMail.textContent = CONTACT_INFO.email; ctMail.href = 'mailto:' + CONTACT_INFO.email; }
 
   document.getElementById('ctTypes').innerHTML = Object.keys(FB_TYPES).map(k =>
     `<button type="button" class="ct-type${k === contactState.type ? ' active' : ''}" data-type="${k}" onclick="setContactType('${k}')">${FB_TYPES[k].icon} ${FB_TYPES[k].label}</button>`).join('');

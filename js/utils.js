@@ -1,8 +1,23 @@
 // ===== Generic Utilities =====
 // Nhãn trạng thái tin đăng (dùng ở thẻ thú cưng, Tin của tôi, Admin)
 var statusLabelMap = { lost: 'Đang thất lạc', found: 'Đã tìm thấy', adopt: 'Chờ nhận nuôi' };
-// Biểu tượng theo loại thú cưng (dùng khi đăng tin)
-var typeIconMap = { 'chó': '🐶', 'mèo': '🐱', 'thỏ': '🐰', 'khác': '🐾' };
+// Biểu tượng theo loại thú cưng (loại thú nhập tự do; không khớp từ khóa nào thì dùng 🐾)
+var PET_ICON_RULES = [
+  ['bò sát', '🦎'], ['chó', '🐶'], ['cún', '🐶'], ['dog', '🐶'], ['mèo', '🐱'], ['cat', '🐱'], ['thỏ', '🐰'], ['rabbit', '🐰'],
+  ['hamster', '🐹'], ['chuột', '🐹'], ['sóc', '🐿️'], ['nhím', '🦔'], ['cáo', '🦊'], ['vẹt', '🦜'], ['chim', '🐦'], ['bồ câu', '🕊️'],
+  ['cá', '🐟'], ['rùa', '🐢'], ['rắn', '🐍'], ['thằn lằn', '🦎'], ['tắc kè', '🦎'], ['kỳ nhông', '🦎'], ['ếch', '🐸'], ['nhện', '🕷️'],
+  ['gà', '🐔'], ['vịt', '🦆'], ['ngan', '🦆'], ['ngỗng', '🪿'], ['heo', '🐷'], ['lợn', '🐷'], ['dê', '🐐'], ['cừu', '🐑'], ['bò', '🐮'],
+  ['ngựa', '🐴'], ['chồn', '🦦'], ['khỉ', '🐒'], ['gấu', '🐻'], ['lười', '🦥']
+];
+function petIcon(type) {
+  const t = String(type || '').toLowerCase().trim();
+  for (let i = 0; i < PET_ICON_RULES.length; i++) {
+    const k = PET_ICON_RULES[i][0];
+    if (t === k || t.startsWith(k + ' ') || t.includes(' ' + k)) return PET_ICON_RULES[i][1];
+  }
+  return '🐾';
+}
+var typeIconMap = { 'chó': '🐶', 'mèo': '🐱', 'thỏ': '🐰', 'khác': '🐾' };   // giữ lại cho mã cũ
 
 // ========== TOAST ==========
 function showToast(msg, duration = 2800) {

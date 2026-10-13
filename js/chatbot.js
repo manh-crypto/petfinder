@@ -23,7 +23,7 @@
   const SYSTEM_PROMPT = `Bạn là "Trợ lý PetFinder" – trợ lý AI trên website PetFinder (nền tảng trực tuyến kết nối cộng đồng yêu động vật để tìm thú cưng thất lạc và kết nối nhận nuôi).
 
 THÔNG TIN VỀ WEBSITE (chỉ dựa vào đây khi nói về tính năng):
-- Đăng tin: đăng tin thú cưng thất lạc, tin nhặt được, hoặc tìm chủ mới (nhận nuôi) cho chó, mèo, thỏ. Nên có ảnh rõ, đặc điểm nhận dạng, khu vực, thời gian, số điện thoại/Zalo. Địa chỉ nhập khi đăng tin được chuyển thành tọa độ để hiện trên bản đồ.
+- Đăng tin: đăng tin thú cưng thất lạc, tin nhặt được, hoặc tìm chủ mới (nhận nuôi) cho chó, mèo, thỏ và nhiều loài thú cưng khác. Nên có ảnh rõ, đặc điểm nhận dạng, khu vực, thời gian, số điện thoại/Zalo. Địa chỉ nhập khi đăng tin được chuyển thành tọa độ để hiện trên bản đồ.
 - Thú cưng: danh sách tin, lọc theo loại thú cưng, khu vực, trạng thái (thất lạc / đã tìm thấy / nhận nuôi).
 - Bản đồ: xem vị trí các tin trên bản đồ tương tác (đỏ = đang thất lạc, xanh = đã tìm thấy, cam = chờ nhận nuôi); tìm địa chỉ; nút "Vị trí của tôi"; nút chuyển nhanh TP.HCM / Hà Nội / Đà Nẵng / Toàn quốc.
 - Cấp cứu 24/7: danh sách phòng khám và bệnh viện thú y trực 24/7.
@@ -63,8 +63,8 @@ QUY TẮC:
     { id: 'post', k: ['dang tin', 'dang bai', 'tao tin', 'dang thu cung', 'bao that lac', 'dang len', 'dang tin that lac', 'dang tin nhat duoc'],
       a: () => 'Cách đăng tin:\n1. Bấm **Đăng tin** trên menu (nên đăng nhập để tin gắn với tài khoản và xem lại ở *Tin của tôi*)\n2. Chọn loại tin: **thất lạc**, **nhặt được** hoặc **nhận nuôi**\n3. Điền tên, loài/giống, đặc điểm nhận dạng, khu vực, thời gian\n4. Thêm **ảnh rõ nét** và số điện thoại/Zalo liên hệ\n5. Bấm đăng — tin sẽ hiện ở danh sách và bản đồ\n\n💡 Ảnh rõ, mô tả cụ thể và vị trí chính xác giúp tăng khả năng tìm thấy.',
       actions: [{ label: '📢 Đăng tin ngay', href: L('index.html#form') }] },
-    { id: 'login', k: ['dang nhap', 'dang ky', 'tao tai khoan', 'google', 'facebook', 'login', 'register', 'tai khoan'],
-      a: () => 'Bạn có thể **đăng ký** bằng email/số điện thoại và mật khẩu, hoặc nhanh hơn bằng **Google / Facebook** (nút ở đầu form Đăng ký). Sau khi đăng nhập, bạn dùng được *Tin của tôi*, yêu thích thú cưng và đăng tin gắn với tài khoản.' },
+    { id: 'login', k: ['dang nhap', 'dang ky', 'tao tai khoan', 'google', 'login', 'register', 'tai khoan'],
+      a: () => 'Bạn có thể **đăng ký** bằng email/số điện thoại và mật khẩu, hoặc nhanh hơn bằng **Google** (nút ở đầu form Đăng ký). Sau khi đăng nhập, bạn dùng được *Tin của tôi*, yêu thích thú cưng và đăng tin gắn với tài khoản.' },
     { id: 'forgot', k: ['quen mat khau', 'mat khau', 'doi mat khau', 'khong dang nhap duoc'],
       a: () => 'Ở hộp **Đăng nhập** có liên kết *Quên mật khẩu?*. Nếu vẫn không vào được tài khoản, bạn gửi yêu cầu ở trang **Liên hệ** (chọn "Cần hỗ trợ") để chúng tôi giúp nhé.',
       actions: [{ label: '💌 Gửi yêu cầu hỗ trợ', href: L('pages/contact.html') }] },
@@ -162,7 +162,7 @@ QUY TẮC:
       <div class="pfc-tip" id="pfcTip">Xin chào! Cần mình giúp gì không? 👋<button type="button" aria-label="Đóng lời chào">✕</button></div>
       <section class="pfc-panel" role="dialog" aria-label="${AI_CONFIG.name}" aria-modal="false">
         <header class="pfc-head">
-          <div class="pfc-avatar">🐶</div>
+          <div class="pfc-avatar"><div aria-label="Hamster đang chạy trong bánh xe" role="img" class="wheel-and-hamster"><div class="wheel"></div><div class="hamster"><div class="hamster__body"><div class="hamster__head"><div class="hamster__ear"></div><div class="hamster__eye"></div><div class="hamster__nose"></div></div><div class="hamster__limb hamster__limb--fr"></div><div class="hamster__limb hamster__limb--fl"></div><div class="hamster__limb hamster__limb--br"></div><div class="hamster__limb hamster__limb--bl"></div><div class="hamster__tail"></div></div></div><div class="spoke"></div></div></div>
           <div><div class="pfc-title">${AI_CONFIG.name}</div><div class="pfc-status ${AI_CONFIG.enabled ? '' : 'quick'}" id="pfcStatus"><i></i><span>${AI_CONFIG.enabled ? 'Trợ lý AI · chạy local' : 'Trả lời nhanh'}</span></div></div>
           <div class="pfc-head-btns">
             <button type="button" class="pfc-hbtn" id="pfcClear" title="Xóa cuộc trò chuyện" aria-label="Xóa cuộc trò chuyện">🗑️</button>
@@ -178,7 +178,7 @@ QUY TẮC:
         <div class="pfc-foot">${AI_CONFIG.enabled ? 'AI có thể nhầm lẫn. ' : ''}Với tình huống khẩn cấp về sức khỏe, hãy liên hệ phòng khám thú y.</div>
       </section>
       <button type="button" class="pfc-fab" id="pfcFab" aria-label="Mở trợ lý AI" aria-expanded="false">
-        <span class="pfc-fab-ic">🐾</span><span class="pfc-fab-ic alt">✕</span><span class="pfc-dot"></span>
+        <span class="pfc-fab-ic"><div aria-label="Hamster đang chạy trong bánh xe" role="img" class="wheel-and-hamster"><div class="wheel"></div><div class="hamster"><div class="hamster__body"><div class="hamster__head"><div class="hamster__ear"></div><div class="hamster__eye"></div><div class="hamster__nose"></div></div><div class="hamster__limb hamster__limb--fr"></div><div class="hamster__limb hamster__limb--fl"></div><div class="hamster__limb hamster__limb--br"></div><div class="hamster__limb hamster__limb--bl"></div><div class="hamster__tail"></div></div></div><div class="spoke"></div></div></span><span class="pfc-fab-ic alt">✕</span><span class="pfc-dot"></span>
       </button>`;
     document.body.appendChild(root);
     body = root.querySelector('#pfcBody'); input = root.querySelector('#pfcInput'); sendBtn = root.querySelector('#pfcSend');

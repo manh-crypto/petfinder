@@ -33,7 +33,7 @@ async function geocodePetLocation(location, area) {
 
 async function submitPost() {
   const name = document.getElementById('fName').value.trim();
-  const type = document.getElementById('fType').value;
+  const type = PFSec.cleanText(document.getElementById('fType').value, 30);
   const breed = document.getElementById('fBreed').value.trim();
   const gender = document.getElementById('fGender').value;
   const date = document.getElementById('fDate').value;
@@ -63,7 +63,7 @@ async function submitPost() {
   if (submitButton) { submitButton.disabled = true; submitButton.textContent = '📍 Đang xác định vị trí...'; }
   const coordinates = await geocodePetLocation(location, area);
   if (submitButton) { submitButton.disabled = false; submitButton.textContent = originalButtonText; }
-  const icon = typeIconMap[type.toLowerCase()] || '🐾';
+  const icon = petIcon(type);
   const displayDate = new Date(date).toLocaleDateString('vi-VN');
   const id = PFSec.newId('pet');
   const imageData = pendingImageData.filter(Boolean);

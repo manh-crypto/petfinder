@@ -20,7 +20,7 @@ Không cần chạy server để các liên kết trên hoạt động.
 
 **Đã ghép từ petfinder(2):** Firebase Auth (đăng nhập Google), tìm địa chỉ → tọa độ (Nominatim), tìm địa chỉ/“Vị trí của tôi” trên bản đồ, tin đã đăng hiện trên bản đồ, `js/location.js`, hộp chọn khu vực chỉ hiện ở trang chủ/Thú cưng/Bản đồ.
 
-**Cấu hình tập trung ở `js/config.js`:** Firebase, Facebook (tuỳ chọn, tự ẩn nút nếu để trống), geocoding, trợ lý **AI local (Ollama)** và link nhóm Facebook cộng đồng.
+**Cấu hình tập trung ở `js/config.js`:** Firebase (đăng nhập Google), geocoding, trợ lý **AI local (Ollama)** và link nhóm Facebook cộng đồng.
 
 ### Việc cần làm trước khi đưa lên mạng
 1. Firebase Console → Authentication → Settings → **Authorized domains**: thêm domain GitHub Pages và `localhost`. Bật nhà cung cấp Google.
@@ -30,7 +30,7 @@ Không cần chạy server để các liên kết trên hoạt động.
 
 ### Thay đổi về bảo mật
 - Bỏ chế độ đăng nhập “demo” (từng cho phép nhập email bất kỳ, kể cả `admin`, để vào tài khoản); đăng nhập bằng mật khẩu với tài khoản chưa tồn tại bị từ chối.
-- Đăng nhập Google/Facebook **không bao giờ** liên kết vào tài khoản quản trị và không cấp quyền admin; tài khoản bị khóa không đăng nhập được.
+- Đăng nhập Google **không bao giờ** liên kết vào tài khoản quản trị và không cấp quyền admin; tài khoản bị khóa không đăng nhập được.
 - Nội dung tin đăng hiển thị trong popup bản đồ đã được escape.
 
 ### Lỗi có sẵn đã sửa

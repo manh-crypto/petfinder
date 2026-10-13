@@ -47,13 +47,14 @@ function initMap() {
       </div>`)
       .addTo(leafletMap);
     m._petStatus = p.status;
+    m._province = pfProvinceIndex(p);
+    m._latlng = [p.lat, p.lng];
     allLeafletMarkers.push(m);
   });
-  document.getElementById('mapCount').textContent = 'Đang hiển thị ' + allLeafletMarkers.length + ' địa điểm';
-  addRegionControl();
-  focusRegion('hcm', false);
+  addProvinceControl();
+  applyMapFilters(false);
   // Đảm bảo Leaflet tính lại kích thước sau khi bố cục ổn định
-  setTimeout(() => { if (leafletMap) { leafletMap.invalidateSize(); focusRegion(currentRegion, false); } }, 200);
+  setTimeout(() => { if (leafletMap) { leafletMap.invalidateSize(); applyMapFilters(false); } }, 200);
 }
 
 // ---------- Ảnh nền bản đồ: thử lần lượt nhiều nguồn, tự chuyển khi tải lỗi ----------
@@ -92,34 +93,39 @@ function setupBaseMap(map, mapEl) {
   useNext();
 }
 
-// ---------- Chuyển nhanh giữa các khu vực ----------
-const MAP_REGIONS = {
-  hcm: { label: 'TP.HCM', test: p => p.lat < 12 && p.lat > 10 },
-  hn:  { label: 'Hà Nội', test: p => p.lat > 20 },
-  dn:  { label: 'Đà Nẵng', test: p => p.lat > 15 && p.lat < 17 },
-  all: { label: 'Toàn quốc', test: () => true }
-};
-let currentRegion = 'hcm';
+// ---------- Lọc theo tỉnh / thành phố (63 tỉnh thành + "Toàn quốc") và theo trạng thái ----------
+let mapStatusFilter = 'all';
+let mapProvinceFilter = -1;          // -1 = Toàn quốc, còn lại là chỉ số trong PF_PROVINCES
 
-function focusRegion(key, animate) {
+function applyMapFilters(animate) {
   if (!leafletMap) return;
-  const r = MAP_REGIONS[key] || MAP_REGIONS.hcm;
-  const pts = (mapPoints.length ? mapPoints : petMarkers).filter(r.test).map(p => [p.lat, p.lng]);
-  if (!pts.length) return;
-  currentRegion = key;
-  if (pts.length === 1) leafletMap.setView(pts[0], 14, { animate: !!animate });
-  else leafletMap.fitBounds(L.latLngBounds(pts).pad(0.25), { animate: !!animate, maxZoom: 14 });
-  document.querySelectorAll('.map-region-btn').forEach(b => b.classList.toggle('active', b.dataset.region === key));
+  const shown = [];
+  allLeafletMarkers.forEach(m => {
+    const ok = (mapStatusFilter === 'all' || m._petStatus === mapStatusFilter) && (mapProvinceFilter < 0 || m._province === mapProvinceFilter);
+    if (ok) { m.addTo(leafletMap); shown.push(m._latlng); } else { leafletMap.removeLayer(m); }
+  });
+  const where = mapProvinceFilter < 0 ? '' : ' tại ' + PF_PROVINCES[mapProvinceFilter][0];
+  const countEl = document.getElementById('mapCount');
+  if (countEl) countEl.textContent = 'Đang hiển thị ' + shown.length + ' địa điểm' + where;
+  const opt = { animate: !!animate, maxZoom: 14 };
+  if (mapProvinceFilter >= 0 && !shown.length) leafletMap.setView([PF_PROVINCES[mapProvinceFilter][1], PF_PROVINCES[mapProvinceFilter][2]], 10, opt);
+  else if (shown.length === 1) leafletMap.setView(shown[0], 14, opt);
+  else if (shown.length) leafletMap.fitBounds(L.latLngBounds(shown).pad(0.25), opt);
 }
 
-function addRegionControl() {
+function addProvinceControl() {
+  const counts = {};
+  allLeafletMarkers.forEach(m => { counts[m._province] = (counts[m._province] || 0) + 1; });
   const Ctl = L.Control.extend({
     options: { position: 'topright' },
     onAdd: function () {
       const div = L.DomUtil.create('div', 'map-region-ctl');
-      div.innerHTML = Object.keys(MAP_REGIONS).map(k => `<button type="button" class="map-region-btn${k === currentRegion ? ' active' : ''}" data-region="${k}">${MAP_REGIONS[k].label}</button>`).join('');
+      const opts = ['<option value="-1">🇻🇳 Toàn quốc (63 tỉnh thành)</option>'].concat(PF_PROVINCES.map((p, i) =>
+        `<option value="${i}">${escapeHtml(p[0])}${counts[i] ? ' (' + counts[i] + ')' : ''}</option>`));
+      div.innerHTML = `<label class="map-province-label">📍 Tỉnh / thành phố</label><select class="map-province-select" aria-label="Lọc theo tỉnh thành">${opts.join('')}</select>`;
       L.DomEvent.disableClickPropagation(div);
-      div.addEventListener('click', e => { const b = e.target.closest('.map-region-btn'); if (b) focusRegion(b.dataset.region, true); });
+      L.DomEvent.disableScrollPropagation(div);
+      div.querySelector('select').addEventListener('change', e => { mapProvinceFilter = Number(e.target.value); applyMapFilters(true); });
       return div;
     }
   });
@@ -179,15 +185,8 @@ function useCurrentMapLocation() {
 function mapFilter(btn, status) {
   document.querySelectorAll('.map-filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  let count = 0;
-  allLeafletMarkers.forEach(m => {
-    if (status === 'all' || m._petStatus === status) {
-      m.addTo(leafletMap); count++;
-    } else {
-      leafletMap.removeLayer(m);
-    }
-  });
-  document.getElementById('mapCount').textContent = 'Đang hiển thị ' + count + ' địa điểm';
+  mapStatusFilter = status;
+  applyMapFilters(true);
 }
 
 // (Các hàm khu vực người dùng: getUserArea, saveUserLocation, resortPetsByArea... nằm trong js/location.js)

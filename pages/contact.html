@@ -3,7 +3,7 @@
 <head>
   <meta name="format-detection" content="telephone=no">
 <meta charset="UTF-8" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://apis.google.com https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://nominatim.openstreetmap.org http://localhost:11434 http://127.0.0.1:11434 https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.google.com https://*.facebook.com https://*.fbcdn.net; frame-src https://*.firebaseapp.com https://accounts.google.com https://*.facebook.com; object-src 'none'; base-uri 'self'; form-action 'self'"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://nominatim.openstreetmap.org http://localhost:11434 http://127.0.0.1:11434 https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.google.com; frame-src https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'"/>
 <meta name="referrer" content="strict-origin-when-cross-origin"/>
 <script src="../js/security.js"></script>
 
@@ -32,15 +32,15 @@
 <!-- component: navbar -->
 <!-- NAVBAR -->
 <nav>
-  <a class="nav-logo" href="../index.html">🐶🐱 PetFinder</a>
+  <a class="nav-logo" href="../index.html"><img class="nav-logo-img" src="../assets/logo-mark.svg" alt="" width="38" height="38"> PetFinder</a>
   <ul class="nav-links">
     <li><a href="../index.html">Trang chủ</a></li>
     <li><a href="../pages/pets.html">Thú cưng</a></li>
     <li><a href="../pages/map.html">Bản đồ</a></li>
     <li><a href="../index.html#form">Đăng tin</a></li>
-    <li><a href="../pages/veterinary.html">🏥 Cấp cứu 24/7</a></li>
-    <li><a href="../index.html#shop-ads">🛍️ Cửa hàng</a></li>
-      <li><a href="contact.html">💌 Liên hệ</a></li>
+    <li><a href="../pages/veterinary.html">Cấp cứu 24/7</a></li>
+    <li><a href="../index.html#shop-ads">Cửa hàng</a></li>
+      <li><a href="contact.html">Liên hệ</a></li>
   </ul>
   <div class="nav-auth" id="navAuth">
     <button class="btn-login" onclick="openAuthModal('login')">Đăng nhập</button>
@@ -66,9 +66,7 @@
     <div class="ct-col">
       <div class="ct-card">
         <h3>Thông tin liên hệ</h3>
-        <div class="ct-info-row"><div class="ct-info-ic">✉️</div><div><small>Email</small><b id="ctInfoEmail"></b></div></div>
-        <div class="ct-info-row"><div class="ct-info-ic">📞</div><div><small>Điện thoại</small><b id="ctInfoPhone"></b></div></div>
-        <div class="ct-info-row"><div class="ct-info-ic">📍</div><div><small>Khu vực hoạt động</small><b id="ctInfoAddress"></b></div></div>
+        <div class="ct-info-row"><div class="ct-info-ic">✉️</div><div><small>Email</small><b><a id="ctInfoEmail" href="mailto:petfinder254@gmail.com">petfinder254@gmail.com</a></b></div></div>
         <div class="ct-ai-cta"><span class="ai-ic">🤖</span><div><b>Cần câu trả lời ngay?</b><br>Trợ lý AI giải đáp cách dùng web và các câu hỏi liên quan.</div><button type="button" onclick="window.PFChat && PFChat.open()">Hỏi AI</button></div>
       </div>
       <div class="ct-card ct-faq">
@@ -216,7 +214,7 @@
     <input type="hidden" id="activeFormType" value="lost"/>
     <div class="form-grid">
       <div class="form-group"><label>Tên thú cưng <span>*</span></label><input type="text" id="fName" class="form-control" placeholder="VD: Mochi, Kitty..."/></div>
-      <div class="form-group"><label>Loại thú <span>*</span></label><select id="fType" class="form-control"><option value="">Chọn loại</option><option value="chó">🐶 Chó</option><option value="mèo">🐱 Mèo</option><option value="thỏ">🐰 Thỏ</option><option value="khác">Khác</option></select></div>
+      <div class="form-group"><label>Loại thú <span>*</span></label><input type="text" id="fType" class="form-control" list="petTypeList" maxlength="30" placeholder="VD: Chó, Mèo, Thỏ, Hamster, Vẹt..." autocomplete="off"/><datalist id="petTypeList"><option value="Chó"><option value="Mèo"><option value="Thỏ"><option value="Hamster"><option value="Chuột lang (guinea pig)"><option value="Sóc"><option value="Nhím"><option value="Chinchilla"><option value="Chim"><option value="Vẹt"><option value="Cá"><option value="Rùa"><option value="Thằn lằn"><option value="Rắn"><option value="Ếch"><option value="Nhện"><option value="Chồn sương"><option value="Cáo"><option value="Gà"><option value="Vịt"><option value="Heo"><option value="Dê"><option value="Ngựa"></datalist></div>
       <div class="form-group"><label>Giống</label><input type="text" id="fBreed" class="form-control" placeholder="VD: Poodle, Mèo Anh..."/></div>
       <div class="form-group"><label>Giới tính</label><select id="fGender" class="form-control"><option value="">Chọn giới tính</option><option value="Đực">Đực</option><option value="Cái">Cái</option></select></div>
       <div class="form-group"><label>Ngày thất lạc <span>*</span></label><input type="date" id="fDate" class="form-control"/></div>
@@ -263,7 +261,6 @@
       <div class="auth-divider">hoặc</div>
       <div class="auth-social">
         <button type="button" class="auth-social-btn" data-provider="Google" onclick="socialLogin('Google', this)"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Google</button>
-        <button type="button" class="auth-social-btn" data-provider="Facebook" onclick="socialLogin('Facebook', this)"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.88v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg> Facebook</button>
       </div>
       <div class="auth-switch">Chưa có tài khoản? <a onclick="switchAuth('register')">Đăng ký ngay</a></div>
     </div>
@@ -289,7 +286,6 @@
       <div class="auth-divider">Đăng ký nhanh bằng</div>
       <div class="auth-social auth-social-top">
         <button type="button" class="auth-social-btn" data-provider="Google" onclick="socialLogin('Google', this)"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Google</button>
-        <button type="button" class="auth-social-btn" data-provider="Facebook" onclick="socialLogin('Facebook', this)"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1877F2" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.88v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg> Facebook</button>
       </div>
       <div class="auth-divider">hoặc điền thông tin</div>
       <div class="auth-row-2">
@@ -367,7 +363,7 @@
     </div>
     <div class="footer-col"><h4>Dịch vụ</h4><ul><li><a href="../index.html#form">Đăng tin thất lạc</a></li><li><a href="../index.html#form">Đăng tin nhặt được</a></li><li><a href="../index.html#form">Cho nhận nuôi</a></li><li><a href="../index.html#form">Tìm kiếm nâng cao</a></li></ul></div>
     <div class="footer-col"><h4>Cộng đồng</h4><ul><li><a href="https://www.facebook.com/share/g/1Db11cVRdx/" target="_blank" rel="noopener noreferrer">Diễn đàn</a></li><li><a href="#">Tin tức thú cưng</a></li><li><a href="#">Chia sẻ câu chuyện</a></li><li><a href="#">Tình nguyện viên</a></li></ul></div>
-    <div class="footer-col"><h4>Liên hệ</h4><ul><li><a href="#">📧 petfinder@email.com</a></li><li><a href="#">📞 1800 xxxx</a></li><li><a href="#">📍 TP. Hồ Chí Minh</a></li><li><a href="privacy.html">Chính sách bảo mật</a></li><li><a href="data-deletion.html">Xóa dữ liệu</a></li></ul></div>
+    <div class="footer-col"><h4>Liên hệ</h4><ul><li><a href="mailto:petfinder254@gmail.com">📧 petfinder254@gmail.com</a></li><li><a href="privacy.html">Chính sách bảo mật</a></li><li><a href="data-deletion.html">Xóa dữ liệu</a></li></ul></div>
   </div>
   <div class="footer-bottom">
     <span>© 2024 PetFinder. Bảo lưu mọi quyền.</span>
@@ -378,6 +374,7 @@
 
 <script src="../js/api.js"></script>
 <script src="../js/utils.js"></script>
+<script src="../js/provinces.js"></script>
 <script src="../js/config.js"></script>
 <script src="../js/services/social-auth.js"></script>
 <script src="../js/db.js"></script>

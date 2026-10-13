@@ -82,3 +82,4 @@
 
 @media (max-width: 960px) { .ct-grid, .ct-wide { grid-template-columns: 1fr; } }
 @media (max-width: 520px) { .ct-row2 { grid-template-columns: 1fr; } .contact-section { padding: 40px 4% 50px; } }
+.ct-info-row b a { color: inherit; text-decoration: none; } .ct-info-row b a:hover { color: var(--orange-dark); text-decoration: underline; }
