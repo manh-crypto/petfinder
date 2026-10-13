@@ -55,7 +55,7 @@ function resortPetsByArea(area) {
 
   const areaLower = area.toLowerCase();
   const cards = Array.from(grid.querySelectorAll('.pet-card'));
-  const priority = cards.filter(card => card.dataset.status === 'lost' && (card.dataset.area || '').toLowerCase().includes(areaLower));
+  const priority = cards.filter(card => card.dataset.status === 'lost' && (typeof cardMatchesArea === 'function' ? cardMatchesArea(card, area) : (card.dataset.area || '').toLowerCase().includes(areaLower)));
   const rest = cards.filter(card => !priority.includes(card));
 
   priority.forEach(card => {

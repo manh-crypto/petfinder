@@ -141,7 +141,10 @@ function addPetCardToGrid(pet, prepend = false) {
   card.dataset.name = pet.name.toLowerCase();
   card.dataset.area = (pet.area + ' ' + pet.location).toLowerCase();
   card.dataset.type = pet.type.toLowerCase();
-  card.dataset.hay = foldText([pet.name, pet.type, pet.breed, pet.gender, pet.area, pet.location, pet.desc].join(' '));
+  // Dữ liệu tìm kiếm dựng sẵn một lần (không dấu, tách theo trường để chấm điểm)
+  card.dataset.fName = pet.name; card.dataset.fKind = [pet.type, pet.breed, pet.gender].filter(Boolean).join(' ');
+  card.dataset.fPlace = [pet.area, pet.location].filter(Boolean).join(' '); card.dataset.fDesc = pet.desc || '';
+  card.dataset.prov = typeof pfProvinceIndex === 'function' ? String(pfProvinceIndex(pet)) : '-1';
   const E = PFSec.esc;
   const photo = PFSec.safeImageSrc(pet.imageData && pet.imageData[0]);
   const statusColor = pet.status === 'lost' ? 'var(--red)' : pet.status === 'found' ? 'var(--green)' : 'var(--orange)';
@@ -191,45 +194,89 @@ function updateStats() {
 
 // ========== SEARCH ==========
 // Đọc bộ lọc từ biểu mẫu tìm kiếm (có thể thiếu trên một số trang)
-// ===== Tìm kiếm: chuẩn hóa không dấu + tách từ khóa, mọi từ phải khớp (AND), dựng "kho chữ" một lần cho mỗi thẻ =====
-const foldText = s => String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd').toLowerCase();
-const tokenize = s => foldText(s).split(/[^a-z0-9]+/).filter(Boolean);
-function cardHaystack(card) {
-  if (card._hay === undefined) card._hay = card.dataset.hay ? card.dataset.hay : foldText(card.textContent);
-  return card._hay;
+// ===== TÌM KIẾM =====
+// - Chuẩn hóa không dấu (kể cả đ), tách từ khóa; MỌI từ khóa phải khớp (AND).
+// - Một từ khóa khớp một từ trong tin khi trùng hẳn, hoặc (từ ≥ 3 ký tự) là TIỀN TỐ của từ đó → "ha" không còn khớp "thạnh" hay "nội" không khớp "ngoại".
+// - Chấm điểm theo trường: tên (5) > loài/giống (3) > khu vực/địa chỉ (2) > mô tả (1); kết quả xếp theo điểm.
+// - Khu vực: tỉnh/thành phố được so theo TỈNH suy ra từ địa chỉ/tọa độ (pfProvinceIndex), quận/huyện so theo nguyên cụm → chọn "Hà Nội" không ra tin ở Quận 12.
+const foldText = s => String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase();
+const wordsOf = s => foldText(s).split(/[^a-z0-9]+/).filter(Boolean);
+const tokenize = wordsOf;
+let _pfOrderSeq = 0;
+function cardIx(card) {
+  if (card._ix) return card._ix;
+  const d = card.dataset;
+  const field = (txt, w) => ({ w, words: wordsOf(txt) });
+  const place = d.fPlace || d.area || '';
+  const norm = typeof pfNorm === 'function' ? pfNorm : (s => ' ' + foldText(s).replace(/[^a-z0-9]+/g, ' ').trim() + ' ');
+  const prov = d.prov !== undefined ? Number(d.prov) : (typeof pfProvinceIndex === 'function' ? pfProvinceIndex({ area: place }) : -1);
+  card._ix = {
+    name: field(d.fName || d.name || '', 5), kind: field(d.fKind || d.type || '', 3), place: field(place, 2), desc: field(d.fDesc || card.textContent || '', 1),
+    placeNorm: norm(place), prov
+  };
+  if (card._order === undefined) card._order = _pfOrderSeq++;
+  return card._ix;
 }
+function fieldScore(f, tok) {
+  let best = 0;
+  for (const w of f.words) {
+    if (w === tok) return f.w + 0.5;
+    if (tok.length >= 3 && w.startsWith(tok)) best = f.w;
+  }
+  return best;
+}
+function tokenScore(ix, tok) { return Math.max(fieldScore(ix.name, tok), fieldScore(ix.kind, tok), fieldScore(ix.place, tok), fieldScore(ix.desc, tok)); }
+function areaMatches(ix, value) {
+  const hasProv = typeof pfProvinceIndex === 'function', norm = typeof pfNorm === 'function' ? pfNorm : (s => ' ' + foldText(s).replace(/[^a-z0-9]+/g, ' ').trim() + ' ');
+  const q = norm(value).trim();
+  if (!q || q === 'toan quoc') return true;
+  const key = ' ' + q + ' ';
+  if (typeof PF_HCM_DISTRICTS !== 'undefined' && PF_HCM_DISTRICTS.some(d => key.includes(' ' + d + ' '))) return ix.placeNorm.includes(key);   // quận/huyện: khớp nguyên cụm
+  if (hasProv) { const idx = pfProvinceIndex({ area: value }); if (idx >= 0) return ix.prov === idx; }                                          // tỉnh/thành: so theo tỉnh
+  return ix.placeNorm.includes(key);
+}
+function cardMatchesArea(card, value) { return areaMatches(cardIx(card), value); }
+
 function readSearchForm() {
   const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
-  return { keyword: PFSec.cleanText(val('sKeyword'), 80).toLowerCase(), type: val('sType').toLowerCase(), area: val('sArea').toLowerCase(), status: val('sStatus') };
+  return { keyword: PFSec.cleanText(val('sKeyword'), 80), type: val('sType'), area: val('sArea'), status: val('sStatus') };
 }
 function doSearch(params) {
   const q = (params && typeof params === 'object' && !(params instanceof Event)) ? params : readSearchForm();
   // Trang này không có danh sách thú cưng (vd: trang chủ) → chuyển sang trang Thú cưng kèm bộ lọc
-  if (!document.getElementById('petsGrid')) {
+  const grid = document.getElementById('petsGrid');
+  if (!grid) {
     try { sessionStorage.setItem('pf_pending_search', JSON.stringify(q)); } catch (e) { }
     window.location.href = (window.location.pathname.replace(/\\/g, '/').includes('/pages/') ? '' : 'pages/') + 'pets.html';
     return;
   }
   const keyword = q.keyword || '', type = q.type || '', area = q.area || '', status = ['lost', 'found', 'adopt'].includes(q.status) ? q.status : '';
-  const kwTokens = tokenize(keyword), typeTokens = tokenize(type), areaTokens = tokenize(area);
-  let count = 0, total = 0;
-  const cards = document.querySelectorAll('.pet-card');
+  const kw = wordsOf(keyword), tp = wordsOf(type);
+  const cards = Array.from(grid.querySelectorAll('.pet-card'));
+  const hits = [];
   cards.forEach(card => {
-    total++;
-    const hay = cardHaystack(card);
-    const ok = kwTokens.every(w => hay.includes(w)) && typeTokens.every(w => hay.includes(w)) && areaTokens.every(w => hay.includes(w)) && (!status || card.dataset.status === status);
-    card.style.display = ok ? 'block' : 'none';
-    if (ok) count++;
+    const ix = cardIx(card);
+    let score = 0, ok = true;
+    for (const tok of kw) { const s = tokenScore(ix, tok); if (!s) { ok = false; break; } score += s; }
+    if (ok) for (const tok of tp) { if (!Math.max(fieldScore(ix.kind, tok), fieldScore(ix.name, tok))) { ok = false; break; } }
+    if (ok && !areaMatches(ix, area)) ok = false;
+    if (ok && status && card.dataset.status !== status) ok = false;
+    card.style.display = ok ? '' : 'none';
+    if (ok) hits.push({ card, score });
   });
+  // Xếp theo mức phù hợp khi có từ khóa; không có từ khóa thì giữ thứ tự gốc
+  if (kw.length) hits.sort((a, b) => b.score - a.score || a.card._order - b.card._order);
+  else hits.sort((a, b) => a.card._order - b.card._order);
+  const frag = document.createDocumentFragment();
+  hits.forEach(h => frag.appendChild(h.card));
+  grid.insertBefore(frag, grid.firstChild);
   const banner = document.getElementById('searchBanner');
   const bannerText = document.getElementById('searchBannerText');
   if (keyword || type || area || status) {
+    const where = area && !/^toan quoc$/.test(foldText(area).trim()) ? ' tại ' + area : '';
     if (banner) banner.style.display = 'flex';
-    if (bannerText) bannerText.textContent = `Tìm thấy ${count} / ${total} tin phù hợp`;
-  } else {
-    if (banner) banner.style.display = 'none';
-    document.querySelectorAll('.pet-card').forEach(c => c.style.display = 'block');
-  }
+    if (bannerText) bannerText.textContent = hits.length ? `Tìm thấy ${hits.length} / ${cards.length} tin phù hợp${where}` : `Không có tin phù hợp${where}. Hãy thử bỏ bớt bộ lọc hoặc đổi từ khóa.`;
+  } else if (banner) banner.style.display = 'none';
   const petsSection = document.querySelector('#pets');
   if (petsSection) petsSection.scrollIntoView({ behavior: 'smooth' });
 }
@@ -240,12 +287,12 @@ function applyPendingSearch() {
   if (!raw || !document.getElementById('petsGrid')) return;
   try {
     const q = JSON.parse(raw);
-    doSearch({ keyword: PFSec.cleanText(q.keyword, 80).toLowerCase(), type: PFSec.cleanText(q.type, 30).toLowerCase(), area: PFSec.cleanText(q.area, 80).toLowerCase(), status: q.status });
+    doSearch({ keyword: PFSec.cleanText(q.keyword, 80), type: PFSec.cleanText(q.type, 30), area: PFSec.cleanText(q.area, 80), status: q.status });
   } catch (e) { /* bỏ qua dữ liệu hỏng */ }
 }
 function clearSearch() {
   ['sKeyword', 'sType', 'sArea', 'sStatus'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  document.querySelectorAll('.pet-card').forEach(c => c.style.display = 'block');
+  doSearch({ keyword: '', type: '', area: '', status: '' });
   const banner = document.getElementById('searchBanner');
   if (banner) banner.style.display = 'none';
 }

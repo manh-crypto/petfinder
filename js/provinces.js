@@ -59,7 +59,7 @@ function pfProvinceIndex(pet) {
 
 // Thêm các tỉnh/thành còn thiếu vào ô chọn "Khu vực" (đăng tin #fArea, tìm kiếm #sArea)
 function pfPopulateAreaSelects() {
-  ['fArea', 'sArea'].forEach(id => {
+  ['fArea', 'sArea', 'locSelect'].forEach(id => {
     const sel = document.getElementById(id);
     if (!sel || sel.dataset.pfProvinces) return;
     sel.dataset.pfProvinces = '1';

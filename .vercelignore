@@ -1,0 +1,6 @@
+# Không đưa các tệp nội bộ lên web công khai
+SECURITY.md
+README.md
+firestore.rules
+_headers
+.vercelignore
