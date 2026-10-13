@@ -5,7 +5,9 @@ service cloud.firestore {
 
     function signedIn() { return request.auth != null; }
     function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
-    function notBanned() { return !(get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('banned', false)); }
+    // Tài khoản email/mật khẩu phải xác thực email (email_verified) mới được ghi/đọc liên hệ; đăng nhập Google luôn có email_verified = true
+    function verified() { return request.auth.token.email_verified == true; }
+    function notBanned() { return verified() && !(get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('banned', false)); }
     function str(v, max) { return v is string && v.size() <= max; }
 
     // Quản trị viên: chỉ admin đang có quyền mới cấp/gỡ được. Admin ĐẦU TIÊN tạo thủ công trong Console (xem README).
@@ -30,23 +32,40 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // Tin thú cưng: ai cũng xem được; chỉ chủ tin / admin được sửa, xóa
+    // Tin thú cưng (CÔNG KHAI): chỉ chứa thông tin mô tả. SĐT/Zalo/email KHÔNG được phép nằm ở đây (xem pet_contacts bên dưới).
+    function petShape(d) {
+      return d.keys().hasOnly(['id','name','type','breed','gender','date','area','location','desc','status','icon','imageData','lat','lng','ownerName','ownerUid','createdAt','flagged'])
+        && str(d.name, 80) && str(d.get('type', ''), 30) && str(d.get('breed', ''), 60) && str(d.get('gender', ''), 20)
+        && str(d.get('area', ''), 80) && str(d.get('location', ''), 200) && str(d.get('date', ''), 32)
+        && str(d.desc, 1500) && str(d.get('icon', ''), 8) && str(d.get('ownerName', ''), 80)
+        && d.status in ['lost','found','adopt']
+        && d.imageData is list && d.imageData.size() <= 5;
+    }
     match /pets/{id} {
       allow read: if true;
-      allow create: if isAdmin() || (signedIn() && notBanned()
-        && request.resource.data.ownerUid == request.auth.uid
-        && str(request.resource.data.name, 80) && str(request.resource.data.desc, 1500)
-        && request.resource.data.status in ['lost','found','adopt']
-        && request.resource.data.imageData.size() <= 5
-        && request.resource.data.get('flagged', false) == false);
-      allow update: if isAdmin() || (signedIn() && notBanned()
-        && resource.data.ownerUid == request.auth.uid
-        && request.resource.data.ownerUid == request.auth.uid
-        && request.resource.data.get('flagged', false) == resource.data.get('flagged', false)
-        && str(request.resource.data.name, 80) && str(request.resource.data.desc, 1500)
-        && request.resource.data.status in ['lost','found','adopt']
-        && request.resource.data.imageData.size() <= 5);
+      allow create: if (isAdmin() || (signedIn() && notBanned() && request.resource.data.ownerUid == request.auth.uid
+          && request.resource.data.get('flagged', false) == false))
+        && petShape(request.resource.data);
+      allow update: if (isAdmin() || (signedIn() && notBanned()
+          && resource.data.ownerUid == request.auth.uid
+          && request.resource.data.ownerUid == request.auth.uid
+          && request.resource.data.get('flagged', false) == resource.data.get('flagged', false)))
+        && petShape(request.resource.data);
       allow delete: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+    }
+
+    // Thông tin liên hệ của tin (SĐT, Zalo, email): TÁCH khỏi tài liệu công khai.
+    // - Chỉ người đã đăng nhập (không bị khóa) đọc được từng tài liệu theo id; KHÔNG ai ngoài admin được liệt kê cả bộ sưu tập.
+    // - Chỉ chủ tin hoặc admin được ghi/xóa.
+    match /pet_contacts/{id} {
+      allow get: if signedIn() && notBanned();
+      allow list: if isAdmin();
+      allow create, update: if (isAdmin() || (signedIn() && notBanned()
+          && getAfter(/databases/$(database)/documents/pets/$(id)).data.ownerUid == request.auth.uid))
+        && request.resource.data.keys().hasOnly(['phone','zalo','email','ownerUid'])
+        && str(request.resource.data.phone, 40) && str(request.resource.data.zalo, 200)
+        && str(request.resource.data.email, 120) && str(request.resource.data.ownerUid, 128);
+      allow delete: if isAdmin() || (signedIn() && get(/databases/$(database)/documents/pets/$(id)).data.ownerUid == request.auth.uid);
     }
 
     // Tin tức: ai cũng đọc, chỉ admin ghi

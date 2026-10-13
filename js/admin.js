@@ -1,3 +1,5 @@
+// Email chủ tin không còn nằm trong dữ liệu công khai: admin tra theo uid trong danh sách người dùng
+function ownerEmailOf(p) { const u = (PFDB.users() || []).find(x => x.uid && x.uid === p.ownerUid); return u ? (u.email || '') : ''; }
 // ===== Admin panel =====
 // ========== ADMIN: OPEN / CLOSE PANEL ==========
 function openAdminPanel() {
@@ -43,7 +45,7 @@ function renderFlaggedTable() {
   body.innerHTML = flagged.map(p => `
       <tr>
         <td>${E(p.icon)} ${E(p.name)}</td>
-        <td>${E(p.ownerName || '')}<br><span style="color:var(--text-muted);font-size:0.78rem">${E(p.ownerEmail || '')}</span></td>
+        <td>${E(p.ownerName || '')}<br><span style="color:var(--text-muted);font-size:0.78rem">${E(ownerEmailOf(p))}</span></td>
         <td>${E(p.area || p.location || '')}</td>
         <td><span class="pill pill-${E(p.status)}">${E(statusLabelMap[p.status] || p.status)}</span></td>
         <td>
@@ -77,7 +79,7 @@ function renderAdminUsers() {
   }
   const E = PFSec.esc;
   body.innerHTML = filtered.map(u => {
-    const postCount = pets.filter(p => p.ownerEmail === u.email).length;
+    const postCount = pets.filter(p => p.ownerUid && p.ownerUid === u.uid).length;
     const role = u.role || 'user';
     const isSelf = currentUser && u.email === currentUser.email;
     return `
@@ -163,7 +165,7 @@ function renderAdminPets() {
   const flagFilter = document.getElementById('adminPetFlagFilter').value;
   const pets = loadPets();
   const filtered = pets.filter(p => {
-    const matchSearch = !search || (p.name || '').toLowerCase().includes(search) || (p.ownerName || '').toLowerCase().includes(search) || (p.ownerEmail || '').toLowerCase().includes(search);
+    const matchSearch = !search || (p.name || '').toLowerCase().includes(search) || (p.ownerName || '').toLowerCase().includes(search) || ownerEmailOf(p).toLowerCase().includes(search);
     const matchStatus = !statusFilter || p.status === statusFilter;
     const matchFlag = !flagFilter || (flagFilter === 'flagged' ? !!p.flagged : !p.flagged);
     return matchSearch && matchStatus && matchFlag;
@@ -177,7 +179,7 @@ function renderAdminPets() {
   body.innerHTML = filtered.map(p => `
     <tr>
       <td>${E(p.icon)} ${E(p.name)}${p.breed ? '<br><span style="color:var(--text-muted);font-size:0.78rem">' + E(p.breed) + '</span>' : ''}</td>
-      <td>${E(p.ownerName || '—')}<br><span style="color:var(--text-muted);font-size:0.78rem">${E(p.ownerEmail || '')}</span></td>
+      <td>${E(p.ownerName || '—')}<br><span style="color:var(--text-muted);font-size:0.78rem">${E(ownerEmailOf(p))}</span></td>
       <td>${E(p.area || p.location || '—')}</td>
       <td><span class="pill pill-${E(p.status)}">${E(statusLabelMap[p.status] || p.status)}</span></td>
       <td>${E(p.date || '—')}</td>
@@ -216,7 +218,7 @@ function adminDeletePet(id) {
   if (!p) return;
   if (!confirm(`Xóa vĩnh viễn tin đăng "${p.name}"? Hành động này không thể hoàn tác.`)) return;
   savePets(pets.filter(x => x.id !== id));
-  PFSec.log('admin_delete_pet', `${p.id} (${p.ownerEmail})`);
+  PFSec.log('admin_delete_pet', `${p.id} (${p.ownerUid || ''})`);
   const card = document.querySelector('.pet-card[data-id="' + CSS.escape(id) + '"]');
   if (card) card.remove();
   showToast(`Đã xóa tin đăng "${p.name}"`);

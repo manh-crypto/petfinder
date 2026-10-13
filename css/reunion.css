@@ -1,0 +1,78 @@
+
+/* ===================================================================
+   Hoạt cảnh đoàn tụ (SVG + CSS, chu kỳ 9 giây): cô gái đi tìm, thấy chú chó, chó chạy tới nhảy vào lòng
+   =================================================================== */
+.auth-scene .rn-scene { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; display: block; }
+/* ---- nền ---- */
+.rn-cloud{animation:drift linear infinite}
+.rn-c1{animation-duration:40s}.rn-c2{animation-duration:55s;animation-delay:-22s}.rn-c3{animation-duration:70s;animation-delay:-45s}
+@keyframes rn_drift{from{transform:translateX(-160px)}to{transform:translateX(700px)}}
+.rn-sunr{transform-origin:432px 78px;animation:spin 40s linear infinite}
+@keyframes rn_spin{to{transform:rotate(360deg)}}
+.rn-tree{transform-origin:78px 392px;animation:sway 5s ease-in-out infinite alternate}
+@keyframes rn_sway{from{transform:rotate(-1.6deg)}to{transform:rotate(1.6deg)}}
+.rn-flower{transform-origin:center bottom;transform-box:fill-box;animation:fl 2.4s ease-in-out infinite alternate}
+@keyframes rn_fl{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+.rn-bird{animation:fly 14s linear infinite}
+@keyframes rn_fly{from{transform:translate(-60px,0)}to{transform:translate(620px,-40px)}}
+.rn-wing{transform-origin:center;transform-box:fill-box;animation:flap .5s ease-in-out infinite alternate}
+@keyframes rn_flap{from{transform:scaleY(1)}to{transform:scaleY(-.5)}}
+/* ---- nhân vật ---- */
+.rn-run{animation-duration:9s;animation-iteration-count:infinite;animation-timing-function:linear}
+.rn-eased{animation-timing-function:ease-in-out}
+.rn-girlX{animation-name:rn_girlX}
+.rn-girlBob{animation-name:rn_girlBob}
+.rn-girlBody{animation-name:rn_girlBody;transform-origin:0 -80px}
+.rn-legL{animation-name:rn_legL;transform-origin:-9px -82px}
+.rn-legR{animation-name:rn_legR;transform-origin:9px -82px}
+.rn-armL{animation-name:rn_armL;transform-origin:-23px -128px}
+.rn-armR{animation-name:rn_armR;transform-origin:23px -128px}
+.rn-bang{animation-name:rn_bang;transform-origin:30px -222px}
+.rn-dogX{animation-name:rn_dogX}.rn-dogBob{animation-name:rn_dogBob}.rn-dogTurn{animation-name:rn_dogTurn;transform-origin:0 -40px}
+.rn-dLegA{animation-name:rn_dLegA;transform-origin:0 0}.rn-dLegB{animation-name:rn_dLegB;transform-origin:0 0}.rn-dang{animation-name:rn_dangle;transform-origin:0 0}
+.rn-runLegs{animation-name:rn_runLegs}.rn-idleLegs{animation-name:rn_idleLegs}
+.rn-tail{animation-name:rn_tail;transform-origin:44px -52px;animation-timing-function:ease-in-out}
+.rn-ear{animation-name:rn_ear;transform-origin:-46px -76px}
+.rn-heart,.rn-spark{animation-duration:9s;animation-iteration-count:infinite;animation-timing-function:ease-out}
+.rn-fadeAll{animation-name:rn_fadeAll}
+@keyframes rn_girlX{0.00%{transform:translateX(-90px)}28.00%{transform:translateX(205px)}100.00%{transform:translateX(205px)}}
+@keyframes rn_legL{0.00%{transform:rotate(24deg)}4.00%{transform:rotate(-24deg)}8.00%{transform:rotate(24deg)}12.00%{transform:rotate(-24deg)}16.00%{transform:rotate(24deg)}20.00%{transform:rotate(-24deg)}24.00%{transform:rotate(24deg)}28.00%{transform:rotate(-24deg)}30.00%{transform:rotate(0deg)}100.00%{transform:rotate(0deg)}}
+@keyframes rn_legR{0.00%{transform:rotate(-24deg)}4.00%{transform:rotate(24deg)}8.00%{transform:rotate(-24deg)}12.00%{transform:rotate(24deg)}16.00%{transform:rotate(-24deg)}20.00%{transform:rotate(24deg)}24.00%{transform:rotate(-24deg)}28.00%{transform:rotate(24deg)}30.00%{transform:rotate(0deg)}100.00%{transform:rotate(0deg)}}
+@keyframes rn_girlBob{0.00%{transform:translateY(0px)}4.00%{transform:translateY(-5px)}8.00%{transform:translateY(0px)}12.00%{transform:translateY(-5px)}16.00%{transform:translateY(0px)}20.00%{transform:translateY(-5px)}24.00%{transform:translateY(0px)}28.00%{transform:translateY(-5px)}30.00%{transform:translateY(0)}100.00%{transform:translateY(0)}}
+@keyframes rn_armL{0.00%{transform:rotate(-14deg)}4.00%{transform:rotate(14deg)}8.00%{transform:rotate(-14deg)}12.00%{transform:rotate(14deg)}16.00%{transform:rotate(-14deg)}20.00%{transform:rotate(14deg)}24.00%{transform:rotate(-14deg)}28.00%{transform:rotate(14deg)}31.00%{transform:rotate(6deg)}36.00%{transform:rotate(6deg)}41.00%{transform:rotate(78deg)}46.00%{transform:rotate(78deg)}52.00%{transform:rotate(-28deg)}88.00%{transform:rotate(-28deg)}100.00%{transform:rotate(6deg)}}
+@keyframes rn_armR{0.00%{transform:rotate(14deg)}4.00%{transform:rotate(-14deg)}8.00%{transform:rotate(14deg)}12.00%{transform:rotate(-14deg)}16.00%{transform:rotate(14deg)}20.00%{transform:rotate(-14deg)}24.00%{transform:rotate(14deg)}28.00%{transform:rotate(-14deg)}31.00%{transform:rotate(-6deg)}36.00%{transform:rotate(-6deg)}41.00%{transform:rotate(-78deg)}46.00%{transform:rotate(-78deg)}52.00%{transform:rotate(28deg)}88.00%{transform:rotate(28deg)}100.00%{transform:rotate(-6deg)}}
+@keyframes rn_girlBody{0.00%{transform:none}30.00%{transform:none}32.00%{transform:translateY(-16px)}35.00%{transform:translateY(0)}50.00%{transform:translateY(0) rotate(0deg)}54.00%{transform:translateY(-6px) rotate(-4deg)}62.00%{transform:translateY(0) rotate(4deg)}70.00%{transform:translateY(-6px) rotate(-4deg)}78.00%{transform:translateY(0) rotate(4deg)}88.00%{transform:translateY(0) rotate(0deg)}100.00%{transform:none}}
+@keyframes rn_bang{0.00%{opacity:0;transform:translateY(8px) scale(.4)}30.00%{opacity:0;transform:translateY(8px) scale(.4)}33.00%{opacity:1;transform:translateY(-4px) scale(1.2)}36.00%{opacity:1;transform:none}42.00%{opacity:1}45.00%{opacity:0}100.00%{opacity:0}}
+@keyframes rn_dogX{0.00%{transform:translate(660px,0)}8.00%{transform:translate(660px,0)}36.00%{transform:translate(330px,0)}42.00%{transform:translate(300px,0)}46.00%{transform:translate(248px,-95px)}50.00%{transform:translate(230px,-70px)}88.00%{transform:translate(230px,-70px)}100.00%{transform:translate(230px,-70px)}}
+@keyframes rn_dogTurn{0.00%{transform:rotate(0deg) scale(1)}42.00%{transform:rotate(0deg) scale(1)}46.00%{transform:rotate(-24deg) scale(.82)}50.00%{transform:rotate(-34deg) scale(.82)}60.00%{transform:rotate(-30deg) scale(.82)}70.00%{transform:rotate(-36deg) scale(.82)}80.00%{transform:rotate(-30deg) scale(.82)}100.00%{transform:rotate(-34deg) scale(.82)}}
+@keyframes rn_dLegA{0.00%{transform:rotate(0deg)}7.90%{transform:rotate(0deg)}8.00%{transform:rotate(34deg)}10.50%{transform:rotate(-34deg)}13.00%{transform:rotate(34deg)}15.50%{transform:rotate(-34deg)}18.00%{transform:rotate(34deg)}20.50%{transform:rotate(-34deg)}23.00%{transform:rotate(34deg)}25.50%{transform:rotate(-34deg)}28.00%{transform:rotate(34deg)}30.50%{transform:rotate(-34deg)}33.00%{transform:rotate(34deg)}35.50%{transform:rotate(-34deg)}38.00%{transform:rotate(34deg)}40.50%{transform:rotate(-34deg)}43.00%{transform:rotate(34deg)}44.50%{transform:rotate(0deg)}100.00%{transform:rotate(0deg)}}
+@keyframes rn_dLegB{0.00%{transform:rotate(0deg)}7.90%{transform:rotate(0deg)}8.00%{transform:rotate(-34deg)}10.50%{transform:rotate(34deg)}13.00%{transform:rotate(-34deg)}15.50%{transform:rotate(34deg)}18.00%{transform:rotate(-34deg)}20.50%{transform:rotate(34deg)}23.00%{transform:rotate(-34deg)}25.50%{transform:rotate(34deg)}28.00%{transform:rotate(-34deg)}30.50%{transform:rotate(34deg)}33.00%{transform:rotate(-34deg)}35.50%{transform:rotate(34deg)}38.00%{transform:rotate(-34deg)}40.50%{transform:rotate(34deg)}43.00%{transform:rotate(-34deg)}44.50%{transform:rotate(0deg)}100.00%{transform:rotate(0deg)}}
+@keyframes rn_dogBob{0.00%{transform:none}7.90%{transform:none}8.00%{transform:translateY(0px) rotate(0deg)}10.50%{transform:translateY(-9px) rotate(-2deg)}13.00%{transform:translateY(0px) rotate(0deg)}15.50%{transform:translateY(-9px) rotate(-2deg)}18.00%{transform:translateY(0px) rotate(0deg)}20.50%{transform:translateY(-9px) rotate(-2deg)}23.00%{transform:translateY(0px) rotate(0deg)}25.50%{transform:translateY(-9px) rotate(-2deg)}28.00%{transform:translateY(0px) rotate(0deg)}30.50%{transform:translateY(-9px) rotate(-2deg)}33.00%{transform:translateY(0px) rotate(0deg)}35.50%{transform:translateY(-9px) rotate(-2deg)}38.00%{transform:translateY(0px) rotate(0deg)}40.50%{transform:translateY(-9px) rotate(-2deg)}43.00%{transform:translateY(0px) rotate(0deg)}44.50%{transform:none}100.00%{transform:none}}
+@keyframes rn_dangle{0.00%{transform:rotate(0deg)}50.00%{transform:rotate(0deg)}58.00%{transform:rotate(10deg)}66.00%{transform:rotate(-8deg)}74.00%{transform:rotate(10deg)}82.00%{transform:rotate(-6deg)}90.00%{transform:rotate(4deg)}100.00%{transform:rotate(0deg)}}
+@keyframes rn_runLegs{0.00%{opacity:1}43.50%{opacity:1}44.00%{opacity:0}100.00%{opacity:0}}
+@keyframes rn_idleLegs{0.00%{opacity:0}43.50%{opacity:0}44.00%{opacity:1}100.00%{opacity:1}}
+@keyframes rn_tail{0.00%{transform:rotate(12deg)}1.11%{transform:rotate(-12deg)}2.22%{transform:rotate(12deg)}3.33%{transform:rotate(-12deg)}4.44%{transform:rotate(12deg)}5.56%{transform:rotate(-12deg)}6.67%{transform:rotate(12deg)}7.78%{transform:rotate(-12deg)}8.89%{transform:rotate(12deg)}10.00%{transform:rotate(-12deg)}11.11%{transform:rotate(12deg)}12.22%{transform:rotate(-12deg)}13.33%{transform:rotate(12deg)}14.44%{transform:rotate(-12deg)}15.56%{transform:rotate(12deg)}16.67%{transform:rotate(-12deg)}17.78%{transform:rotate(12deg)}18.89%{transform:rotate(-12deg)}20.00%{transform:rotate(12deg)}21.11%{transform:rotate(-12deg)}22.22%{transform:rotate(12deg)}23.33%{transform:rotate(-12deg)}24.44%{transform:rotate(12deg)}25.56%{transform:rotate(-12deg)}26.67%{transform:rotate(12deg)}27.78%{transform:rotate(-12deg)}28.89%{transform:rotate(12deg)}30.00%{transform:rotate(-12deg)}31.11%{transform:rotate(12deg)}32.22%{transform:rotate(-12deg)}33.33%{transform:rotate(12deg)}34.44%{transform:rotate(-12deg)}35.56%{transform:rotate(12deg)}36.67%{transform:rotate(-12deg)}37.78%{transform:rotate(12deg)}38.89%{transform:rotate(-12deg)}40.00%{transform:rotate(12deg)}41.11%{transform:rotate(-12deg)}42.22%{transform:rotate(30deg)}43.33%{transform:rotate(-30deg)}44.44%{transform:rotate(30deg)}45.56%{transform:rotate(-30deg)}46.67%{transform:rotate(30deg)}47.78%{transform:rotate(-30deg)}48.89%{transform:rotate(30deg)}50.00%{transform:rotate(-30deg)}51.11%{transform:rotate(30deg)}52.22%{transform:rotate(-30deg)}53.33%{transform:rotate(30deg)}54.44%{transform:rotate(-30deg)}55.56%{transform:rotate(30deg)}56.67%{transform:rotate(-30deg)}57.78%{transform:rotate(30deg)}58.89%{transform:rotate(-30deg)}60.00%{transform:rotate(30deg)}61.11%{transform:rotate(-30deg)}62.22%{transform:rotate(30deg)}63.33%{transform:rotate(-30deg)}64.44%{transform:rotate(30deg)}65.56%{transform:rotate(-30deg)}66.67%{transform:rotate(30deg)}67.78%{transform:rotate(-30deg)}68.89%{transform:rotate(30deg)}70.00%{transform:rotate(-30deg)}71.11%{transform:rotate(30deg)}72.22%{transform:rotate(-30deg)}73.33%{transform:rotate(30deg)}74.44%{transform:rotate(-30deg)}75.56%{transform:rotate(30deg)}76.67%{transform:rotate(-30deg)}77.78%{transform:rotate(30deg)}78.89%{transform:rotate(-30deg)}80.00%{transform:rotate(30deg)}81.11%{transform:rotate(-30deg)}82.22%{transform:rotate(30deg)}83.33%{transform:rotate(-30deg)}84.44%{transform:rotate(30deg)}85.56%{transform:rotate(-30deg)}86.67%{transform:rotate(30deg)}87.78%{transform:rotate(-30deg)}88.89%{transform:rotate(30deg)}90.00%{transform:rotate(-30deg)}91.11%{transform:rotate(30deg)}92.22%{transform:rotate(-30deg)}93.33%{transform:rotate(30deg)}94.44%{transform:rotate(-30deg)}95.56%{transform:rotate(30deg)}96.67%{transform:rotate(-30deg)}97.78%{transform:rotate(30deg)}98.89%{transform:rotate(-30deg)}100.00%{transform:rotate(30deg)}}
+@keyframes rn_ear{0.00%{transform:rotate(0deg)}10.00%{transform:rotate(-14deg)}20.00%{transform:rotate(6deg)}30.00%{transform:rotate(-14deg)}40.00%{transform:rotate(6deg)}50.00%{transform:rotate(0deg)}60.00%{transform:rotate(-8deg)}100.00%{transform:rotate(0deg)}}
+@keyframes rn_h0{0.00%{opacity:0}49.00%{opacity:0;transform:translate(0,0) scale(.3)}52.00%{opacity:1;transform:translate(0,-18px) scale(1.15)}69.00%{opacity:0;transform:translate(-29px,-150px) scale(1.5)}100.00%{opacity:0}}
+@keyframes rn_h1{0.00%{opacity:0}53.40%{opacity:0;transform:translate(0,0) scale(.3)}56.40%{opacity:1;transform:translate(0,-18px) scale(1.15)}73.40%{opacity:0;transform:translate(40px,-150px) scale(1.5)}100.00%{opacity:0}}
+@keyframes rn_h2{0.00%{opacity:0}57.80%{opacity:0;transform:translate(0,0) scale(.3)}60.80%{opacity:1;transform:translate(0,-18px) scale(1.15)}77.80%{opacity:0;transform:translate(-14px,-150px) scale(1.5)}100.00%{opacity:0}}
+@keyframes rn_h3{0.00%{opacity:0}62.20%{opacity:0;transform:translate(0,0) scale(.3)}65.20%{opacity:1;transform:translate(0,-18px) scale(1.15)}82.20%{opacity:0;transform:translate(45px,-150px) scale(1.5)}100.00%{opacity:0}}
+@keyframes rn_h4{0.00%{opacity:0}66.60%{opacity:0;transform:translate(0,0) scale(.3)}69.60%{opacity:1;transform:translate(0,-18px) scale(1.15)}86.60%{opacity:0;transform:translate(-24px,-150px) scale(1.5)}100.00%{opacity:0}}
+@keyframes rn_h5{0.00%{opacity:0}71.00%{opacity:0;transform:translate(0,0) scale(.3)}74.00%{opacity:1;transform:translate(0,-18px) scale(1.15)}91.00%{opacity:0;transform:translate(27px,-150px) scale(1.5)}100.00%{opacity:0}}
+@keyframes rn_h6{0.00%{opacity:0}75.40%{opacity:0;transform:translate(0,0) scale(.3)}78.40%{opacity:1;transform:translate(0,-18px) scale(1.15)}95.40%{opacity:0;transform:translate(-26px,-150px) scale(1.5)}100.00%{opacity:0}}
+@keyframes rn_h7{0.00%{opacity:0}79.80%{opacity:0;transform:translate(0,0) scale(.3)}82.80%{opacity:1;transform:translate(0,-18px) scale(1.15)}99.80%{opacity:0;transform:translate(-26px,-150px) scale(1.5)}100.00%{opacity:0}}
+@keyframes rn_s0{0.00%{opacity:0}48.00%{opacity:0;transform:scale(.2) rotate(0)}51.00%{opacity:1;transform:scale(1) rotate(90deg)}56.00%{opacity:0;transform:scale(.3) rotate(180deg)}100.00%{opacity:0}}
+@keyframes rn_s1{0.00%{opacity:0}53.00%{opacity:0;transform:scale(.2) rotate(0)}56.00%{opacity:1;transform:scale(1) rotate(90deg)}61.00%{opacity:0;transform:scale(.3) rotate(180deg)}100.00%{opacity:0}}
+@keyframes rn_s2{0.00%{opacity:0}58.00%{opacity:0;transform:scale(.2) rotate(0)}61.00%{opacity:1;transform:scale(1) rotate(90deg)}66.00%{opacity:0;transform:scale(.3) rotate(180deg)}100.00%{opacity:0}}
+@keyframes rn_s3{0.00%{opacity:0}63.00%{opacity:0;transform:scale(.2) rotate(0)}66.00%{opacity:1;transform:scale(1) rotate(90deg)}71.00%{opacity:0;transform:scale(.3) rotate(180deg)}100.00%{opacity:0}}
+@keyframes rn_s4{0.00%{opacity:0}68.00%{opacity:0;transform:scale(.2) rotate(0)}71.00%{opacity:1;transform:scale(1) rotate(90deg)}76.00%{opacity:0;transform:scale(.3) rotate(180deg)}100.00%{opacity:0}}
+@keyframes rn_fadeAll{0.00%{opacity:0}2.00%{opacity:1}92.00%{opacity:1}97.00%{opacity:0}100.00%{opacity:0}}
+
+
+.modal-overlay:not(.open) .rn-scene * { animation-play-state: paused; }
+@media (max-width: 800px) { .auth-scene { min-height: 260px; height: 260px; } }
+@media (prefers-reduced-motion: reduce) {
+  .rn-scene * { animation: none !important; }
+  .rn-scene .rn-fadeAll { opacity: 1; }
+  .rn-scene .rn-girlX { transform: translateX(205px); } .rn-scene .rn-dogX { transform: translate(230px,-70px); } .rn-scene .rn-dogTurn { transform: rotate(-34deg) scale(.82); }
+}

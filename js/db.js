@@ -9,7 +9,7 @@
   const S = { pets: [], news: [], users: [], feedback: [], tx: [], me: null, isAdmin: false, adminChecked: false, adminIds: new Set(), error: '' };
   const snap = { pets: [], news: [], users: [], feedback: [], tx: [] };       // bản sao lần cuối máy chủ gửi về (để hoàn tác khi ghi lỗi)
   const base = { pets: new Map(), news: new Map(), users: new Map(), feedback: new Map(), tx: new Map() };   // id → JSON tài liệu đang có trên máy chủ (để so sánh khi ghi)
-  let db = null, auth = null, userUnsubs = [], pubUnsubs = [];
+  let legacy = [], migrated = new Set(), db = null, auth = null, userUnsubs = [], pubUnsubs = [];
   const emit = (name) => { try { w.dispatchEvent(new CustomEvent(name || 'pf:data')); } catch (e) { } };
 
   // ---- ready: chờ trạng thái đăng nhập + lần tải đầu của dữ liệu công khai (tối đa 9 giây để trang không bị treo khi mất mạng)
@@ -25,7 +25,12 @@
   const clean = o => { const r = {}; Object.keys(o).forEach(k => { if (o[k] !== undefined) r[k] = o[k]; }); return r; };
 
   // ---- chuyển đổi bản ghi <-> tài liệu Firestore
-  const petDoc = p => clean({ ...p, ownerUid: String(p.ownerUid || ''), imageData: p.imageData || [] });
+  // Tài liệu công khai của tin KHÔNG chứa SĐT/Zalo/email: các trường đó nằm ở pet_contacts/{id} (chỉ người đã đăng nhập đọc từng tài liệu)
+  const PET_PUBLIC_KEYS = ['id', 'name', 'type', 'breed', 'gender', 'date', 'area', 'location', 'desc', 'status', 'icon', 'imageData', 'lat', 'lng', 'ownerName', 'ownerUid', 'createdAt', 'flagged'];
+  const petDoc = p => { const r = {}; for (const k of PET_PUBLIC_KEYS) if (p[k] !== undefined) r[k] = p[k]; r.ownerUid = String(p.ownerUid || ''); r.imageData = p.imageData || []; return clean(r); };
+  const contactDoc = p => { const c = { phone: String(p.phone || ''), zalo: String(p.zalo || ''), email: String(p.ownerEmail || ''), ownerUid: String(p.ownerUid || '') }; return (c.phone || c.zalo || c.email) ? c : null; };
+  const contactBase = new Map();                 // id → JSON liên hệ đã biết (để chỉ ghi khi đổi)
+  const contactCache = new Map();                // id → Promise<{phone,zalo,email}|null>
   const userDoc = u => clean({ uid: u.uid, name: u.name, avatar: u.avatar || '👤', avatarPhoto: u.avatarPhoto || '', email: u.email, phone: u.phone || '', role: u.role === 'admin' ? 'admin' : 'user', banned: u.banned === true, area: u.area || '', bio: u.bio || '', provider: u.provider });
   const idOf = { pets: x => x.id, news: x => x.id, feedback: x => x.id, tx: x => x.id, users: x => x.uid };
   const toDoc = { pets: petDoc, news: n => clean({ ...n }), feedback: f => clean({ ...f, ownerUid: String(f.ownerUid || '') }), tx: t => clean({ ...t }), users: userDoc };
@@ -52,7 +57,9 @@
   }
   function attachPublic() {
     pubUnsubs.push(listen('pets', db.collection('pets').orderBy('createdAt', 'desc').limit(300), s => {
-      setSnap('pets', s.docs.map(d => sanitize.pets({ ...d.data(), id: d.id })).filter(Boolean));
+      legacy = s.docs.filter(d => { const x = d.data(); return x.phone || x.zalo || x.ownerEmail; }).map(d => { const x = d.data(); return { id: d.id, phone: x.phone || '', zalo: x.zalo || '', email: x.ownerEmail || '', ownerUid: x.ownerUid || '' }; });
+      setSnap('pets', s.docs.map(d => { const x = sanitize.pets({ ...d.data(), id: d.id }); if (x) { x.phone = ''; x.zalo = ''; x.ownerEmail = ''; } return x; }).filter(Boolean));
+      migrateLegacy();
     }));
     pubUnsubs.push(feedbackListener('pub', db.collection('feedback').where('public', '==', true)));
     pubUnsubs.push(listen('news', db.collection('news'), s => {
@@ -82,7 +89,7 @@
       if (!S.isAdmin && S.me) setSnap('users', [{ ...S.me, role: 'user' }]);      // người dùng thường chỉ thấy hồ sơ của mình
     }));
     userUnsubs.push(listen('admin', db.collection('admins').doc(uid), d => {
-      S.isAdmin = d.exists; S.adminChecked = true; applyRoles();
+      S.isAdmin = d.exists; S.adminChecked = true; applyRoles(); migrateLegacy();
       if (S.isAdmin && !adminAttached) {                 // chỉ admin mới đọc được toàn bộ người dùng / giao dịch / góp ý
         adminAttached = true;
         userUnsubs.push(listen('admins', db.collection('admins'), s => { S.adminIds = new Set(s.docs.map(x => x.id)); applyRoles(); }));
@@ -94,6 +101,41 @@
     userUnsubs.push(feedbackListener('mine', db.collection('feedback').where('ownerUid', '==', uid)));
   }
 
+
+  // ---- liên hệ của tin: tải theo yêu cầu (không tải hàng loạt), có cache
+  function getContact(id) {
+    if (!db || !id) return Promise.resolve(null);
+    if (!S.me) return Promise.resolve(null);                       // cần đăng nhập
+    if (!contactCache.has(id)) {
+      contactCache.set(id, db.collection('pet_contacts').doc(id).get().then(d => {
+        if (!d.exists) return {};
+        const x = d.data(); const c = { phone: x.phone || '', zalo: x.zalo || '', email: x.email || '' };
+        contactBase.set(id, JSON.stringify({ ...c, ownerUid: x.ownerUid || '' }));
+        return c;
+      }).catch(err => { contactCache.delete(id); console.warn('pet_contacts:', err && err.code); return null; }));
+    }
+    return contactCache.get(id);
+  }
+  // ---- di trú: tin cũ còn SĐT/email trong tài liệu công khai → chuyển sang pet_contacts rồi xóa khỏi tài liệu công khai
+  async function migrateLegacy() {
+    if (!db || !S.me || !S.adminChecked) return;
+    const mine = legacy.filter(x => !migrated.has(x.id) && (S.isAdmin || x.ownerUid === S.me.uid));
+    if (!mine.length) return;
+    mine.forEach(x => migrated.add(x.id));
+    const del = w.firebase.firestore.FieldValue.delete();
+    try {
+      for (let i = 0; i < mine.length; i += 200) {
+        const b = db.batch();
+        mine.slice(i, i + 200).forEach(x => {
+          b.set(db.collection('pet_contacts').doc(x.id), { phone: x.phone, zalo: x.zalo, email: x.email, ownerUid: x.ownerUid });
+          b.update(db.collection('pets').doc(x.id), { phone: del, zalo: del, ownerEmail: del });
+        });
+        await b.commit();
+      }
+      console.info('Đã chuyển thông tin liên hệ của ' + mine.length + ' tin sang vùng riêng tư.');
+    } catch (e) { console.warn('Di trú liên hệ lỗi:', e && e.code); mine.forEach(x => migrated.delete(x.id)); }
+  }
+
   // ---- ghi: so sánh với bản cũ rồi gửi phần thay đổi lên Firestore
   const MAX_DOC = 950000;
   function write(col, nextArr) {
@@ -103,18 +145,26 @@
       const id = idOf[col](raw); if (!id) continue;
       nextIds.add(id);
       const doc = toDoc[col](raw); const json = JSON.stringify(doc);
+      if (col === 'pets') {
+        const c = contactDoc(raw);
+        if (c) { const cj = JSON.stringify(c); if (contactBase.get(id) !== cj) { ops.push({ type: 'contact', id, doc: c }); contactBase.set(id, cj); contactCache.set(id, Promise.resolve({ phone: c.phone, zalo: c.zalo, email: c.email })); } }
+      }
       if (base[col].get(id) === json) continue;
       if (json.length > MAX_DOC) { toast('Dữ liệu quá lớn để lưu (thường do ảnh). Hãy bỏ bớt ảnh rồi thử lại.'); return false; }
       ops.push({ type: 'set', id, doc, json });
     }
-    base[col].forEach((_, id) => { if (!nextIds.has(id)) ops.push({ type: 'delete', id }); });
+    base[col].forEach((_, id) => { if (!nextIds.has(id)) { ops.push({ type: 'delete', id }); if (col === 'pets') { ops.push({ type: 'delContact', id }); contactBase.delete(id); contactCache.delete(id); } } });
     S[col] = nextArr; emit();                         // cập nhật giao diện ngay (optimistic)
     if (!ops.length) return true;
     const roleOps = col === 'users' ? ops.filter(o => o.type === 'set' && (o.doc.role === 'admin') !== S.adminIds.has(o.id)).map(o => ({ id: o.id, admin: o.doc.role === 'admin' })) : [];
     (async () => {
       for (let i = 0; i < ops.length; i += 400) {
         const b = db.batch();
-        ops.slice(i, i + 400).forEach(o => { const ref = db.collection(col).doc(o.id); o.type === 'set' ? b.set(ref, o.doc) : b.delete(ref); });
+        ops.slice(i, i + 400).forEach(o => {
+          if (o.type === 'contact') return b.set(db.collection('pet_contacts').doc(o.id), o.doc);
+          if (o.type === 'delContact') return b.delete(db.collection('pet_contacts').doc(o.id));
+          const ref = db.collection(col).doc(o.id); o.type === 'set' ? b.set(ref, o.doc) : b.delete(ref);
+        });
         await b.commit();
       }
       for (const r of roleOps) { const ref = db.collection('admins').doc(r.id); await (r.admin ? ref.set({ since: Date.now() }) : ref.delete()); }
@@ -145,7 +195,7 @@
     ready, state: S, _k: '',
     get ok() { return !!db && !S.error; }, get error() { return S.error; },
     auth: () => auth, db: () => db, fb: () => w.firebase,
-    write, emit,
+    write, emit, getContact,
     users: () => S.users,
     me: () => S.me ? { ...S.me, role: S.isAdmin ? 'admin' : 'user' } : null,
     whenMe(ms) { return new Promise(res => { const t0 = Date.now(); const tick = () => { if (S.me && S.adminChecked) return res(PFDB.me()); if (Date.now() - t0 > (ms || 6000)) return res(null); setTimeout(tick, 80); }; tick(); }); },

@@ -3,7 +3,7 @@
 <head>
   <meta name="format-detection" content="telephone=no">
 <meta charset="UTF-8" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://nominatim.openstreetmap.org http://localhost:11434 http://127.0.0.1:11434 https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.google.com; frame-src https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://apis.google.com https://www.google.com/recaptcha/; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://nominatim.openstreetmap.org http://localhost:11434 http://127.0.0.1:11434 https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://*.google.com; frame-src https://*.firebaseapp.com https://accounts.google.com https://www.google.com/recaptcha/ https://recaptcha.google.com; object-src 'none'; base-uri 'self'; form-action 'self'"/>
 <meta name="referrer" content="strict-origin-when-cross-origin"/>
 <script src="../js/security.js"></script>
 
@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="../css/map.css"/>
   <link rel="stylesheet" href="../css/modal.css"/>
   <link rel="stylesheet" href="../css/auth.css"/>
+<link rel="stylesheet" href="../css/reunion.css">
   <link rel="stylesheet" href="../css/profile.css"/>
   <link rel="stylesheet" href="../css/admin.css"/>
   <link rel="stylesheet" href="../css/footer.css"/>
@@ -237,9 +238,10 @@
 <!-- component: modal-login -->
 <!-- ========== LOGIN MODAL ========== -->
 <div class="modal-overlay" id="loginModal" onclick="closeOnBackdrop(event,'loginModal')">
-  <div class="modal auth-modal">
+  <div class="modal auth-modal auth-wide">
     <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
-    <div class="auth-logo">🐾</div>
+    <div class="auth-main">
+    <div class="auth-logo"><img src="../assets/logo-mark.svg" alt="" width="40" height="40" style="filter:drop-shadow(0 2px 4px rgba(150,60,0,.35))"></div>
     <div class="auth-title">Chào mừng trở lại!</div>
     <div class="auth-sub">Đăng nhập để đăng tin và kết nối cộng đồng</div>
 
@@ -271,14 +273,123 @@
       <p>Chào mừng bạn trở lại với cộng đồng PetFinder 🐾</p>
     </div>
   </div>
+    <div class="auth-scene" aria-hidden="true">
+      <div class="scene-copy"><h3>Cùng nhau đưa các bé về nhà</h3><p>Hàng nghìn người yêu thú cưng đang chung tay tìm kiếm mỗi ngày.</p>
+        <div class="scene-chips"><span>Đăng tin miễn phí</span><span>Bản đồ theo khu vực</span><span>Cộng đồng hỗ trợ</span></div></div>
+      <svg class="rn-scene" viewBox="0 0 520 590" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+<defs>
+<linearGradient id="rnskyL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd3ff"/><stop offset=".55" stop-color="#c9edff"/><stop offset="1" stop-color="#fff2d6"/></linearGradient>
+<radialGradient id="rnsunL"><stop offset="0" stop-color="#fff6b0"/><stop offset=".6" stop-color="#ffd84d"/><stop offset="1" stop-color="#ffc01f"/></radialGradient>
+<g id="rncloudL"><rect width="96" height="28" rx="14" fill="#fff"/><circle cx="32" cy="6" r="20" fill="#fff"/><circle cx="62" cy="10" r="15" fill="#fff"/></g>
+</defs>
+<rect width="520" height="590" fill="url(#rnskyL)"/>
+<g class="rn-sunr"><circle cx="432" cy="78" r="52" fill="#ffd84d" opacity=".22"/><circle cx="432" cy="78" r="34" fill="url(#rnsunL)"/>
+<g stroke="#ffd84d" stroke-width="4" stroke-linecap="round" opacity=".7"><path d="M432 22v10M432 124v10M376 78h10M478 78h10M392 38l7 7M465 111l7 7M472 38l-7 7M399 111l-7 7"/></g></g>
+<g class="rn-cloud rn-c1" opacity=".95"><use href="#rncloudL" y="170"/></g>
+<g class="rn-cloud rn-c2" opacity=".8"><use href="#rncloudL" y="250" transform="scale(.8)"/></g>
+<g class="rn-cloud rn-c3" opacity=".7"><use href="#rncloudL" y="130" transform="scale(.6)"/></g>
+<g class="rn-bird" transform="translate(0,200)"><g transform="translate(0,0)"><path class="rn-wing" d="M0 0 Q8 -9 16 0 Q24 -9 32 0" fill="none" stroke="#5b6b7a" stroke-width="2.4" stroke-linecap="round"/></g></g>
+<g class="rn-bird" style="animation-delay:-7s" transform="translate(0,150)"><path class="rn-wing" d="M0 0 Q6 -7 12 0 Q18 -7 24 0" fill="none" stroke="#5b6b7a" stroke-width="2" stroke-linecap="round"/></g>
+<!-- đồi -->
+<path d="M-20 430 Q110 340 260 405 T560 380 V590 H-20Z" fill="#9fdc8a"/>
+<path d="M-20 470 Q150 410 320 455 T560 440 V590 H-20Z" fill="#7ccb6f"/>
+<!-- cây -->
+<g class="rn-tree"><rect x="70" y="330" width="16" height="70" rx="6" fill="#8a5a2b"/><circle cx="78" cy="318" r="42" fill="#5cb85c"/><circle cx="50" cy="338" r="26" fill="#6cc76c"/><circle cx="108" cy="336" r="28" fill="#4fae52"/><circle cx="64" cy="302" r="8" fill="#ff7a59"/><circle cx="96" cy="326" r="8" fill="#ff7a59"/></g>
+<!-- hàng rào -->
+<g fill="#f7e3c0"><rect x="300" y="408" width="240" height="8" rx="3"/><rect x="300" y="428" width="240" height="8" rx="3"/>
+<rect x="316" y="396" width="10" height="56" rx="3"/><rect x="358" y="396" width="10" height="56" rx="3"/><rect x="400" y="396" width="10" height="56" rx="3"/><rect x="442" y="396" width="10" height="56" rx="3"/><rect x="484" y="396" width="10" height="56" rx="3"/></g>
+<!-- mặt đất -->
+<rect x="0" y="470" width="520" height="120" fill="#8a5a2b"/><rect x="0" y="470" width="520" height="22" fill="#6fc45e"/>
+<g fill="#58b04a"><circle cx="20" cy="486" r="9"/><circle cx="60" cy="488" r="8"/><circle cx="104" cy="486" r="9"/><circle cx="148" cy="488" r="8"/><circle cx="194" cy="486" r="9"/><circle cx="240" cy="488" r="8"/><circle cx="286" cy="486" r="9"/><circle cx="332" cy="488" r="8"/><circle cx="378" cy="486" r="9"/><circle cx="424" cy="488" r="8"/><circle cx="470" cy="486" r="9"/><circle cx="512" cy="488" r="8"/></g>
+<!-- hoa -->
+<g><g transform="translate(150,474)"><g class="rn-flower"><rect x="-1.5" y="-26" width="3" height="26" fill="#3f9a3a"/><circle cx="0" cy="-30" r="8" fill="#ff9ec1"/><circle cx="0" cy="-30" r="3.5" fill="#ffd84d"/></g></g>
+<g transform="translate(400,476)"><g class="rn-flower" style="animation-delay:-.8s"><rect x="-1.5" y="-24" width="3" height="24" fill="#3f9a3a"/><circle cx="0" cy="-28" r="8" fill="#fff"/><circle cx="0" cy="-28" r="3.5" fill="#ffd84d"/></g></g>
+<g transform="translate(40,478)"><g class="rn-flower" style="animation-delay:-1.4s"><rect x="-1.5" y="-22" width="3" height="22" fill="#3f9a3a"/><circle cx="0" cy="-26" r="7" fill="#ffb347"/><circle cx="0" cy="-26" r="3" fill="#fff"/></g></g></g>
+
+<g class="rn-run rn-fadeAll" style="animation-name:rn_fadeAll">
+<!-- bóng đổ -->
+<!-- ===== cô gái ===== -->
+<g transform="translate(0,505)"><g class="rn-run rn-girlX"><g class="rn-run rn-girlBob"><g class="rn-run rn-girlBody">
+ <ellipse cx="0" cy="2" rx="38" ry="7" fill="#000" opacity=".16"/>
+ <g class="rn-run rn-legL"><rect x="-17" y="-84" width="16" height="80" rx="8" fill="#4a5d86"/><ellipse cx="-9" cy="-4" rx="14" ry="7" fill="#fff"/><ellipse cx="-9" cy="-2" rx="14" ry="4" fill="#e8671d"/></g>
+ <g class="rn-run rn-legR"><rect x="1" y="-84" width="16" height="80" rx="8" fill="#4a5d86"/><ellipse cx="9" cy="-4" rx="14" ry="7" fill="#fff"/><ellipse cx="9" cy="-2" rx="14" ry="4" fill="#e8671d"/></g>
+ <rect x="-24" y="-138" width="48" height="68" rx="18" fill="#F5823A"/>
+ <path d="M-24 -96 H24 V-84 H-24Z" fill="#fff" opacity=".35"/>
+ <g class="rn-run rn-armL"><rect x="-33" y="-132" width="13" height="58" rx="6.5" fill="#FFD8B5"/><rect x="-34" y="-136" width="15" height="26" rx="7" fill="#F5823A"/></g>
+ <g class="rn-run rn-armR"><rect x="20" y="-132" width="13" height="58" rx="6.5" fill="#FFD8B5"/><rect x="19" y="-136" width="15" height="26" rx="7" fill="#F5823A"/></g>
+ <rect x="-5" y="-146" width="10" height="14" rx="5" fill="#FFD8B5"/>
+ <!-- đầu -->
+ <circle cx="-26" cy="-190" r="13" fill="#5a3a24"/><circle cx="26" cy="-190" r="13" fill="#5a3a24"/>
+ <circle cx="0" cy="-176" r="31" fill="#FFD8B5"/>
+ <path d="M-33 -180 Q-30 -212 0 -210 Q30 -212 33 -180 Q18 -194 0 -192 Q-18 -194 -33 -180Z" fill="#5a3a24"/>
+ <circle cx="-11" cy="-174" r="3.6" fill="#2C2415"/><circle cx="11" cy="-174" r="3.6" fill="#2C2415"/>
+ <circle cx="-20" cy="-164" r="5.5" fill="#ff9ea8" opacity=".6"/><circle cx="20" cy="-164" r="5.5" fill="#ff9ea8" opacity=".6"/>
+ <path d="M-9 -162 Q0 -153 9 -162" fill="none" stroke="#c0503a" stroke-width="3" stroke-linecap="round"/>
+ <!-- dấu ! -->
+ <g class="rn-run rn-bang"><text x="30" y="-216" font-family="Nunito,sans-serif" font-weight="900" font-size="34" fill="#E8671D" stroke="#fff" stroke-width="5" paint-order="stroke" text-anchor="middle">!</text></g>
+</g></g></g></g>
+
+<!-- ===== chú chó ===== -->
+<g transform="translate(0,505)"><g class="rn-run rn-dogX"><g class="rn-run rn-dogTurn"><g class="rn-run rn-dogBob">
+ <ellipse cx="0" cy="2" rx="52" ry="7" fill="#000" opacity=".16"/>
+ <g class="rn-run rn-tail"><path d="M40 -56 Q70 -78 62 -104" fill="none" stroke="#E0983F" stroke-width="13" stroke-linecap="round"/></g>
+ <g class="rn-run rn-runLegs">
+  <g transform="translate(-30,-34)"><g class="rn-run rn-dLegB"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#D98E37"/><ellipse cx="-2" cy="33" rx="9" ry="4.5" fill="#B9722A"/></g></g>
+  <g transform="translate(32,-34)"><g class="rn-run rn-dLegA"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#D98E37"/><ellipse cx="-2" cy="33" rx="9" ry="4.5" fill="#B9722A"/></g></g>
+ </g>
+ <g class="rn-run rn-idleLegs">
+  <g transform="translate(-30,-34)"><g class="rn-run rn-dang"><rect x="-6.5" y="0" width="13" height="30" rx="6.5" fill="#D98E37"/></g></g>
+  <g transform="translate(32,-34)"><g class="rn-run rn-dang" style="animation-delay:-.6s"><rect x="-6.5" y="0" width="13" height="30" rx="6.5" fill="#D98E37"/></g></g>
+ </g>
+ <ellipse cx="0" cy="-48" rx="50" ry="27" fill="#E8A24A"/>
+ <ellipse cx="4" cy="-38" rx="38" ry="14" fill="#F3C27A"/>
+ <g class="rn-run rn-runLegs">
+  <g transform="translate(-14,-34)"><g class="rn-run rn-dLegA"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#E8A24A"/><ellipse cx="-2" cy="33" rx="9" ry="4.5" fill="#C98232"/></g></g>
+  <g transform="translate(14,-34)"><g class="rn-run rn-dLegB"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#E8A24A"/><ellipse cx="-2" cy="33" rx="9" ry="4.5" fill="#C98232"/></g></g>
+ </g>
+ <g class="rn-run rn-idleLegs">
+  <g transform="translate(-14,-34)"><g class="rn-run rn-dang" style="animation-delay:-.3s"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#E8A24A"/></g></g>
+  <g transform="translate(14,-34)"><g class="rn-run rn-dang" style="animation-delay:-.9s"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#E8A24A"/></g></g>
+ </g>
+ <circle cx="-50" cy="-72" r="26" fill="#E8A24A"/>
+ <ellipse cx="-74" cy="-64" rx="17" ry="12" fill="#F3C27A"/>
+ <circle cx="-86" cy="-68" r="5" fill="#2C2415"/>
+ <circle cx="-54" cy="-78" r="4.2" fill="#2C2415"/><circle cx="-55" cy="-79.5" r="1.4" fill="#fff"/>
+ <path d="M-80 -58 Q-72 -50 -62 -58" fill="none" stroke="#2C2415" stroke-width="2.4" stroke-linecap="round"/>
+ <path d="M-76 -57 Q-72 -44 -66 -53 Z" fill="#ff8aa0"/>
+ <g class="rn-run rn-ear"><path d="M-44 -90 Q-22 -86 -28 -58 Q-36 -62 -44 -90Z" fill="#B9722A"/></g>
+ <rect x="-62" y="-52" width="22" height="7" rx="3.5" fill="#E8671D"/><circle cx="-52" cy="-42" r="4.5" fill="#ffd84d"/>
+</g></g></g></g>
+
+<!-- trái tim & lấp lánh -->
+<g transform="translate(175,330)"><g class="rn-heart" style="animation-name:rn_h0"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF5C7A"/></g></g>
+<g transform="translate(204,330)"><g class="rn-heart" style="animation-name:rn_h1"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF8FA3"/></g></g>
+<g transform="translate(228,330)"><g class="rn-heart" style="animation-name:rn_h2"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#F5823A"/></g></g>
+<g transform="translate(265,330)"><g class="rn-heart" style="animation-name:rn_h3"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF5C7A"/></g></g>
+<g transform="translate(188,330)"><g class="rn-heart" style="animation-name:rn_h4"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF8FA3"/></g></g>
+<g transform="translate(205,330)"><g class="rn-heart" style="animation-name:rn_h5"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#F5823A"/></g></g>
+<g transform="translate(234,330)"><g class="rn-heart" style="animation-name:rn_h6"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF5C7A"/></g></g>
+<g transform="translate(264,330)"><g class="rn-heart" style="animation-name:rn_h7"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF8FA3"/></g></g>
+
+<g transform="translate(120,260)"><path class="rn-spark" style="animation-name:rn_s0" d="M0 -11 L3 -3 L11 0 L3 3 L0 11 L-3 3 L-11 0 L-3 -3Z" fill="#FFE27A"/></g>
+<g transform="translate(330,250)"><path class="rn-spark" style="animation-name:rn_s1" d="M0 -11 L3 -3 L11 0 L3 3 L0 11 L-3 3 L-11 0 L-3 -3Z" fill="#FFE27A"/></g>
+<g transform="translate(90,360)"><path class="rn-spark" style="animation-name:rn_s2" d="M0 -11 L3 -3 L11 0 L3 3 L0 11 L-3 3 L-11 0 L-3 -3Z" fill="#FFE27A"/></g>
+<g transform="translate(380,330)"><path class="rn-spark" style="animation-name:rn_s3" d="M0 -11 L3 -3 L11 0 L3 3 L0 11 L-3 3 L-11 0 L-3 -3Z" fill="#FFE27A"/></g>
+<g transform="translate(250,205)"><path class="rn-spark" style="animation-name:rn_s4" d="M0 -11 L3 -3 L11 0 L3 3 L0 11 L-3 3 L-11 0 L-3 -3Z" fill="#FFE27A"/></g>
+
+</g>
+</svg>
+    </div>
+  </div>
 </div>
 <!-- /component: modal-login -->
 <!-- component: modal-register -->
 <!-- ========== REGISTER MODAL ========== -->
 <div class="modal-overlay" id="registerModal" onclick="closeOnBackdrop(event,'registerModal')">
-  <div class="modal auth-modal">
+  <div class="modal auth-modal auth-wide">
     <button class="modal-close" onclick="closeModal('registerModal')">✕</button>
-    <div class="auth-logo">🐶🐱</div>
+    <div class="auth-main">
+    <div class="auth-logo"><img src="../assets/logo-mark.svg" alt="" width="40" height="40" style="filter:drop-shadow(0 2px 4px rgba(150,60,0,.35))"></div>
     <div class="auth-title">Tạo tài khoản mới</div>
     <div class="auth-sub">Tham gia cộng đồng PetFinder – hoàn toàn miễn phí!</div>
 
@@ -303,7 +414,7 @@
         <input class="auth-input" id="regEmail" type="email" placeholder="example@email.com" autocomplete="email"/>
       </div>
       <div class="auth-field">
-        <label>Số điện thoại <span style="color:var(--red)">*</span></label>
+        <label>Số điện thoại <span style="color:var(--text-muted);font-weight:600">(không bắt buộc)</span></label>
         <input class="auth-input" id="regPhone" type="tel" placeholder="0901 234 567" autocomplete="tel"/>
       </div>
       <div class="auth-field">
@@ -345,6 +456,114 @@
       <div class="auth-success-icon">🎊</div>
       <h3>Đăng ký thành công!</h3>
       <p>Chào mừng bạn đến với cộng đồng PetFinder! Hãy bắt đầu bằng cách đăng tin thú cưng của bạn 🐾</p>
+    </div>
+  </div>
+    <div class="auth-scene" aria-hidden="true">
+      <div class="scene-copy"><h3>Tham gia cộng đồng yêu thú cưng</h3><p>Tạo tài khoản để đăng tin, lưu tin yêu thích và nhận thông báo gần bạn.</p>
+        <div class="scene-chips"><span>Đăng tin miễn phí</span><span>Bản đồ theo khu vực</span><span>Cộng đồng hỗ trợ</span></div></div>
+      <svg class="rn-scene" viewBox="0 0 520 590" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+<defs>
+<linearGradient id="rnskyR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd3ff"/><stop offset=".55" stop-color="#c9edff"/><stop offset="1" stop-color="#fff2d6"/></linearGradient>
+<radialGradient id="rnsunR"><stop offset="0" stop-color="#fff6b0"/><stop offset=".6" stop-color="#ffd84d"/><stop offset="1" stop-color="#ffc01f"/></radialGradient>
+<g id="rncloudR"><rect width="96" height="28" rx="14" fill="#fff"/><circle cx="32" cy="6" r="20" fill="#fff"/><circle cx="62" cy="10" r="15" fill="#fff"/></g>
+</defs>
+<rect width="520" height="590" fill="url(#rnskyR)"/>
+<g class="rn-sunr"><circle cx="432" cy="78" r="52" fill="#ffd84d" opacity=".22"/><circle cx="432" cy="78" r="34" fill="url(#rnsunR)"/>
+<g stroke="#ffd84d" stroke-width="4" stroke-linecap="round" opacity=".7"><path d="M432 22v10M432 124v10M376 78h10M478 78h10M392 38l7 7M465 111l7 7M472 38l-7 7M399 111l-7 7"/></g></g>
+<g class="rn-cloud rn-c1" opacity=".95"><use href="#rncloudR" y="170"/></g>
+<g class="rn-cloud rn-c2" opacity=".8"><use href="#rncloudR" y="250" transform="scale(.8)"/></g>
+<g class="rn-cloud rn-c3" opacity=".7"><use href="#rncloudR" y="130" transform="scale(.6)"/></g>
+<g class="rn-bird" transform="translate(0,200)"><g transform="translate(0,0)"><path class="rn-wing" d="M0 0 Q8 -9 16 0 Q24 -9 32 0" fill="none" stroke="#5b6b7a" stroke-width="2.4" stroke-linecap="round"/></g></g>
+<g class="rn-bird" style="animation-delay:-7s" transform="translate(0,150)"><path class="rn-wing" d="M0 0 Q6 -7 12 0 Q18 -7 24 0" fill="none" stroke="#5b6b7a" stroke-width="2" stroke-linecap="round"/></g>
+<!-- đồi -->
+<path d="M-20 430 Q110 340 260 405 T560 380 V590 H-20Z" fill="#9fdc8a"/>
+<path d="M-20 470 Q150 410 320 455 T560 440 V590 H-20Z" fill="#7ccb6f"/>
+<!-- cây -->
+<g class="rn-tree"><rect x="70" y="330" width="16" height="70" rx="6" fill="#8a5a2b"/><circle cx="78" cy="318" r="42" fill="#5cb85c"/><circle cx="50" cy="338" r="26" fill="#6cc76c"/><circle cx="108" cy="336" r="28" fill="#4fae52"/><circle cx="64" cy="302" r="8" fill="#ff7a59"/><circle cx="96" cy="326" r="8" fill="#ff7a59"/></g>
+<!-- hàng rào -->
+<g fill="#f7e3c0"><rect x="300" y="408" width="240" height="8" rx="3"/><rect x="300" y="428" width="240" height="8" rx="3"/>
+<rect x="316" y="396" width="10" height="56" rx="3"/><rect x="358" y="396" width="10" height="56" rx="3"/><rect x="400" y="396" width="10" height="56" rx="3"/><rect x="442" y="396" width="10" height="56" rx="3"/><rect x="484" y="396" width="10" height="56" rx="3"/></g>
+<!-- mặt đất -->
+<rect x="0" y="470" width="520" height="120" fill="#8a5a2b"/><rect x="0" y="470" width="520" height="22" fill="#6fc45e"/>
+<g fill="#58b04a"><circle cx="20" cy="486" r="9"/><circle cx="60" cy="488" r="8"/><circle cx="104" cy="486" r="9"/><circle cx="148" cy="488" r="8"/><circle cx="194" cy="486" r="9"/><circle cx="240" cy="488" r="8"/><circle cx="286" cy="486" r="9"/><circle cx="332" cy="488" r="8"/><circle cx="378" cy="486" r="9"/><circle cx="424" cy="488" r="8"/><circle cx="470" cy="486" r="9"/><circle cx="512" cy="488" r="8"/></g>
+<!-- hoa -->
+<g><g transform="translate(150,474)"><g class="rn-flower"><rect x="-1.5" y="-26" width="3" height="26" fill="#3f9a3a"/><circle cx="0" cy="-30" r="8" fill="#ff9ec1"/><circle cx="0" cy="-30" r="3.5" fill="#ffd84d"/></g></g>
+<g transform="translate(400,476)"><g class="rn-flower" style="animation-delay:-.8s"><rect x="-1.5" y="-24" width="3" height="24" fill="#3f9a3a"/><circle cx="0" cy="-28" r="8" fill="#fff"/><circle cx="0" cy="-28" r="3.5" fill="#ffd84d"/></g></g>
+<g transform="translate(40,478)"><g class="rn-flower" style="animation-delay:-1.4s"><rect x="-1.5" y="-22" width="3" height="22" fill="#3f9a3a"/><circle cx="0" cy="-26" r="7" fill="#ffb347"/><circle cx="0" cy="-26" r="3" fill="#fff"/></g></g></g>
+
+<g class="rn-run rn-fadeAll" style="animation-name:rn_fadeAll">
+<!-- bóng đổ -->
+<!-- ===== cô gái ===== -->
+<g transform="translate(0,505)"><g class="rn-run rn-girlX"><g class="rn-run rn-girlBob"><g class="rn-run rn-girlBody">
+ <ellipse cx="0" cy="2" rx="38" ry="7" fill="#000" opacity=".16"/>
+ <g class="rn-run rn-legL"><rect x="-17" y="-84" width="16" height="80" rx="8" fill="#4a5d86"/><ellipse cx="-9" cy="-4" rx="14" ry="7" fill="#fff"/><ellipse cx="-9" cy="-2" rx="14" ry="4" fill="#e8671d"/></g>
+ <g class="rn-run rn-legR"><rect x="1" y="-84" width="16" height="80" rx="8" fill="#4a5d86"/><ellipse cx="9" cy="-4" rx="14" ry="7" fill="#fff"/><ellipse cx="9" cy="-2" rx="14" ry="4" fill="#e8671d"/></g>
+ <rect x="-24" y="-138" width="48" height="68" rx="18" fill="#F5823A"/>
+ <path d="M-24 -96 H24 V-84 H-24Z" fill="#fff" opacity=".35"/>
+ <g class="rn-run rn-armL"><rect x="-33" y="-132" width="13" height="58" rx="6.5" fill="#FFD8B5"/><rect x="-34" y="-136" width="15" height="26" rx="7" fill="#F5823A"/></g>
+ <g class="rn-run rn-armR"><rect x="20" y="-132" width="13" height="58" rx="6.5" fill="#FFD8B5"/><rect x="19" y="-136" width="15" height="26" rx="7" fill="#F5823A"/></g>
+ <rect x="-5" y="-146" width="10" height="14" rx="5" fill="#FFD8B5"/>
+ <!-- đầu -->
+ <circle cx="-26" cy="-190" r="13" fill="#5a3a24"/><circle cx="26" cy="-190" r="13" fill="#5a3a24"/>
+ <circle cx="0" cy="-176" r="31" fill="#FFD8B5"/>
+ <path d="M-33 -180 Q-30 -212 0 -210 Q30 -212 33 -180 Q18 -194 0 -192 Q-18 -194 -33 -180Z" fill="#5a3a24"/>
+ <circle cx="-11" cy="-174" r="3.6" fill="#2C2415"/><circle cx="11" cy="-174" r="3.6" fill="#2C2415"/>
+ <circle cx="-20" cy="-164" r="5.5" fill="#ff9ea8" opacity=".6"/><circle cx="20" cy="-164" r="5.5" fill="#ff9ea8" opacity=".6"/>
+ <path d="M-9 -162 Q0 -153 9 -162" fill="none" stroke="#c0503a" stroke-width="3" stroke-linecap="round"/>
+ <!-- dấu ! -->
+ <g class="rn-run rn-bang"><text x="30" y="-216" font-family="Nunito,sans-serif" font-weight="900" font-size="34" fill="#E8671D" stroke="#fff" stroke-width="5" paint-order="stroke" text-anchor="middle">!</text></g>
+</g></g></g></g>
+
+<!-- ===== chú chó ===== -->
+<g transform="translate(0,505)"><g class="rn-run rn-dogX"><g class="rn-run rn-dogTurn"><g class="rn-run rn-dogBob">
+ <ellipse cx="0" cy="2" rx="52" ry="7" fill="#000" opacity=".16"/>
+ <g class="rn-run rn-tail"><path d="M40 -56 Q70 -78 62 -104" fill="none" stroke="#E0983F" stroke-width="13" stroke-linecap="round"/></g>
+ <g class="rn-run rn-runLegs">
+  <g transform="translate(-30,-34)"><g class="rn-run rn-dLegB"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#D98E37"/><ellipse cx="-2" cy="33" rx="9" ry="4.5" fill="#B9722A"/></g></g>
+  <g transform="translate(32,-34)"><g class="rn-run rn-dLegA"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#D98E37"/><ellipse cx="-2" cy="33" rx="9" ry="4.5" fill="#B9722A"/></g></g>
+ </g>
+ <g class="rn-run rn-idleLegs">
+  <g transform="translate(-30,-34)"><g class="rn-run rn-dang"><rect x="-6.5" y="0" width="13" height="30" rx="6.5" fill="#D98E37"/></g></g>
+  <g transform="translate(32,-34)"><g class="rn-run rn-dang" style="animation-delay:-.6s"><rect x="-6.5" y="0" width="13" height="30" rx="6.5" fill="#D98E37"/></g></g>
+ </g>
+ <ellipse cx="0" cy="-48" rx="50" ry="27" fill="#E8A24A"/>
+ <ellipse cx="4" cy="-38" rx="38" ry="14" fill="#F3C27A"/>
+ <g class="rn-run rn-runLegs">
+  <g transform="translate(-14,-34)"><g class="rn-run rn-dLegA"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#E8A24A"/><ellipse cx="-2" cy="33" rx="9" ry="4.5" fill="#C98232"/></g></g>
+  <g transform="translate(14,-34)"><g class="rn-run rn-dLegB"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#E8A24A"/><ellipse cx="-2" cy="33" rx="9" ry="4.5" fill="#C98232"/></g></g>
+ </g>
+ <g class="rn-run rn-idleLegs">
+  <g transform="translate(-14,-34)"><g class="rn-run rn-dang" style="animation-delay:-.3s"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#E8A24A"/></g></g>
+  <g transform="translate(14,-34)"><g class="rn-run rn-dang" style="animation-delay:-.9s"><rect x="-6.5" y="0" width="13" height="34" rx="6.5" fill="#E8A24A"/></g></g>
+ </g>
+ <circle cx="-50" cy="-72" r="26" fill="#E8A24A"/>
+ <ellipse cx="-74" cy="-64" rx="17" ry="12" fill="#F3C27A"/>
+ <circle cx="-86" cy="-68" r="5" fill="#2C2415"/>
+ <circle cx="-54" cy="-78" r="4.2" fill="#2C2415"/><circle cx="-55" cy="-79.5" r="1.4" fill="#fff"/>
+ <path d="M-80 -58 Q-72 -50 -62 -58" fill="none" stroke="#2C2415" stroke-width="2.4" stroke-linecap="round"/>
+ <path d="M-76 -57 Q-72 -44 -66 -53 Z" fill="#ff8aa0"/>
+ <g class="rn-run rn-ear"><path d="M-44 -90 Q-22 -86 -28 -58 Q-36 -62 -44 -90Z" fill="#B9722A"/></g>
+ <rect x="-62" y="-52" width="22" height="7" rx="3.5" fill="#E8671D"/><circle cx="-52" cy="-42" r="4.5" fill="#ffd84d"/>
+</g></g></g></g>
+
+<!-- trái tim & lấp lánh -->
+<g transform="translate(175,330)"><g class="rn-heart" style="animation-name:rn_h0"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF5C7A"/></g></g>
+<g transform="translate(204,330)"><g class="rn-heart" style="animation-name:rn_h1"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF8FA3"/></g></g>
+<g transform="translate(228,330)"><g class="rn-heart" style="animation-name:rn_h2"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#F5823A"/></g></g>
+<g transform="translate(265,330)"><g class="rn-heart" style="animation-name:rn_h3"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF5C7A"/></g></g>
+<g transform="translate(188,330)"><g class="rn-heart" style="animation-name:rn_h4"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF8FA3"/></g></g>
+<g transform="translate(205,330)"><g class="rn-heart" style="animation-name:rn_h5"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#F5823A"/></g></g>
+<g transform="translate(234,330)"><g class="rn-heart" style="animation-name:rn_h6"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF5C7A"/></g></g>
+<g transform="translate(264,330)"><g class="rn-heart" style="animation-name:rn_h7"><path d="M0 8 C-14 -4 -10 -16 0 -9 C10 -16 14 -4 0 8Z" fill="#FF8FA3"/></g></g>
+
+<g transform="translate(120,260)"><path class="rn-spark" style="animation-name:rn_s0" d="M0 -11 L3 -3 L11 0 L3 3 L0 11 L-3 3 L-11 0 L-3 -3Z" fill="#FFE27A"/></g>
+<g transform="translate(330,250)"><path class="rn-spark" style="animation-name:rn_s1" d="M0 -11 L3 -3 L11 0 L3 3 L0 11 L-3 3 L-11 0 L-3 -3Z" fill="#FFE27A"/></g>
+<g transform="translate(90,360)"><path class="rn-spark" style="animation-name:rn_s2" d="M0 -11 L3 -3 L11 0 L3 3 L0 11 L-3 3 L-11 0 L-3 -3Z" fill="#FFE27A"/></g>
+<g transform="translate(380,330)"><path class="rn-spark" style="animation-name:rn_s3" d="M0 -11 L3 -3 L11 0 L3 3 L0 11 L-3 3 L-11 0 L-3 -3Z" fill="#FFE27A"/></g>
+<g transform="translate(250,205)"><path class="rn-spark" style="animation-name:rn_s4" d="M0 -11 L3 -3 L11 0 L3 3 L0 11 L-3 3 L-11 0 L-3 -3Z" fill="#FFE27A"/></g>
+
+</g>
+</svg>
     </div>
   </div>
 </div>

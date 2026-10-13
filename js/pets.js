@@ -54,10 +54,13 @@ async function submitPost() {
   const fail = m => { err.textContent = m; err.style.display = 'block'; };
   if (!currentUser) { openAuthModal('login'); return; }
   if (!PFSec.isPhone(phone)) return fail('Số điện thoại không hợp lệ.');
-  if (zalo && !/^(https?:\/\/[^\s]+|[0-9+().\-\s]{8,40})$/.test(zalo)) return fail('Zalo phải là số điện thoại hoặc đường dẫn https.');
+  const social = PFSec.parseSocialLink(zalo);
+  if (!social.ok) return fail('Liên kết liên hệ chỉ nhận đường dẫn Zalo (zalo.me) hoặc Facebook (facebook.com, fb.com, m.me), hoặc để trống.');
   if (Number.isNaN(new Date(date).getTime())) return fail('Ngày không hợp lệ.');
   const lastPost = Number(sessionStorage.getItem('pf_last_post') || 0);
   if (Date.now() - lastPost < 15000) return fail('⏳ Bạn đăng tin quá nhanh. Vui lòng đợi vài giây rồi thử lại.');
+  const rl = PFSec.rateLimit('post:' + currentUser.uid, 5, 10 * 60 * 1000);
+  if (!rl.ok) return fail('Bạn đăng quá nhiều tin trong thời gian ngắn. Vui lòng thử lại sau ' + Math.ceil(rl.retryMs / 60000) + ' phút.');
   const submitButton = document.querySelector('#form .submit-btn');
   const originalButtonText = submitButton ? submitButton.textContent : '';
   if (submitButton) { submitButton.disabled = true; submitButton.textContent = 'Đang xác định vị trí...'; }
@@ -67,7 +70,7 @@ async function submitPost() {
   const displayDate = new Date(date).toLocaleDateString('vi-VN');
   const id = PFSec.newId('pet');
   const imageData = pendingImageData.filter(Boolean);
-  const rawPet = { id, name, type, breed, gender, date: displayDate, area, location, desc, phone, zalo, status, icon, imageData, ...coordinates, ownerEmail: currentUser.email, ownerUid: currentUser.uid, ownerName: currentUser.name, createdAt: Date.now() };
+  const rawPet = { id, name, type, breed, gender, date: displayDate, area, location, desc, phone, zalo: social.url, status, icon, imageData, ...coordinates, ownerEmail: currentUser.email, ownerUid: currentUser.uid, ownerName: currentUser.name, createdAt: Date.now() };
   const pet = PFSec.sanitizePet(rawPet);                           // chuẩn hóa/giới hạn mọi trường trước khi lưu
   if (!pet) return fail('Dữ liệu tin đăng không hợp lệ.');
   sessionStorage.setItem('pf_last_post', String(Date.now()));
@@ -138,6 +141,7 @@ function addPetCardToGrid(pet, prepend = false) {
   card.dataset.name = pet.name.toLowerCase();
   card.dataset.area = (pet.area + ' ' + pet.location).toLowerCase();
   card.dataset.type = pet.type.toLowerCase();
+  card.dataset.hay = foldText([pet.name, pet.type, pet.breed, pet.gender, pet.area, pet.location, pet.desc].join(' '));
   const E = PFSec.esc;
   const photo = PFSec.safeImageSrc(pet.imageData && pet.imageData[0]);
   const statusColor = pet.status === 'lost' ? 'var(--red)' : pet.status === 'found' ? 'var(--green)' : 'var(--orange)';
@@ -187,6 +191,13 @@ function updateStats() {
 
 // ========== SEARCH ==========
 // Đọc bộ lọc từ biểu mẫu tìm kiếm (có thể thiếu trên một số trang)
+// ===== Tìm kiếm: chuẩn hóa không dấu + tách từ khóa, mọi từ phải khớp (AND), dựng "kho chữ" một lần cho mỗi thẻ =====
+const foldText = s => String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd').toLowerCase();
+const tokenize = s => foldText(s).split(/[^a-z0-9]+/).filter(Boolean);
+function cardHaystack(card) {
+  if (card._hay === undefined) card._hay = card.dataset.hay ? card.dataset.hay : foldText(card.textContent);
+  return card._hay;
+}
 function readSearchForm() {
   const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
   return { keyword: PFSec.cleanText(val('sKeyword'), 80).toLowerCase(), type: val('sType').toLowerCase(), area: val('sArea').toLowerCase(), status: val('sStatus') };
@@ -200,19 +211,15 @@ function doSearch(params) {
     return;
   }
   const keyword = q.keyword || '', type = q.type || '', area = q.area || '', status = ['lost', 'found', 'adopt'].includes(q.status) ? q.status : '';
+  const kwTokens = tokenize(keyword), typeTokens = tokenize(type), areaTokens = tokenize(area);
   let count = 0, total = 0;
-  document.querySelectorAll('.pet-card').forEach(card => {
+  const cards = document.querySelectorAll('.pet-card');
+  cards.forEach(card => {
     total++;
-    const cardName = (card.dataset.name || '').toLowerCase();
-    const cardArea = (card.dataset.area || card.querySelector('.pet-meta:nth-child(3)')?.textContent || '').toLowerCase();
-    const cardType = (card.dataset.type || '').toLowerCase();
-    const cardStatus = card.dataset.status;
-    const matchKw = !keyword || cardName.includes(keyword) || cardArea.includes(keyword) || (card.querySelector('.pet-meta')?.textContent || '').toLowerCase().includes(keyword);
-    const matchType = !type || cardType.includes(type);
-    const matchArea = !area || cardArea.includes(area);
-    const matchStatus = !status || cardStatus === status;
-    if (matchKw && matchType && matchArea && matchStatus) { card.style.display = 'block'; count++; }
-    else card.style.display = 'none';
+    const hay = cardHaystack(card);
+    const ok = kwTokens.every(w => hay.includes(w)) && typeTokens.every(w => hay.includes(w)) && areaTokens.every(w => hay.includes(w)) && (!status || card.dataset.status === status);
+    card.style.display = ok ? 'block' : 'none';
+    if (ok) count++;
   });
   const banner = document.getElementById('searchBanner');
   const bannerText = document.getElementById('searchBannerText');
@@ -370,15 +377,27 @@ function getZaloUrl(zalo, phone) {
   return v ? 'https://zalo.me/' + v : '';
 }
 
-function showPetContact() {
-  const pet = currentModalPet || {};
+async function showPetContact() {
+  const basePet = currentModalPet || {};
   const modal = document.querySelector('#petModal .modal');
   if (!modal) return;
-  const owner = {};   // hồ sơ người dùng không công khai; thông tin liên hệ lấy từ chính tin đăng
+  // Thông tin liên hệ không nằm trong dữ liệu công khai: chỉ người đã đăng nhập mới tải được (từng tin một)
+  if (typeof currentUser === 'undefined' || !currentUser) {
+    if (typeof showToast === 'function') showToast('Vui lòng đăng nhập để xem thông tin liên hệ của người đăng tin.');
+    if (typeof openAuthModal === 'function') openAuthModal('login');
+    return;
+  }
+  let c = null;
+  try { c = (basePet.phone || basePet.zalo || basePet.ownerEmail) ? { phone: basePet.phone, zalo: basePet.zalo, email: basePet.ownerEmail } : await PFDB.getContact(basePet.id); } catch (e) { c = null; }
+  if (c === null) { if (typeof showToast === 'function') showToast('Không tải được thông tin liên hệ. Hãy thử lại sau.'); return; }
+  const pet = { ...basePet, phone: c.phone || '', zalo: c.zalo || '', ownerEmail: c.email || '' };
+  const owner = {};
   const ownerName = pet.ownerName || owner.name || 'Người đăng tin';
   const phone = pet.phone || owner.phone || '';
   const email = (pet.ownerEmail && !/\.(local|demo)$/.test(pet.ownerEmail)) ? pet.ownerEmail : '';
-  const zaloUrl = getZaloUrl(pet.zalo, phone);
+  const sl = PFSec.parseSocialLink(pet.zalo);
+  const socialUrl = sl.ok && sl.url ? sl.url : PFSec.safeUrl(pet.zalo || '', { httpsOnly: true });
+  const socialLabel = sl.kind === 'facebook' ? 'Facebook' : sl.kind === 'zalo' ? 'Zalo' : 'Liên kết liên hệ';
   const initials = ownerName.trim().split(/\s+/).slice(-2).map(w => w[0]).join('').toUpperCase();
   const ownerPhoto = PFSec.safeImageSrc(owner.avatarPhoto);
   const avatar = ownerPhoto
@@ -407,10 +426,7 @@ function showPetContact() {
         <div class="cv"><small>Số điện thoại</small><b>${escapeHtml(phone || 'Chưa cung cấp')}</b></div>
         ${phone ? `<button type="button" class="contact-copy" data-copy="${escapeHtml(phone)}" onclick="copyContactValue(this.dataset.copy, this)">Sao chép</button>` : ''}
       </div>
-      <div class="contact-row">
-        <div class="cv"><small>Zalo</small><b>${zaloUrl ? escapeHtml(zaloUrl.replace(/^https?:\/\//, '')) : 'Chưa cung cấp'}</b></div>
-        ${zaloUrl ? `<button type="button" class="contact-copy" data-copy="${escapeHtml(zaloUrl)}" onclick="copyContactValue(this.dataset.copy, this)">Sao chép</button>` : ''}
-      </div>
+      ${socialUrl ? `<div class="contact-row"><div class="cv"><small>${escapeHtml(socialLabel)}</small><b>${escapeHtml(socialUrl.replace(/^https?:\/\//, ''))}</b></div><a class="contact-copy" href="${escapeHtml(socialUrl)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit">Mở</a><button type="button" class="contact-copy" data-copy="${escapeHtml(socialUrl)}" onclick="copyContactValue(this.dataset.copy, this)">Sao chép</button></div>` : ''}
       ${email ? `<div class="contact-row"><div class="cv"><small>Email</small><b>${escapeHtml(email)}</b></div><button type="button" class="contact-copy" data-copy="${escapeHtml(email)}" onclick="copyContactValue(this.dataset.copy, this)">Sao chép</button></div>` : ''}
     </div>
     <div class="contact-tip">ℹ️ Đây chỉ là thông tin liên lạc của người đăng tin. Hãy tự liên hệ, hỏi thêm đặc điểm nhận dạng để xác minh, hẹn gặp ở nơi công cộng và không chuyển tiền trước cho người lạ.</div>`;

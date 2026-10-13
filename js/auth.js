@@ -141,6 +141,13 @@ async function doLogin() {
   loginBusy = true;
   try {
     const cred = await PFDB.auth().signInWithEmailAndPassword(email, pw);
+    if (!cred.user.emailVerified) {                // email/mật khẩu: bắt buộc xác thực email trước khi dùng tài khoản
+      let sent = true;
+      try { await cred.user.sendEmailVerification(); } catch (e) { sent = false; }
+      await PFDB.auth().signOut();
+      PFSec.log('login_blocked', 'email chưa xác thực', email);
+      return showAuthError('loginError', 'Email này chưa được xác thực. ' + (sent ? 'Chúng tôi vừa gửi lại thư xác thực, hãy bấm vào liên kết trong thư (kiểm tra cả thư rác) rồi đăng nhập lại.' : 'Hãy kiểm tra hộp thư (kể cả thư rác) để bấm vào liên kết xác thực, hoặc thử lại sau ít phút.'));
+    }
     let me = await PFDB.whenMe(2500);
     if (!me) {                                   // tài khoản có trong Firebase Auth nhưng chưa có hồ sơ → tạo hồ sơ cơ bản
       await PFDB.upsertProfile({ uid: cred.user.uid, email, name: cred.user.displayName || email.split('@')[0], avatar: '👤' });
@@ -176,9 +183,10 @@ async function doRegister() {
   const pw = document.getElementById('regPw').value, pw2 = document.getElementById('regPw2').value;
   document.getElementById('regError').style.display = 'none';
   const E = m => showAuthError('regError', m);
-  if (!ho || !ten || !email || !phone || !pw || !pw2) return E('Vui lòng điền đầy đủ các trường bắt buộc (*).');
+  if (!ho || !ten || !email || !pw || !pw2) return E('Vui lòng điền đầy đủ các trường bắt buộc (*).');
   if (!PFSec.isEmail(email)) return E('Địa chỉ email không hợp lệ.');
-  if (!PFSec.isPhone(phone)) return E('Số điện thoại không hợp lệ.');
+  if (PFSec.isDisposableEmail(email)) return E('Vui lòng dùng email thật (không dùng email tạm thời).');
+  if (phone && !PFSec.isPhone(phone)) return E('Số điện thoại không hợp lệ.');
   const issues = PFSec.passwordIssues(pw, { email });
   if (issues.length) return E('' + issues[0]);
   if (pw !== pw2) return E('Mật khẩu xác nhận không khớp.');
@@ -189,12 +197,15 @@ async function doRegister() {
     const cred = await PFDB.auth().createUserWithEmailAndPassword(email, pw);
     await PFDB.upsertProfile({ uid: cred.user.uid, email, name, phone, avatar: '👤' });          // vai trò luôn là 'user' (luật Firestore bắt buộc)
     try { await cred.user.updateProfile({ displayName: name }); } catch (e) { }
-    const me = await PFDB.whenMe();
-    if (!me) throw new Error('Đã tạo tài khoản nhưng chưa tải được hồ sơ. Hãy đăng nhập lại.');
-    PFSec.log('register', 'tài khoản mới', email);
-    document.getElementById('registerForm').style.display = 'none';
-    document.getElementById('registerSuccess').style.display = 'block';
-    setTimeout(() => { closeModal('registerModal'); loginSuccess(me); document.getElementById('registerForm').style.display = 'flex'; document.getElementById('registerSuccess').style.display = 'none'; }, 1600);
+    let sent = true;
+    try { await cred.user.sendEmailVerification(); } catch (e) { sent = false; }
+    await PFDB.auth().signOut();                                   // chưa cho dùng tài khoản cho tới khi email được xác thực
+    PFSec.log('register', 'tài khoản mới, chờ xác thực email', email);
+    const form = document.getElementById('registerForm'), ok = document.getElementById('registerSuccess');
+    if (ok) { ok.innerHTML = ''; const h = document.createElement('h3'); h.textContent = 'Kiểm tra email của bạn'; const p = document.createElement('p'); p.textContent = sent ? ('Chúng tôi đã gửi thư xác thực tới ' + email + '. Hãy bấm vào liên kết trong thư (kiểm tra cả thư rác) rồi quay lại đăng nhập.') : 'Tài khoản đã tạo nhưng chưa gửi được thư xác thực. Hãy thử đăng nhập để nhận lại thư.'; ok.append(h, p); }
+    if (form) form.style.display = 'none';
+    if (ok) ok.style.display = 'block';
+    setTimeout(() => { closeModal('registerModal'); if (form) form.style.display = 'flex'; if (ok) ok.style.display = 'none'; openAuthModal('login'); }, 6000);
   } catch (e) { E(authErr(e)); } finally { registerBusy = false; }
 }
 function loginSuccess(user) {

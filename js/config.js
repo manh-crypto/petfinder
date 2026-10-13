@@ -28,6 +28,9 @@ window.PETFINDER_CONFIG = Object.freeze({
   //          3) cho phép trang web gọi Ollama: đặt biến môi trường OLLAMA_ORIGINS (vd: http://localhost:8123) rồi khởi động lại Ollama.
   // Ollama không chạy / không kết nối được = khung chat tự chuyển sang chế độ "trả lời nhanh" (bộ kiến thức có sẵn).
   // Đặt enabled:false để tắt hẳn AI.
+  // Firebase App Check (chống lạm dụng API từ ngoài web): tạo khóa reCAPTCHA v3 trong Firebase Console → App Check, dán "site key" vào đây.
+  // Để trống = chưa bật. Khi đã dán khóa, vào Console → App Check → Firestore → Enforce để chặn mọi truy cập không đến từ web của bạn.
+  appCheck: Object.freeze({ siteKey: '' }),
   ai: Object.freeze({
     enabled: true,
     endpoint: 'http://localhost:11434/api/chat',          // địa chỉ Ollama (chỉ chấp nhận localhost / 127.0.0.1)

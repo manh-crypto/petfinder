@@ -47,6 +47,13 @@
       const app = global.firebase.apps.length
         ? global.firebase.app()
         : global.firebase.initializeApp(config);
+      const ac = (global.PETFINDER_CONFIG || {}).appCheck;
+      if (ac && ac.siteKey) {                       // App Check (tùy chọn): chỉ web hợp lệ mới gọi được Firestore/Auth
+        try {
+          await loadScript(`https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/firebase-app-check-compat.js`);
+          global.firebase.appCheck().activate(ac.siteKey, true);
+        } catch (e) { console.warn('App Check không khởi tạo được:', e && e.message); }
+      }
       const auth = app.auth();
       await auth.setPersistence(global.firebase.auth.Auth.Persistence.LOCAL);
       return auth;

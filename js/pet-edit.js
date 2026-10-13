@@ -15,13 +15,15 @@ function ensureEditOverlay() {
       <label>Khu vực<input type="text" id="editPetArea" maxlength="80"/></label>
       <label>Địa điểm cụ thể<input type="text" id="editPetLocation" maxlength="200"/></label>
       <label>Số điện thoại liên hệ<input type="text" id="editPetPhone" maxlength="40"/></label>
+      <label>Link Zalo hoặc Facebook (không bắt buộc)<input type="text" id="editPetZalo" maxlength="200" placeholder="https://zalo.me/... hoặc https://facebook.com/..."/></label>
       <label>Mô tả<textarea id="editPetDesc" maxlength="1500"></textarea></label>
       <div class="admin-edit-actions"><button type="submit" class="btn-primary">Lưu thay đổi</button><button type="button" class="btn-outline" onclick="closeAdminEditPet()">Hủy</button></div>
     </form></div></div>`;
   document.body.appendChild(ov);
 }
 
-function openAdminEditPet(id) {
+let editingContact = {};
+async function openAdminEditPet(id) {
   const pets = loadPets();
   const p = pets.find(x => x.id === id);
   if (!p) return;
@@ -33,7 +35,9 @@ function openAdminEditPet(id) {
   document.getElementById('editPetStatus').value = p.status || 'lost';
   document.getElementById('editPetArea').value = p.area || '';
   document.getElementById('editPetLocation').value = p.location || '';
-  document.getElementById('editPetPhone').value = p.phone || '';
+  editingContact = (p.phone || p.zalo || p.ownerEmail) ? { phone: p.phone, zalo: p.zalo, email: p.ownerEmail } : ((await PFDB.getContact(id)) || {});
+  document.getElementById('editPetPhone').value = editingContact.phone || '';
+  document.getElementById('editPetZalo').value = editingContact.zalo || '';
   document.getElementById('editPetDesc').value = p.desc || '';
   document.getElementById('adminEditPetOverlay').classList.add('open');
 }
@@ -52,6 +56,8 @@ function saveAdminEditPet(event) {
   if (!canModifyPet(pets[idx])) { PFSec.log('access_denied', 'lưu tin của người khác: ' + pets[idx].id); showToast('Bạn chỉ có thể sửa tin do chính mình đăng.'); return false; }
   const phone = document.getElementById('editPetPhone').value.trim();
   if (phone && !PFSec.isPhone(phone)) { showToast('Số điện thoại không hợp lệ.'); return false; }
+  const social = PFSec.parseSocialLink(document.getElementById('editPetZalo').value);
+  if (!social.ok) { showToast('Liên kết chỉ nhận Zalo (zalo.me) hoặc Facebook, hoặc để trống.'); return false; }
   const edited = PFSec.sanitizePet({
     ...pets[idx],
     name: document.getElementById('editPetName').value.trim() || pets[idx].name,
@@ -59,7 +65,7 @@ function saveAdminEditPet(event) {
     status: document.getElementById('editPetStatus').value,          // sanitizePet ép về lost/found/adopt
     area: document.getElementById('editPetArea').value.trim(),
     location: document.getElementById('editPetLocation').value.trim(),
-    phone, desc: document.getElementById('editPetDesc').value.trim()
+    phone, zalo: social.url, ownerEmail: editingContact.email || '', desc: document.getElementById('editPetDesc').value.trim()
   });
   if (!edited) { showToast('Dữ liệu không hợp lệ.'); return false; }
   pets[idx] = edited;

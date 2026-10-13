@@ -148,6 +148,29 @@
   };
 
   // ------------------------------------------------------------------ chống dò mật khẩu (A07)
+  // Giới hạn tần suất kiểu cửa sổ trượt (sliding window): tối đa `max` lần trong `windowMs`. Độ phức tạp O(max) mỗi lần gọi.
+  // Chỉ là lớp giảm lạm dụng ở trình duyệt; giới hạn thật cần App Check / máy chủ.
+  // Liên kết liên hệ tùy chọn: Zalo hoặc Facebook (hoặc số điện thoại dùng cho Zalo). Trả về {ok, kind:'zalo'|'facebook'|'', url}
+  const SOCIAL = { zalo: ['zalo.me'], facebook: ['facebook.com', 'fb.com', 'fb.me', 'm.me', 'messenger.com'] };
+  PFSec.parseSocialLink = raw => {
+    const v = String(raw == null ? '' : raw).trim();
+    if (!v) return { ok: true, kind: '', url: '' };
+    if (/^[0-9+().\-\s]{8,20}$/.test(v)) { const d = v.replace(/\D/g, ''); return d.length >= 8 && d.length <= 13 ? { ok: true, kind: 'zalo', url: 'https://zalo.me/' + d } : { ok: false, kind: '', url: '' }; }
+    let u; try { u = new URL(/^[a-z]+:/i.test(v) ? v : 'https://' + v); } catch (e) { return { ok: false, kind: '', url: '' }; }
+    if (u.protocol !== 'https:' || u.username || u.password) return { ok: false, kind: '', url: '' };
+    const host = u.hostname.toLowerCase().replace(/^(www|m|web|mbasic)\./, '');
+    for (const kind of Object.keys(SOCIAL)) if (SOCIAL[kind].some(h => host === h || host.endsWith('.' + h))) return { ok: true, kind, url: u.href.slice(0, 200) };
+    return { ok: false, kind: '', url: '' };
+  };
+  const DISPOSABLE = new Set(['mailinator.com', 'guerrillamail.com', 'guerrillamail.net', '10minutemail.com', '10minutemail.net', 'tempmail.com', 'temp-mail.org', 'temp-mail.io', 'yopmail.com', 'trashmail.com', 'getnada.com', 'sharklasers.com', 'dispostable.com', 'maildrop.cc', 'throwawaymail.com', 'fakeinbox.com', 'mailnesia.com', 'mohmal.com', 'emailondeck.com', 'tempail.com', 'burnermail.io', 'mintemail.com', 'spamgourmet.com', 'moakt.com']);
+  PFSec.isDisposableEmail = e => DISPOSABLE.has(String(e || '').toLowerCase().split('@').pop());
+  PFSec.rateLimit = (key, max, windowMs) => {
+    const k = 'pf_rl_' + key, now = Date.now();
+    let hits = PFSec.readJSON(k, []); hits = (Array.isArray(hits) ? hits : []).filter(x => Number.isFinite(x) && now - x < windowMs);
+    if (hits.length >= max) { try { w.localStorage.setItem(k, JSON.stringify(hits)); } catch (e) { } return { ok: false, retryMs: windowMs - (now - hits[0]) }; }
+    hits.push(now); try { w.localStorage.setItem(k, JSON.stringify(hits)); } catch (e) { }
+    return { ok: true, retryMs: 0 };
+  };
   const TH_KEY = 'pf_throttle', MAX_FAILS = 5;
   const thKey = id => PFSec.cleanText(String(id || '').toLowerCase(), 120);
   PFSec.throttle = {
