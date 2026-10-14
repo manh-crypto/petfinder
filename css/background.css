@@ -33,7 +33,6 @@ body::after {
 .search-section  { background: rgba(255, 255, 255, .66); }
 .stories-section { background: rgba(255, 255, 255, .58); }
 .map-section     { background: rgba(255, 255, 255, .60); }
-.stats-section   { background: rgba(255, 236, 220, .55); }
 .shop-ads-section{ background: rgba(255, 243, 236, .42); }
 .how-section     { background: rgba(255, 255, 255, .40); }
 .form-section, .contact-section { background: transparent; }

@@ -110,7 +110,6 @@ async function submitPost() {
   // Re-sort to keep local lost pets at top
   const userArea = getUserArea();
   if (userArea && userArea !== '__skipped__') resortPetsByArea(userArea);
-  updateStats();
   resetForm();
   // Show alert popup if matches user area
   showAlertPopup(pet);
@@ -175,21 +174,6 @@ function loadSavedPets() {
   const pets = loadPets();
   pets.forEach(pet => addPetCardToGrid(pet, false));
   updateFavButtons();
-  updateStats();
-}
-
-// ========== STATS ==========
-function updateStats() {
-  const pets = loadPets();
-  const lost = pets.filter(p => p.status === 'lost').length;
-  const found = pets.filter(p => p.status === 'found').length;
-  const adopt = pets.filter(p => p.status === 'adopt').length;
-  // Update stat cards (add to base numbers)
-  const statNums = document.querySelectorAll('.stat-num');
-  if (statNums[0]) statNums[0].textContent = 126 + lost;
-  if (statNums[1]) statNums[1].textContent = 97 + found;
-  if (statNums[2]) statNums[2].textContent = 20 + adopt;
-  if (statNums[3]) statNums[3].textContent = (200 + pets.length) + '+';
 }
 
 // ========== SEARCH ==========

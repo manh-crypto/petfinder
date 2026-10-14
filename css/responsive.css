@@ -1,2 +1,49 @@
-/* Most @media breakpoints are embedded within their relevant component files
-   (auth.css, admin.css, cards.css) to keep rules close to the styles they modify. */
+/* Lớp responsive chung: chống tràn ngang trên điện thoại.
+   Các breakpoint riêng của từng thành phần nằm trong file CSS của thành phần đó. */
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html, body { max-width: 100%; overflow-x: hidden; }
+img, video, svg, canvas, iframe { max-width: 100%; }
+img, video { height: auto; }
+.leaflet-container img, .leaflet-container svg { max-width: none; }
+input, select, textarea, button { max-width: 100%; font-size: max(16px, 1em); }
+h1, h2, h3, h4, p, li, a, td, th, .pet-card, .modal { overflow-wrap: anywhere; }
+table { max-width: 100%; }
+pre, code { white-space: pre-wrap; word-break: break-word; }
+
+/* ===== Chân trang ===== */
+@media (max-width: 900px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) {
+  footer { padding: 40px 18px 24px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+  .footer-brand p { max-width: none; }
+  .footer-bottom { flex-direction: column; text-align: left; }
+}
+
+/* ===== Trang chủ ===== */
+@media (max-width: 640px) {
+  .hero { min-height: 420px; }
+  .hero-content { padding: 44px 18px; }
+  .hero-content p { font-size: 1rem; }
+  .btn-primary, .btn-outline { padding: 12px 22px; }
+  .search-section { padding: 24px 16px; }
+  .search-bar select, .search-bar input { min-width: 0; flex: 1 1 100%; }
+  .btn-search { width: 100%; }
+  .shop-ads-section, .how-section { padding: 40px 16px; }
+  .shop-ads-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
+  .how-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== Thông báo nhỏ ===== */
+@media (max-width: 520px) {
+  #toast { white-space: normal; width: max-content; max-width: calc(100vw - 32px); text-align: center; bottom: 16px; }
+}
+
+/* ===== Hộp thoại ===== */
+@media (max-width: 640px) {
+  .modal-overlay, [class$="-overlay"] { padding: 10px; }
+  .modal { max-width: 100%; width: 100%; max-height: 92vh; overflow-y: auto; box-sizing: border-box; }
+}

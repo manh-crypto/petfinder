@@ -37,14 +37,6 @@
     .shop-ad-tag { display: inline-block; background: var(--orange-pale); color: var(--orange-dark); font-size: 0.72rem; font-weight: 800; padding: 2px 10px; border-radius: 20px; width: fit-content; margin-bottom: 2px; }
     .shop-ad-link-icon { color: var(--orange); font-weight: 800; }
 
-    /* ===== STATS ===== */
-    .stats-section { padding: 52px 5%; background: var(--orange-light); }
-    .stats-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 20px; }
-    .stat-card { background: white; border-radius: var(--radius); padding: 28px 20px; text-align: center; border: 1.5px solid var(--border); box-shadow: var(--shadow); transition: transform 0.18s; }
-    .stat-card:hover { transform: translateY(-4px); }
-    .stat-icon { font-size: 2.2rem; margin-bottom: 10px; }
-    .stat-num { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 800; color: var(--orange); line-height: 1; margin-bottom: 4px; }
-    .stat-label { font-size: 0.88rem; color: var(--text-muted); font-weight: 600; }
 
     /* ===== HOW IT WORKS ===== */
     .how-section { background: var(--orange-light); padding: 60px 5%; }

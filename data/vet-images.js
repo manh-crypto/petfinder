@@ -2,53 +2,53 @@
 // cover = ảnh bìa, gallery = toàn bộ ảnh, doctors = ảnh đội ngũ/bác sĩ.
 const VET_IMAGES = {
   "vc1": {
-    "logo": "vc1/logo.jpeg",
-    "cover": "vc1/cover.jpeg",
+    "logo": "vc1/logo.jpg",
+    "cover": "vc1/cover.jpg",
     "gallery": [
-      "vc1/gallery-01.jpeg",
-      "vc1/gallery-02.webp",
-      "vc1/gallery-03.jpeg",
-      "vc1/gallery-04.jpeg",
-      "vc1/gallery-05.jpeg",
-      "vc1/gallery-06.jpeg"
+      "vc1/gallery-01.jpg",
+      "vc1/gallery-02.jpg",
+      "vc1/gallery-03.jpg",
+      "vc1/gallery-04.jpg",
+      "vc1/gallery-05.jpg",
+      "vc1/gallery-06.jpg"
     ],
     "doctors": [
       {
-        "img": "vc1/doctor-01.jpeg",
+        "img": "vc1/doctor-01.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc1/doctor-02.jpeg",
+        "img": "vc1/doctor-02.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc1/doctor-03.jpeg",
+        "img": "vc1/doctor-03.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       }
     ]
   },
   "vc2": {
-    "logo": "vc2/logo.png",
-    "cover": "vc2/cover.png",
+    "logo": "vc2/logo.jpg",
+    "cover": "vc2/cover.jpg",
     "gallery": [
-      "vc2/gallery-01.png",
-      "vc2/gallery-02.png",
-      "vc2/gallery-03.png",
-      "vc2/gallery-04.jpeg",
-      "vc2/gallery-05.jpeg",
-      "vc2/gallery-06.jpeg"
+      "vc2/gallery-01.jpg",
+      "vc2/gallery-02.jpg",
+      "vc2/gallery-03.jpg",
+      "vc2/gallery-04.jpg",
+      "vc2/gallery-05.jpg",
+      "vc2/gallery-06.jpg"
     ],
     "doctors": [
       {
-        "img": "vc2/doctor-01.png",
+        "img": "vc2/doctor-01.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc2/doctor-02.jpeg",
+        "img": "vc2/doctor-02.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc2/doctor-03.jpeg",
+        "img": "vc2/doctor-03.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       }
     ]
@@ -79,21 +79,21 @@ const VET_IMAGES = {
     ]
   },
   "vc4": {
-    "logo": "vc4/logo.jpeg",
-    "cover": "vc4/cover.png",
+    "logo": "vc4/logo.jpg",
+    "cover": "vc4/cover.jpg",
     "gallery": [
       "vc4/gallery-01.jpg",
-      "vc4/gallery-02.jpeg",
+      "vc4/gallery-02.jpg",
       "vc4/gallery-03.jpg",
-      "vc4/gallery-04.png",
-      "vc4/gallery-05.jpeg",
-      "vc4/gallery-06.jpeg",
-      "vc4/gallery-07.jpeg",
-      "vc4/gallery-08.png"
+      "vc4/gallery-04.jpg",
+      "vc4/gallery-05.jpg",
+      "vc4/gallery-06.jpg",
+      "vc4/gallery-07.jpg",
+      "vc4/gallery-08.jpg"
     ],
     "doctors": [
       {
-        "img": "vc4/doctor-01.jpeg",
+        "img": "vc4/doctor-01.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
@@ -101,164 +101,164 @@ const VET_IMAGES = {
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc4/doctor-03.jpeg",
+        "img": "vc4/doctor-03.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       }
     ]
   },
   "vc5": {
-    "logo": "vc5/logo.png",
-    "cover": "vc5/cover.jpeg",
+    "logo": "vc5/logo.jpg",
+    "cover": "vc5/cover.jpg",
     "gallery": [
-      "vc5/gallery-01.jpeg",
-      "vc5/gallery-02.jpeg",
-      "vc5/gallery-03.jpeg",
-      "vc5/gallery-04.png",
-      "vc5/gallery-05.png",
-      "vc5/gallery-06.jpeg",
-      "vc5/gallery-07.jpeg",
-      "vc5/gallery-08.jpeg",
-      "vc5/gallery-09.jpeg",
-      "vc5/gallery-10.jpeg",
-      "vc5/gallery-11.jpeg"
+      "vc5/gallery-01.jpg",
+      "vc5/gallery-02.jpg",
+      "vc5/gallery-03.jpg",
+      "vc5/gallery-04.jpg",
+      "vc5/gallery-05.jpg",
+      "vc5/gallery-06.jpg",
+      "vc5/gallery-07.jpg",
+      "vc5/gallery-08.jpg",
+      "vc5/gallery-09.jpg",
+      "vc5/gallery-10.jpg",
+      "vc5/gallery-11.jpg"
     ],
     "doctors": [
       {
-        "img": "vc5/doctor-01.jpeg",
+        "img": "vc5/doctor-01.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc5/doctor-02.jpeg",
+        "img": "vc5/doctor-02.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc5/doctor-03.jpeg",
+        "img": "vc5/doctor-03.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       }
     ]
   },
   "vc6": {
-    "logo": "vc6/logo.png",
-    "cover": "vc6/cover.jpeg",
+    "logo": "vc6/logo.jpg",
+    "cover": "vc6/cover.jpg",
     "gallery": [
-      "vc6/gallery-01.jpeg",
-      "vc6/gallery-02.jpeg",
-      "vc6/gallery-03.png",
-      "vc6/gallery-04.jpeg",
-      "vc6/gallery-05.jpeg",
-      "vc6/gallery-06.jpeg",
-      "vc6/gallery-07.jpeg",
-      "vc6/gallery-08.jpeg",
-      "vc6/gallery-09.jpeg",
-      "vc6/gallery-10.jpeg"
+      "vc6/gallery-01.jpg",
+      "vc6/gallery-02.jpg",
+      "vc6/gallery-03.jpg",
+      "vc6/gallery-04.jpg",
+      "vc6/gallery-05.jpg",
+      "vc6/gallery-06.jpg",
+      "vc6/gallery-07.jpg",
+      "vc6/gallery-08.jpg",
+      "vc6/gallery-09.jpg",
+      "vc6/gallery-10.jpg"
     ],
     "doctors": [
       {
-        "img": "vc6/doctor-01.jpeg",
+        "img": "vc6/doctor-01.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc6/doctor-02.jpeg",
+        "img": "vc6/doctor-02.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc6/doctor-03.jpeg",
+        "img": "vc6/doctor-03.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       }
     ]
   },
   "vc7": {
-    "logo": "vc7/logo.jpeg",
-    "cover": "vc7/cover.jpeg",
+    "logo": "vc7/logo.jpg",
+    "cover": "vc7/cover.jpg",
     "gallery": [
-      "vc7/gallery-01.jpeg",
-      "vc7/gallery-02.jpeg",
-      "vc7/gallery-03.jpeg",
-      "vc7/gallery-04.jpeg",
-      "vc7/gallery-05.jpeg",
-      "vc7/gallery-06.jpeg",
-      "vc7/gallery-07.jpeg",
-      "vc7/gallery-08.jpeg",
-      "vc7/gallery-09.jpeg",
-      "vc7/gallery-10.jpeg",
-      "vc7/gallery-11.jpeg"
+      "vc7/gallery-01.jpg",
+      "vc7/gallery-02.jpg",
+      "vc7/gallery-03.jpg",
+      "vc7/gallery-04.jpg",
+      "vc7/gallery-05.jpg",
+      "vc7/gallery-06.jpg",
+      "vc7/gallery-07.jpg",
+      "vc7/gallery-08.jpg",
+      "vc7/gallery-09.jpg",
+      "vc7/gallery-10.jpg",
+      "vc7/gallery-11.jpg"
     ],
     "doctors": [
       {
-        "img": "vc7/doctor-01.jpeg",
+        "img": "vc7/doctor-01.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc7/doctor-02.jpeg",
+        "img": "vc7/doctor-02.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc7/doctor-03.jpeg",
+        "img": "vc7/doctor-03.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc7/doctor-04.jpeg",
+        "img": "vc7/doctor-04.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       }
     ]
   },
   "vc8": {
-    "logo": "vc8/logo.jpeg",
-    "cover": "vc8/cover.png",
+    "logo": "vc8/logo.jpg",
+    "cover": "vc8/cover.jpg",
     "gallery": [
-      "vc8/gallery-01.jpeg",
-      "vc8/gallery-02.jpeg",
-      "vc8/gallery-03.jpeg",
-      "vc8/gallery-04.jpeg",
-      "vc8/gallery-05.jpeg",
-      "vc8/gallery-06.jpeg",
-      "vc8/gallery-07.jpeg",
-      "vc8/gallery-08.png",
-      "vc8/gallery-09.jpeg",
-      "vc8/gallery-10.jpeg",
-      "vc8/gallery-11.jpeg"
+      "vc8/gallery-01.jpg",
+      "vc8/gallery-02.jpg",
+      "vc8/gallery-03.jpg",
+      "vc8/gallery-04.jpg",
+      "vc8/gallery-05.jpg",
+      "vc8/gallery-06.jpg",
+      "vc8/gallery-07.jpg",
+      "vc8/gallery-08.jpg",
+      "vc8/gallery-09.jpg",
+      "vc8/gallery-10.jpg",
+      "vc8/gallery-11.jpg"
     ],
     "doctors": [
       {
-        "img": "vc8/doctor-01.jpeg",
+        "img": "vc8/doctor-01.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc8/doctor-02.jpeg",
+        "img": "vc8/doctor-02.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc8/doctor-03.jpeg",
+        "img": "vc8/doctor-03.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       }
     ]
   },
   "vc9": {
-    "logo": "vc9/logo.jpeg",
-    "cover": "vc9/cover.png",
+    "logo": "vc9/logo.jpg",
+    "cover": "vc9/cover.jpg",
     "gallery": [
-      "vc9/gallery-01.jpeg",
-      "vc9/gallery-02.jpeg",
-      "vc9/gallery-03.jpeg",
-      "vc9/gallery-04.png",
-      "vc9/gallery-05.jpeg",
-      "vc9/gallery-06.jpeg",
-      "vc9/gallery-07.jpeg",
-      "vc9/gallery-08.jpeg",
-      "vc9/gallery-09.jpeg",
-      "vc9/gallery-10.jpeg"
+      "vc9/gallery-01.jpg",
+      "vc9/gallery-02.jpg",
+      "vc9/gallery-03.jpg",
+      "vc9/gallery-04.jpg",
+      "vc9/gallery-05.jpg",
+      "vc9/gallery-06.jpg",
+      "vc9/gallery-07.jpg",
+      "vc9/gallery-08.jpg",
+      "vc9/gallery-09.jpg",
+      "vc9/gallery-10.jpg"
     ],
     "doctors": [
       {
-        "img": "vc9/doctor-01.jpeg",
+        "img": "vc9/doctor-01.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc9/doctor-02.jpeg",
+        "img": "vc9/doctor-02.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       },
       {
-        "img": "vc9/doctor-03.jpeg",
+        "img": "vc9/doctor-03.jpg",
         "caption": "Hình ảnh bác sĩ / đội ngũ chăm sóc thú cưng"
       }
     ]
