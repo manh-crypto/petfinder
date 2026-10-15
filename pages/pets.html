@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="../css/profile.css"/>
   <link rel="stylesheet" href="../css/admin.css"/>
   <link rel="stylesheet" href="../css/footer.css"/>
+<link rel="stylesheet" href="../css/poster.css"/>
   <link rel="stylesheet" href="../css/responsive.css"/>
 <link rel="stylesheet" href="../css/chatbot.css"/>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E🐾%3C/text%3E%3C/svg%3E"/>
@@ -183,11 +184,11 @@
     </div>
     <input type="hidden" id="activeFormType" value="lost"/>
     <div class="form-grid">
-      <div class="form-group"><label>Tên thú cưng <span>*</span></label><input type="text" id="fName" class="form-control" placeholder="VD: Mochi, Kitty..."/></div>
+      <div class="form-group" id="grpName"><label>Tên thú cưng <span>*</span></label><input type="text" id="fName" class="form-control" placeholder="VD: Mochi, Kitty..."/></div>
       <div class="form-group"><label>Loại thú <span>*</span></label><input type="text" id="fType" class="form-control" list="petTypeList" maxlength="30" placeholder="VD: Chó, Mèo, Thỏ, Hamster, Vẹt..." autocomplete="off"/><datalist id="petTypeList"><option value="Chó"><option value="Mèo"><option value="Thỏ"><option value="Hamster"><option value="Chuột lang (guinea pig)"><option value="Sóc"><option value="Nhím"><option value="Chinchilla"><option value="Chim"><option value="Vẹt"><option value="Cá"><option value="Rùa"><option value="Thằn lằn"><option value="Rắn"><option value="Ếch"><option value="Nhện"><option value="Chồn sương"><option value="Cáo"><option value="Gà"><option value="Vịt"><option value="Heo"><option value="Dê"><option value="Ngựa"></datalist></div>
       <div class="form-group"><label>Giống</label><input type="text" id="fBreed" class="form-control" placeholder="VD: Poodle, Mèo Anh..."/></div>
       <div class="form-group"><label>Giới tính</label><select id="fGender" class="form-control"><option value="">Chọn giới tính</option><option value="Đực">Đực</option><option value="Cái">Cái</option></select></div>
-      <div class="form-group"><label>Ngày thất lạc <span>*</span></label><input type="date" id="fDate" class="form-control"/></div>
+      <div class="form-group" id="grpDate"><label>Ngày thất lạc <span>*</span></label><input type="date" id="fDate" class="form-control"/></div>
       <div class="form-group"><label>Khu vực <span>*</span></label><select id="fArea" class="form-control"><option value="">Chọn khu vực</option><option>TP. Hồ Chí Minh</option><option>Quận 1</option><option>Quận 3</option><option>Quận 4</option><option>Quận 5</option><option>Quận 6</option><option>Quận 7</option><option>Quận 8</option><option>Quận 10</option><option>Quận 11</option><option>Quận 12</option><option>Bình Thạnh</option><option>Gò Vấp</option><option>Tân Bình</option><option>Tân Phú</option><option>Phú Nhuận</option><option>Bình Tân</option><option>Thủ Đức</option><option>Hà Nội</option><option>Đà Nẵng</option><option>Bình Dương</option></select></div>
       <div class="form-group full"><label>Địa điểm cụ thể <span>*</span></label><input type="text" id="fLocation" class="form-control" placeholder="VD: Công viên Lê Thị Riêng, Quận 10..."/></div>
       <div class="form-group full"><label>Mô tả đặc điểm nhận dạng</label><textarea id="fDesc" class="form-control" placeholder="Màu lông, vòng cổ, vết thương, đặc điểm nổi bật..."></textarea></div>
@@ -545,11 +546,11 @@
       <div class="footer-logo">PetFinder</div>
       <p>Kết nối cộng đồng yêu thú cưng, giúp những người bạn nhỏ tìm lại được ngôi nhà thân yêu.</p>
       <div class="footer-socials">
-        <a class="social-btn" href="https://www.facebook.com/share/g/1Db11cVRdx/" target="_blank" rel="noopener noreferrer" title="Cộng đồng PetFinder trên Facebook" aria-label="Facebook">f</a>
+        <a class="social-btn" href="https://www.facebook.com/share/g/1Db11cVRdx/" target="_blank" rel="noopener noreferrer" title="Cộng đồng PetFinder trên Facebook" aria-label="Facebook">f</a><a class="social-btn" href="https://www.tiktok.com/@petfinder_thucung" target="_blank" rel="noopener noreferrer" title="PetFinder trên TikTok" aria-label="TikTok"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.73 5.7 3.14 0 5.68-2.55 5.68-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg></a>
       </div>
     </div>
     <div class="footer-col"><h4>Dịch vụ</h4><ul><li><a href="../index.html#form">Đăng tin</a></li><li><a href="pets.html">Thú cưng</a></li><li><a href="map.html">Bản đồ</a></li><li><a href="veterinary.html">Cấp cứu 24/7</a></li></ul></div>
-    <div class="footer-col"><h4>Cộng đồng</h4><ul><li><a href="https://www.facebook.com/share/g/1Db11cVRdx/" target="_blank" rel="noopener noreferrer">Diễn đàn</a></li><li><a href="news.html">Tin tức thú cưng</a></li></ul></div>
+    <div class="footer-col"><h4>Cộng đồng</h4><ul><li><a href="https://www.facebook.com/share/g/1Db11cVRdx/" target="_blank" rel="noopener noreferrer">Diễn đàn</a></li><li><a href="https://www.tiktok.com/@petfinder_thucung" target="_blank" rel="noopener noreferrer">TikTok</a></li><li><a href="news.html">Tin tức thú cưng</a></li></ul></div>
     <div class="footer-col"><h4>Liên hệ</h4><ul><li><a href="mailto:petfinder254@gmail.com">petfinder254@gmail.com</a></li><li><a href="privacy.html">Chính sách bảo mật</a></li><li><a href="data-deletion.html">Xóa dữ liệu</a></li></ul></div>
   </div>
   <div class="footer-bottom">
@@ -575,5 +576,6 @@
 <script src="../js/favorite.js"></script>
 <script src="../js/app.js"></script>
 <script src="../js/chatbot.js"></script>
+<script src="../js/poster.js"></script>
 </body>
 </html>

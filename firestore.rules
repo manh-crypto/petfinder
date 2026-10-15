@@ -39,8 +39,11 @@ service cloud.firestore {
         && str(d.get('area', ''), 80) && str(d.get('location', ''), 200) && str(d.get('date', ''), 32)
         && str(d.desc, 1500) && str(d.get('icon', ''), 8) && str(d.get('ownerName', ''), 80)
         && d.status in ['lost','found','adopt']
-        && d.imageData is list && d.imageData.size() <= 5;
+        && d.imageData is list && d.imageData.size() <= 5
+        && imgOk(d.imageData, 0) && imgOk(d.imageData, 1) && imgOk(d.imageData, 2) && imgOk(d.imageData, 3) && imgOk(d.imageData, 4);
     }
+    // Mỗi ảnh là chuỗi, tối đa ~900 KB (giới hạn tài liệu Firestore là 1 MiB)
+    function imgOk(l, i) { return l.size() <= i || (l[i] is string && l[i].size() <= 900000); }
     match /pets/{id} {
       allow read: if true;
       allow create: if (isAdmin() || (signedIn() && notBanned() && request.resource.data.ownerUid == request.auth.uid
@@ -78,7 +81,10 @@ service cloud.firestore {
     match /feedback/{id} {
       allow read: if isAdmin() || resource.data.public == true
         || (signedIn() && resource.data.ownerUid == request.auth.uid);
-      allow create: if str(request.resource.data.message, 3000) && str(request.resource.data.name, 80) && str(request.resource.data.email, 120)
+      allow create: if request.resource.data.keys().hasOnly(['id','createdAt','name','email','type','rating','message','public','status','reply','repliedAt','userEmail','ownerUid'])
+        && str(request.resource.data.get('userEmail', ''), 120)
+        && (request.resource.data.get('userEmail', '') == '' || (signedIn() && request.resource.data.userEmail == request.auth.token.email))
+        && str(request.resource.data.message, 3000) && str(request.resource.data.name, 80) && str(request.resource.data.email, 120)
         && request.resource.data.type in ['support','feedback','bug','review','partner']
         && request.resource.data.status == 'new'
         && request.resource.data.get('reply', '') == ''

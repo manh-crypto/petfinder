@@ -23,6 +23,7 @@ function renderMyPosts() {
         <div class="mini-meta">${PFSec.esc(p.location || p.area)} · ${PFSec.esc(statusLabelMap[p.status] || '')}</div>
         <div class="mini-meta">${PFSec.esc(p.date)}</div>
       </div>
+      ${p.status === 'lost' ? `<button class="mini-poster" data-id="${PFSec.esc(p.id)}" onclick="openPosterEditor(this.dataset.id)">Tạo poster</button>` : ''}
       <button class="mini-delete" data-id="${PFSec.esc(p.id)}" onclick="deleteMyPost(this.dataset.id)">Xóa</button>
     </div>
   `).join('');
@@ -153,6 +154,7 @@ function renderAccountPosts() {
         <div class="mini-meta">${PFSec.esc(p.date)}</div>
       </div>
       <div class="mini-card-actions">
+        ${p.status === 'lost' ? `<button class="mini-poster" data-id="${PFSec.esc(p.id)}" onclick="openPosterEditor(this.dataset.id)">Tạo poster</button>` : ''}
         <button class="mini-edit" data-id="${PFSec.esc(p.id)}" onclick="openAdminEditPet(this.dataset.id)">Sửa</button>
         <button class="mini-delete" data-id="${PFSec.esc(p.id)}" onclick="deleteAccountPost(this.dataset.id)">Xóa</button>
       </div>

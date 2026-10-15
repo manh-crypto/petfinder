@@ -32,8 +32,12 @@ async function geocodePetLocation(location, area) {
 }
 
 async function submitPost() {
-  const name = document.getElementById('fName').value.trim();
+  const status = document.getElementById('activeFormType').value;
   const type = PFSec.cleanText(document.getElementById('fType').value, 30);
+  // Tin nhặt được / cho nhận nuôi không cần tên thú cưng và ngày thất lạc: tự đặt tên theo loại, ngày = hôm nay
+  const lostOnly = status === 'lost';
+  const name = lostOnly ? document.getElementById('fName').value.trim() : (type ? type + (status === 'found' ? ' nhặt được' : ' cần nhận nuôi') : '');
+  if (!lostOnly) { const d = new Date(); document.getElementById('fDate').value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   const breed = document.getElementById('fBreed').value.trim();
   const gender = document.getElementById('fGender').value;
   const date = document.getElementById('fDate').value;
@@ -42,7 +46,6 @@ async function submitPost() {
   const desc = document.getElementById('fDesc').value.trim();
   const phone = document.getElementById('fPhone').value.trim();
   const zalo = document.getElementById('fZalo').value.trim();
-  const status = document.getElementById('activeFormType').value;
   const err = document.getElementById('formError');
   err.style.display = 'none';
 
@@ -490,6 +493,12 @@ function switchFormTab(btn, type) {
   document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('activeFormType').value = type;
+  applyFormTypeFields(type);
+}
+// Chỉ tin thất lạc mới cần tên thú cưng và ngày thất lạc
+function applyFormTypeFields(type) {
+  const lost = type === 'lost';
+  ['grpName', 'grpDate'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = lost ? '' : 'none'; });
 }
 
 // ========== ADD FAV BUTTONS TO EXISTING CARDS ==========
