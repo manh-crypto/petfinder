@@ -1,6 +1,13 @@
 // ===== Profile: My Posts panel + Account settings =====
 // ========== MY POSTS PANEL ==========
-function openMyPosts() {
+// Chờ Firebase xác định trạng thái đăng nhập (tối đa 6 giây) rồi đồng bộ currentUser, để nút mở đúng ngay cả khi bấm lúc trang vừa tải
+async function waitForAuth() {
+  if (currentUser || !window.PFDB) return;
+  try { await Promise.race([PFDB.ready, new Promise(r => setTimeout(r, 6000))]); } catch (e) { /* bỏ qua */ }
+  if (typeof syncCurrentUser === 'function') syncCurrentUser();
+}
+async function openMyPosts() {
+  await waitForAuth();
   renderMyPosts();
   document.getElementById('myPostsPanel').classList.add('open');
 }
@@ -44,7 +51,8 @@ function deleteMyPost(id) {
 
 // ========== ACCOUNT SETTINGS ==========
 let pendingAvatarData = null;
-function openAccountSettings() {
+async function openAccountSettings() {
+  await waitForAuth();
   if (!currentUser) { showToast('Vui lòng đăng nhập để vào cài đặt!'); openAuthModal('login'); return; }
   pendingAvatarData = null;
   document.getElementById('accName').value = currentUser.name || '';

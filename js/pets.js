@@ -21,14 +21,21 @@ async function previewImages(input) {
 }
 
 async function geocodePetLocation(location, area) {
-  if (!window.PetFinderGeocoding || (!location && !area)) return {};
-  try {
-    const results = await window.PetFinderGeocoding.search([location, area, 'Việt Nam'].filter(Boolean).join(', '));
-    return results[0] ? { lat: results[0].lat, lng: results[0].lng } : {};
-  } catch (error) {
-    console.warn('Could not geocode pet location:', error);
-    return {};
+  // Thử địa chỉ đầy đủ, rồi chỉ khu vực; nếu dịch vụ tìm địa chỉ lỗi thì dùng tâm tỉnh/thành để tin vẫn hiện trên bản đồ
+  const tries = [[location, area], [area]].map(a => a.filter(Boolean).join(', ')).filter((v, i, arr) => v && arr.indexOf(v) === i);
+  if (window.PetFinderGeocoding) {
+    for (const q of tries) {
+      try {
+        const results = await window.PetFinderGeocoding.search([q, 'Việt Nam'].join(', '));
+        if (results[0]) return { lat: results[0].lat, lng: results[0].lng };
+      } catch (error) { console.warn('Could not geocode pet location:', error); }
+    }
   }
+  if (typeof pfProvinceIndex === 'function' && typeof PF_PROVINCES !== 'undefined') {
+    const i = pfProvinceIndex({ area, location });
+    if (i >= 0) return { lat: PF_PROVINCES[i][1], lng: PF_PROVINCES[i][2] };
+  }
+  return {};
 }
 
 async function submitPost() {

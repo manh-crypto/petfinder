@@ -48,11 +48,11 @@
     <button class="btn-register" onclick="openAuthModal('register')">Đăng ký</button>
   </div>
   <div class="nav-user" id="navUser">
-    <button class="nav-avatar" id="navAvatar" onclick="window.location.href='../pages/profile.html#settings'" style="cursor:pointer" title="Cài đặt tài khoản">👤</button>
+    <button class="nav-avatar" id="navAvatar" onclick="openAccountSettings()" style="cursor:pointer" title="Cài đặt tài khoản">👤</button>
     <span class="nav-username" id="navUsername">Người dùng</span>
     <button class="btn-admin" id="navAdminBtn" onclick="window.location.href='../pages/admin.html'" style="display:none">Quản trị</button>
     <button class="btn-login" onclick="window.location.href='../pages/profile.html#posts'" style="margin-right:4px">Tin của tôi</button>
-    <button class="btn-login" onclick="window.location.href='../pages/profile.html#settings'" style="margin-right:4px">Cài đặt</button>
+    <button class="btn-login" onclick="openAccountSettings()" style="margin-right:4px">Cài đặt</button>
     <button class="btn-logout" onclick="logout()">Đăng xuất</button>
   </div>
 </nav>
@@ -613,13 +613,14 @@
 <script src="../js/auth.js"></script>
 <script src="../js/favorite.js"></script>
 <script>
-window.addEventListener('load', function(){
+// Mở bảng theo địa chỉ (#settings, #posts): lúc tải trang và mỗi khi địa chỉ đổi
+function openFromHash() {
   const h = window.location.hash;
-  setTimeout(function(){
-    if (h === '#posts' && typeof openMyPosts === 'function') openMyPosts();
-    if (h === '#settings' && typeof openAccountSettings === 'function') openAccountSettings();
-  }, 250);
-});
+  if (h === '#posts' && typeof openMyPosts === 'function') openMyPosts();
+  if (h === '#settings' && typeof openAccountSettings === 'function') openAccountSettings();
+}
+window.addEventListener('load', openFromHash);
+window.addEventListener('hashchange', openFromHash);
 </script>
 <script src="../js/app.js"></script>
 <script src="../js/chatbot.js"></script>

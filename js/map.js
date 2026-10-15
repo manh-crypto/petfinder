@@ -22,6 +22,19 @@ function initMap() {
   }
   leafletMap = L.map('leafletMap', { zoomControl: true, scrollWheelZoom: true }).setView([10.7769, 106.7009], 12);
   setupBaseMap(leafletMap, mapEl);
+  renderPetMarkers();
+  addProvinceControl();
+  applyMapFilters(false);
+  // Đảm bảo Leaflet tính lại kích thước sau khi bố cục ổn định
+  setTimeout(() => { if (leafletMap) { leafletMap.invalidateSize(); applyMapFilters(false); } }, 200);
+}
+
+
+// Vẽ lại toàn bộ điểm tin trên bản đồ từ dữ liệu hiện có (gọi lúc mở bản đồ và mỗi khi dữ liệu thay đổi)
+function renderPetMarkers() {
+  if (!leafletMap) return;
+  allLeafletMarkers.forEach(m => leafletMap.removeLayer(m));
+  allLeafletMarkers = [];
   // Tin do người dùng đăng (đã được chuyển địa chỉ → tọa độ khi đăng tin) cũng hiện trên bản đồ
   const savedMarkers = typeof loadPets === 'function'
     ? loadPets().filter(pet => Number.isFinite(Number(pet.lat)) && Number.isFinite(Number(pet.lng))).map(pet => ({
@@ -51,11 +64,17 @@ function initMap() {
     m._latlng = [p.lat, p.lng];
     allLeafletMarkers.push(m);
   });
-  addProvinceControl();
-  applyMapFilters(false);
-  // Đảm bảo Leaflet tính lại kích thước sau khi bố cục ổn định
-  setTimeout(() => { if (leafletMap) { leafletMap.invalidateSize(); applyMapFilters(false); } }, 200);
 }
+
+// Làm mới bản đồ khi có tin mới/đổi/xóa (dữ liệu Firestore về sau khi bản đồ đã mở), giữ nguyên vị trí đang xem
+let mapRefreshTimer = 0;
+function refreshMapData() {
+  if (!leafletMap) return;
+  renderPetMarkers();
+  refreshProvinceControl();
+  applyMapFilters(false, false);
+}
+window.addEventListener('pf:data', () => { clearTimeout(mapRefreshTimer); mapRefreshTimer = setTimeout(refreshMapData, 250); });
 
 // ---------- Ảnh nền bản đồ: thử lần lượt nhiều nguồn, tự chuyển khi tải lỗi ----------
 const BASEMAPS = [
@@ -96,7 +115,7 @@ function setupBaseMap(map, mapEl) {
 let mapStatusFilter = 'all';
 let mapProvinceFilter = -1;          // -1 = Toàn quốc, còn lại là chỉ số trong PF_PROVINCES
 
-function applyMapFilters(animate) {
+function applyMapFilters(animate, fit = true) {
   if (!leafletMap) return;
   const shown = [];
   allLeafletMarkers.forEach(m => {
@@ -106,12 +125,18 @@ function applyMapFilters(animate) {
   const where = mapProvinceFilter < 0 ? '' : ' tại ' + PF_PROVINCES[mapProvinceFilter][0];
   const countEl = document.getElementById('mapCount');
   if (countEl) countEl.textContent = 'Đang hiển thị ' + shown.length + ' địa điểm' + where;
+  if (!fit) return;
   const opt = { animate: !!animate, maxZoom: 14 };
   if (mapProvinceFilter >= 0 && !shown.length) leafletMap.setView([PF_PROVINCES[mapProvinceFilter][1], PF_PROVINCES[mapProvinceFilter][2]], 10, opt);
   else if (shown.length === 1) leafletMap.setView(shown[0], 14, opt);
   else if (shown.length) leafletMap.fitBounds(L.latLngBounds(shown).pad(0.25), opt);
 }
 
+let provinceCtl = null;
+function refreshProvinceControl() {
+  if (provinceCtl) { leafletMap.removeControl(provinceCtl); provinceCtl = null; }
+  addProvinceControl();
+}
 function addProvinceControl() {
   const counts = {};
   allLeafletMarkers.forEach(m => { counts[m._province] = (counts[m._province] || 0) + 1; });
@@ -124,11 +149,13 @@ function addProvinceControl() {
       div.innerHTML = `<label class="map-province-label">Tỉnh / thành phố</label><select class="map-province-select" aria-label="Lọc theo tỉnh thành">${opts.join('')}</select>`;
       L.DomEvent.disableClickPropagation(div);
       L.DomEvent.disableScrollPropagation(div);
+      div.querySelector('select').value = String(mapProvinceFilter);
       div.querySelector('select').addEventListener('change', e => { mapProvinceFilter = Number(e.target.value); applyMapFilters(true); });
       return div;
     }
   });
-  new Ctl().addTo(leafletMap);
+  provinceCtl = new Ctl();
+  provinceCtl.addTo(leafletMap);
 }
 
 function setMapSearchState(message, isError = false) {
