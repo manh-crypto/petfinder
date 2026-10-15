@@ -46,7 +46,6 @@
     .acc-save { width: 100%; margin-top: 18px; padding: 13px; border-radius: 12px; font-size: 1rem; }
     #accPwSection .auth-field { margin-bottom: 12px; }
     #accPwSection .auth-btn { width: 100%; }
-    .account-modal .mini-card { background: #fff; border-radius: 14px; padding: 14px; }
     @media (max-width: 760px) {
       .account-modal { width: 100%; max-height: 96vh; border-radius: 20px 20px 0 0; }
       .acc-hero { flex-wrap: wrap; padding: 30px 22px 54px; gap: 18px; }
@@ -73,7 +72,6 @@
     .account-panel.active { display: block; }
     .mini-edit { background: var(--bg); color: var(--text-muted); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; font-weight: 700; font-size: 0.78rem; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.15s; }
     .mini-edit:hover { background: var(--orange-light); border-color: var(--orange); color: var(--orange-dark); }
-    .mini-card-actions { display: flex; gap: 6px; flex-direction: column; }
     .auth-logo { text-align: center; font-size: 2rem; margin-bottom: 4px; }
     .auth-title { font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 4px; color: var(--text); }
     .auth-sub { font-size: 0.88rem; color: var(--text-muted); text-align: center; margin-bottom: 24px; }

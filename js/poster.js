@@ -69,23 +69,35 @@
     ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.16)'; ctx.shadowBlur = 18; ctx.shadowOffsetY = 6;
     ctx.fillStyle = fill; rr(ctx, x, y, w, h, r); ctx.fill(); ctx.restore();
   }
-  function drawPhoto(ctx, img, icon, x, y, w, h) {
+  function drawContain(ctx, img, x, y, w, h) {
+    const r = Math.min(w / img.width, h / img.height);
+    const dw = img.width * r, dh = img.height * r;
+    ctx.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+  }
+  // fit = 'full': hiện toàn bộ ảnh (phần thừa được lấp bằng chính ảnh làm mờ); 'fill': cắt cho vừa khung
+  function drawPhoto(ctx, img, icon, x, y, w, h, fit) {
     shadowBox(ctx, x - 6, y - 6, w + 12, h + 12, 28, '#fff');
     ctx.save(); rr(ctx, x, y, w, h, 24); ctx.clip();
     ctx.fillStyle = '#FFE3C2'; ctx.fillRect(x, y, w, h);
-    if (img) drawCover(ctx, img, x, y, w, h);
+    if (img && fit !== 'fill') {
+      ctx.save();
+      if ('filter' in ctx) ctx.filter = 'blur(14px)';
+      ctx.globalAlpha = 0.55; drawCover(ctx, img, x - 20, y - 20, w + 40, h + 40);
+      ctx.restore();
+      drawContain(ctx, img, x, y, w, h);
+    } else if (img) drawCover(ctx, img, x, y, w, h);
     else { ctx.font = Math.min(w, h) * 0.5 + 'px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#2C2415'; ctx.fillText(icon || '🐾', x + w / 2, y + h / 2); }
     ctx.restore();
   }
-  function drawInfo(ctx, rows, x, y, w, lh, labelSize, valueSize) {
+  function drawInfo(ctx, rows, x, y, w, lh, labelSize, valueSize, dry) {
     const HEAD = '"Nunito", "Segoe UI", Arial, sans-serif';
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     for (const r of rows) {
       if (!r.value) continue;
       ctx.font = '800 ' + labelSize + 'px ' + HEAD; ctx.fillStyle = '#6B5744';
-      y += labelSize + 2; ctx.fillText(r.label, x, y);
+      y += labelSize + 2; if (!dry) ctx.fillText(r.label, x, y);
       ctx.font = '700 ' + valueSize + 'px ' + HEAD; ctx.fillStyle = '#2C2415';
-      for (const line of wrap(ctx, r.value, w, r.lines)) { y += lh; ctx.fillText(line, x, y); }
+      for (const line of wrap(ctx, r.value, w, r.lines)) { y += lh; if (!dry) ctx.fillText(line, x, y); }
       y += 14;
     }
     return y;
@@ -128,20 +140,26 @@
     if (d.size === 'a4') {
       ctx.fillStyle = accent; ctx.fillRect(0, 0, S.w, 137);
       ctx.fillStyle = '#fff'; ctx.font = '800 88px ' + HEAD; ctx.fillText('THẤT LẠC', S.w / 2, 102);
-      drawPhoto(ctx, img, d.icon, 54, 162, 686, 260);
+      const bh = boxHeight(d), boxTop = S.h - 76 - 24 - bh;
+      const rowsH = drawInfo(ctx, rows, 54, 0, 686, 29, 19, 24, true);
+      const maxPh = Math.max(200, boxTop - 14 - 134 - rowsH - 162);            // chiều cao ảnh tối đa để chữ không bị chèn
+      const ph = Math.round(img && d.fit !== 'fill' ? Math.max(200, Math.min(maxPh, 686 / (img.width / img.height))) : Math.min(maxPh, 380));
+      drawPhoto(ctx, img, d.icon, 54, 162, 686, ph, d.fit);
+      const pb = 162 + ph;
       ctx.textAlign = 'left'; ctx.fillStyle = '#C95010'; fitFont(ctx, d.name.toUpperCase(), '800', HEAD, 70, 34, 686);
-      ctx.fillText(d.name.toUpperCase(), 54, 506);
+      ctx.fillText(d.name.toUpperCase(), 54, pb + 84);
       ctx.fillStyle = '#6B5744'; ctx.font = '700 26px ' + BODY;
-      const sub = wrap(ctx, d.line, 686, 1)[0] || ''; ctx.fillText(sub, 54, 544);
-      drawInfo(ctx, rows, 54, 556, 686, 29, 19, 24);
-      const bh = boxHeight(d);
-      drawContact(ctx, d, 54, S.h - 76 - 24 - bh, 686, bh);
+      const sub = wrap(ctx, d.line, 686, 1)[0] || ''; ctx.fillText(sub, 54, pb + 122);
+      drawInfo(ctx, rows, 54, pb + 134, 686, 29, 19, 24);
+      drawContact(ctx, d, 54, boxTop, 686, bh);
       drawFooter(ctx, d, S.w, S.h - 76, 76);
     } else {
       ctx.fillStyle = accent; ctx.fillRect(0, 0, S.w, 127);
       ctx.fillStyle = '#fff'; ctx.font = '800 76px ' + HEAD; ctx.fillText('THẤT LẠC', S.w / 2, 92);
-      drawPhoto(ctx, img, d.icon, 50, 166, 480, 450);
-      drawContact(ctx, d, 44, 650, 492, boxHeight(d));
+      const sbh = boxHeight(d), maxSh = 1014 - 20 - sbh - 36 - 166;
+      const sh = Math.round(img && d.fit !== 'fill' ? Math.max(340, Math.min(maxSh, 480 / (img.width / img.height))) : Math.min(maxSh, 450));
+      drawPhoto(ctx, img, d.icon, 50, 166, 480, sh, d.fit);
+      drawContact(ctx, d, 44, 166 + sh + 36, 492, sbh);
       ctx.textAlign = 'left'; ctx.fillStyle = '#C95010'; fitFont(ctx, d.name.toUpperCase(), '800', HEAD, 100, 44, 466);
       ctx.fillText(d.name.toUpperCase(), 570, 262);
       ctx.fillStyle = '#6B5744'; ctx.font = '700 26px ' + BODY;
@@ -216,6 +234,8 @@
       <label class="pz-check"><input id="pzShowPhone" type="checkbox" checked> Hiện số điện thoại trên poster</label>
       <p class="pz-warn" id="pzWarn">Số điện thoại sẽ hiển thị công khai trên poster. Chỉ nhập số bạn sẵn sàng cho người lạ gọi.</p>
       <label class="pz-check"><input id="pzShowWeb" type="checkbox" checked> Hiện địa chỉ web PetFinder</label>
+      <div class="pz-group" id="pzThumbsWrap" hidden><span>Chọn ảnh dùng cho poster</span><div class="pz-thumbs" id="pzThumbs"></div></div>
+      <div class="pz-group"><span>Cách hiển thị ảnh</span><div class="pz-seg" id="pzFit"></div></div>
       <div class="pz-group"><span>Khổ giấy</span><div class="pz-seg" id="pzSizes"></div></div>
       <div class="pz-group"><span>Màu dải tiêu đề</span><div class="pz-sw" id="pzColors"></div></div>
       <div class="pz-err" id="pzErr" role="alert" hidden></div>
@@ -254,6 +274,12 @@
       $('pzColors').appendChild(b);
     });
     ui.color = 'red';
+    ui.fit = 'full';
+    [['full', 'Hiện toàn bộ ảnh'], ['fill', 'Cắt vừa khung']].forEach(([k, label], i) => {
+      const b = el('button'); b.type = 'button'; b.textContent = label; if (!i) b.classList.add('on');
+      b.addEventListener('click', () => { ui.fit = k; [...$('pzFit').children].forEach(c => c.classList.toggle('on', c === b)); schedule(); });
+      $('pzFit').appendChild(b);
+    });
 
     ov.querySelectorAll('input,textarea,select').forEach(i => i.addEventListener('input', () => { $('pzWarn').hidden = !$('pzShowPhone').checked; schedule(); }));
     ov.querySelector('.pz-close').addEventListener('click', close);
@@ -273,7 +299,7 @@
     const name = clean(v('pzName'), 40) || 'Thú cưng';
     const contact = (v('pzSal') + ' ' + clean(v('pzCName'), 20)).trim();
     return {
-      size: ui.size, color: ui.color, icon: pet && pet.icon, name, shortName: name,
+      size: ui.size, color: ui.color, fit: ui.fit, icon: pet && pet.icon, name, shortName: name,
       line: clean(v('pzLine'), 70), desc: clean(v('pzDesc'), 160), place: clean(v('pzPlace'), 110), time: clean(v('pzTime'), 60),
       contact, phone: clean(v('pzPhone'), 20), showPhone: ui.$('pzShowPhone').checked, showWeb: ui.$('pzShowWeb').checked
     };
@@ -378,7 +404,18 @@
     ui.ov.classList.add('open'); document.body.classList.add('pz-lock');
     ui.res.hidden = true; ui.edit.hidden = false;
     await fontsReady();
-    photoImg = await loadPhoto(window.PFSec && PFSec.safeImageSrc ? PFSec.safeImageSrc(p.imageData && p.imageData[0]) : (p.imageData && p.imageData[0]));
+    const srcs = (p.imageData || []).map(x => (window.PFSec && PFSec.safeImageSrc ? PFSec.safeImageSrc(x) : x)).filter(Boolean).slice(0, 5);
+    const loaded = await Promise.all(srcs.map(loadPhoto));
+    const photos = loaded.map((im, i) => ({ im, src: srcs[i] })).filter(x => x.im);
+    photoImg = photos[0] ? photos[0].im : null;
+    const tw = $('pzThumbs'); tw.textContent = '';
+    $('pzThumbsWrap').hidden = photos.length < 2;
+    photos.forEach((ph, i) => {
+      const b = el('button', 'pz-thumb' + (i ? '' : ' on')); b.type = 'button'; b.setAttribute('aria-label', 'Ảnh ' + (i + 1));
+      const im = new Image(); im.src = ph.src; im.alt = ''; b.appendChild(im);
+      b.addEventListener('click', () => { photoImg = ph.im; [...tw.children].forEach(c => c.classList.toggle('on', c === b)); schedule(); });
+      tw.appendChild(b);
+    });
     renderLive();
     $('pzName').focus({ preventScroll: true });
   }

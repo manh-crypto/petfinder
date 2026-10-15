@@ -22,18 +22,7 @@ function renderMyPosts() {
     el.innerHTML = '<div class="empty-panel"><div>📭</div><p>Bạn chưa đăng tin nào.<br>Hãy đăng tin để cộng đồng cùng giúp!</p></div>';
     return;
   }
-  el.innerHTML = pets.map(p => `
-    <div class="mini-card">
-      <div class="mini-icon">${PFSec.esc(p.icon)}</div>
-      <div class="mini-info">
-        <div class="mini-name">${PFSec.esc(p.name)}</div>
-        <div class="mini-meta">${PFSec.esc(p.location || p.area)} · ${PFSec.esc(statusLabelMap[p.status] || '')}</div>
-        <div class="mini-meta">${PFSec.esc(p.date)}</div>
-      </div>
-      ${p.status === 'lost' ? `<button class="mini-poster" data-id="${PFSec.esc(p.id)}" onclick="openPosterEditor(this.dataset.id)">Tạo poster</button>` : ''}
-      <button class="mini-delete" data-id="${PFSec.esc(p.id)}" onclick="deleteMyPost(this.dataset.id)">Xóa</button>
-    </div>
-  `).join('');
+  el.innerHTML = pets.map(p => miniCardHtml(p, false)).join('');
 }
 function deleteMyPost(id) {
   if (!currentUser) { openAuthModal('login'); return; }
@@ -143,31 +132,45 @@ function saveAccountSettings(event) {
   closeModal('accountModal');
   return false;
 }
+// Thẻ tin trong "Tin của tôi" / "Tin đã đăng": ảnh vuông cố định, trạng thái có màu, nút thao tác xếp hàng
+function miniCardHtml(p, withEdit) {
+  const E = PFSec.esc, id = E(p.id);
+  const photo = PFSec.safeImageSrc(p.imageData && p.imageData[0]);
+  const status = ['lost', 'found', 'adopt'].includes(p.status) ? p.status : 'lost';
+  const thumb = photo ? `<img src="${E(photo)}" alt="${E(p.name)}" loading="lazy"/>` : E(p.icon || '🐾');
+  return `
+    <article class="mini-card">
+      <div class="mini-icon">${thumb}</div>
+      <div class="mini-info">
+        <span class="mini-status st-${status}">${E(statusLabelMap[status] || '')}</span>
+        <div class="mini-name">${E(p.name)}</div>
+        <div class="mini-meta">${E(p.location || p.area || '')}</div>
+        <div class="mini-meta">${E(p.date || '')}</div>
+        <div class="mini-card-actions">
+          ${status === 'lost' ? `<button type="button" class="mini-poster" data-id="${id}" onclick="openPosterEditor(this.dataset.id)">Tạo poster</button>` : ''}
+          ${withEdit ? `<button type="button" class="mini-edit" data-id="${id}" onclick="openAdminEditPet(this.dataset.id)">Sửa</button>` : ''}
+          <button type="button" class="mini-delete" data-id="${id}" onclick="${withEdit ? 'deleteAccountPost' : 'deleteMyPost'}(this.dataset.id)">Xóa</button>
+        </div>
+      </div>
+    </article>`;
+}
+let accPostFilter = 'all';
+function setAccPostFilter(f) { accPostFilter = f; renderAccountPosts(); }
 function renderAccountPosts() {
   if (!currentUser) return;
-  const pets = loadPets().filter(isMyPet);
+  const all = loadPets().filter(isMyPet);
   const el = document.getElementById('accountPostsList');
-  if (pets.length === 0) {
-    el.innerHTML = '<div class="empty-panel"><div>📭</div><p>Bạn chưa đăng tin nào.<br>Hãy đăng tin để cộng đồng cùng giúp!</p></div>';
+  if (all.length === 0) {
+    el.innerHTML = '<div class="empty-panel"><p>Bạn chưa đăng tin nào.<br>Hãy đăng tin để cộng đồng cùng giúp!</p><a class="empty-cta" href="../index.html#form">Đăng tin ngay</a></div>';
     return;
   }
-  el.innerHTML = pets.map(p => {
-    const photo = PFSec.safeImageSrc(p.imageData && p.imageData[0]);
-    return `
-    <div class="mini-card">
-      <div class="mini-icon">${photo ? `<img src="${PFSec.esc(photo)}" alt="${PFSec.esc(p.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"/>` : PFSec.esc(p.icon)}</div>
-      <div class="mini-info">
-        <div class="mini-name">${PFSec.esc(p.name)}</div>
-        <div class="mini-meta">${PFSec.esc(p.location || p.area)} · ${PFSec.esc(statusLabelMap[p.status] || '')}</div>
-        <div class="mini-meta">${PFSec.esc(p.date)}</div>
-      </div>
-      <div class="mini-card-actions">
-        ${p.status === 'lost' ? `<button class="mini-poster" data-id="${PFSec.esc(p.id)}" onclick="openPosterEditor(this.dataset.id)">Tạo poster</button>` : ''}
-        <button class="mini-edit" data-id="${PFSec.esc(p.id)}" onclick="openAdminEditPet(this.dataset.id)">Sửa</button>
-        <button class="mini-delete" data-id="${PFSec.esc(p.id)}" onclick="deleteAccountPost(this.dataset.id)">Xóa</button>
-      </div>
-    </div>`;
-  }).join('');
+  const count = k => k === 'all' ? all.length : all.filter(p => p.status === k).length;
+  if (accPostFilter !== 'all' && !count(accPostFilter)) accPostFilter = 'all';
+  const chips = [['all', 'Tất cả'], ['lost', 'Đang thất lạc'], ['found', 'Đã tìm thấy'], ['adopt', 'Chờ nhận nuôi']]
+    .filter(([k]) => k === 'all' || count(k))
+    .map(([k, label]) => `<button type="button" class="acc-filter${accPostFilter === k ? ' on' : ''}" onclick="setAccPostFilter('${k}')">${label} <b>${count(k)}</b></button>`).join('');
+  const pets = accPostFilter === 'all' ? all : all.filter(p => p.status === accPostFilter);
+  el.innerHTML = `<div class="acc-filters">${chips}</div><div class="acc-posts-grid">${pets.map(p => miniCardHtml(p, true)).join('')}</div>`;
 }
 function deleteAccountPost(id) {
   if (!currentUser) { openAuthModal('login'); return; }

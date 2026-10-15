@@ -10,13 +10,6 @@
     .my-posts-panel.open { display: block; }
     .panel-title { font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
     .panel-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
-    .mini-card { background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; }
-    .mini-icon { font-size: 1.8rem; }
-    .mini-info { flex: 1; }
-    .mini-name { font-weight: 800; font-size: 0.95rem; }
-    .mini-meta { font-size: 0.78rem; color: var(--text-muted); }
-    .mini-delete { background: var(--red-light); border: none; border-radius: 6px; color: var(--red); font-size: 0.78rem; font-weight: 700; padding: 5px 9px; cursor: pointer; font-family: 'Nunito', sans-serif; }
-    .mini-delete:hover { background: var(--red); color: white; }
     .empty-panel { text-align: center; padding: 40px 20px; color: var(--text-muted); }
     .empty-panel div { font-size: 3rem; margin-bottom: 10px; }
 
@@ -31,3 +24,32 @@
     /* ===== IMAGE PREVIEW ===== */
     .img-preview-item { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid var(--border); }
 
+
+/* ===== Thẻ tin trong hồ sơ cá nhân ===== */
+.mini-card { background: #fff; border: 1.5px solid var(--border); border-radius: 16px; padding: 12px; margin-bottom: 12px; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; align-items: start; box-shadow: 0 3px 12px rgba(120,60,20,.05); transition: box-shadow .15s, border-color .15s; }
+.mini-card:hover { border-color: var(--orange); box-shadow: 0 6px 18px rgba(120,60,20,.1); }
+.mini-icon { width: 96px; height: 96px; border-radius: 12px; background: var(--orange-pale); display: flex; align-items: center; justify-content: center; font-size: 2.4rem; overflow: hidden; flex: none; }
+.mini-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mini-info { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.mini-name { font-weight: 800; font-size: 1rem; color: var(--text); overflow-wrap: anywhere; }
+.mini-meta { font-size: .82rem; color: var(--text-muted); overflow-wrap: anywhere; line-height: 1.4; }
+.mini-status { align-self: flex-start; font-size: .72rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; }
+.mini-status.st-lost { background: var(--red-light); color: var(--red); }
+.mini-status.st-found { background: #E3F5EA; color: #1E7A47; }
+.mini-status.st-adopt { background: var(--orange-pale); color: var(--orange-dark); }
+.mini-card-actions { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.mini-card-actions button { min-height: 36px; padding: 6px 14px; border-radius: 10px; font-size: .82rem; font-weight: 800; font-family: 'Nunito', sans-serif; cursor: pointer; }
+.mini-delete { background: var(--red-light); border: 1.5px solid transparent; color: var(--red); }
+.mini-delete:hover { background: var(--red); color: #fff; }
+.acc-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.acc-filter { border: 1.5px solid var(--border); background: #fff; color: var(--text-muted); border-radius: 20px; padding: 7px 14px; font-weight: 800; font-size: .84rem; cursor: pointer; font-family: 'Nunito', sans-serif; min-height: 38px; }
+.acc-filter b { margin-left: 4px; color: var(--orange-dark); }
+.acc-filter.on { background: var(--orange); border-color: var(--orange); color: #fff; }
+.acc-filter.on b { color: #fff; }
+.acc-posts-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+.empty-cta { display: inline-block; margin-top: 10px; background: var(--orange); color: #fff; border-radius: 12px; padding: 10px 22px; font-weight: 800; text-decoration: none; }
+@media (max-width: 760px) {
+  .acc-posts-grid { grid-template-columns: 1fr; }
+  .mini-card { grid-template-columns: 80px minmax(0, 1fr); gap: 12px; }
+  .mini-icon { width: 80px; height: 80px; }
+}
