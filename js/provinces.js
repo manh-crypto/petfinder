@@ -59,15 +59,15 @@ function pfProvinceIndex(pet) {
 
 // Thêm các tỉnh/thành còn thiếu vào ô chọn "Khu vực" (đăng tin #fArea, tìm kiếm #sArea)
 function pfPopulateAreaSelects() {
-  ['fArea', 'sArea', 'locSelect'].forEach(id => {
+  ['fArea', 'sArea', 'locSelect', 'regCity'].forEach(id => {
     const sel = document.getElementById(id);
     if (!sel || sel.dataset.pfProvinces) return;
     sel.dataset.pfProvinces = '1';
     const have = new Set(Array.from(sel.options).map(o => pfNorm(o.textContent)));
-    const group = document.createElement('optgroup');
-    group.label = 'Tỉnh / thành phố';
+    const group = sel.id === 'regCity' ? document.createDocumentFragment() : document.createElement('optgroup');
+    if (group.nodeType === 1) group.label = 'Tỉnh / thành phố';
     PF_PROVINCES.forEach(p => { if (!have.has(pfNorm(p[0]))) { const o = document.createElement('option'); o.textContent = p[0]; group.appendChild(o); } });
-    if (group.children.length) sel.appendChild(group);
+    if (group.childNodes.length) sel.appendChild(group);
   });
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pfPopulateAreaSelects); else pfPopulateAreaSelects();
