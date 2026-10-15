@@ -150,10 +150,13 @@ function adminDeleteUser(email) {
   if (currentUser && u.email === currentUser.email) { showToast('Bạn không thể tự xóa tài khoản của chính mình'); return; }
   if (u.role === 'admin' && users.filter(x => x.role === 'admin').length <= 1) { showToast('Không thể xóa quản trị viên cuối cùng.'); return; }
   if (!confirm(`Xóa hồ sơ "${u.name}" (${u.email}) khỏi cơ sở dữ liệu? Hành động này không thể hoàn tác.`)) return;
+  const theirs = loadPets().filter(p => (p.ownerUid && p.ownerUid === u.uid) || (p.ownerEmail && p.ownerEmail === u.email));
+  if (theirs.length && !confirm(`Người này đang có ${theirs.length} tin đăng. Xóa luôn các tin đó?`)) return;
+  if (theirs.length) { const ids = new Set(theirs.map(p => p.id)); savePets(loadPets().filter(p => !ids.has(p.id))); }
   users.splice(idx, 1);
   saveUsers(users);
   PFSec.log('admin_delete_user', u.email);
-  showToast(`Đã xóa hồ sơ ${u.name}. Để xóa hẳn tài khoản đăng nhập, hãy xóa trong Firebase Console → Authentication.`, 6000);
+  showToast(`Đã xóa hồ sơ ${u.name}${theirs.length ? ' và ' + theirs.length + ' tin đăng' : ''}. Người này có thể đăng ký lại bằng email cũ (hãy chọn "Đăng nhập" hoặc "Quên mật khẩu"); muốn xóa hẳn tài khoản đăng nhập thì xóa trong Firebase Console → Authentication.`, 8000);
   renderAdminUsers();
   renderAdminOverview();
 }

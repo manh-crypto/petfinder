@@ -226,3 +226,14 @@
       .vet-lightbox-nav.prev { left: 22px; }
       .vet-lightbox-nav.next { right: 22px; }
     }
+
+/* ===== Thẻ thú cưng: các thẻ cùng chiều cao, nội dung căn đều ===== */
+.pets-grid { align-items: stretch; }
+.pet-card { display: flex; flex-direction: column; }
+.pet-card .pet-img { flex: 0 0 190px; height: 190px; }
+.pet-card .pet-info { flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
+.pet-card .pet-name { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pet-card .pet-meta { width: 100%; align-items: flex-start; line-height: 1.35; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; min-height: calc(2 * 1.35em); margin-bottom: 4px; }
+.pet-card .pet-date { width: 100%; margin-top: auto; }
+.pet-card .pet-meta + .pet-meta { margin-bottom: 10px; }
+.pet-card .contact-btn { margin-top: 10px; }
