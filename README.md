@@ -28,7 +28,7 @@ Cộng đồng: [Facebook](https://www.facebook.com/share/g/1Db11cVRdx/) · [Tik
 **Dành cho quản trị viên**
 - Bảng điều khiển, quản lý người dùng, tin tức, góp ý.
 - **Không duyệt tin trước khi đăng:** vì tính khẩn cấp của tin tìm thú cưng, tin xuất hiện ngay khi đăng. Quản trị viên chỉ kiểm tra sau: sửa, đánh dấu nghi vấn hoặc xóa tin vi phạm.
-- Khi xóa người dùng, quản trị viên được hỏi có xóa luôn các tin của người đó không. Xóa hồ sơ không xóa tài khoản đăng nhập Firebase; người đó đăng ký lại bằng email cũ sẽ được khôi phục hồ sơ nếu nhập đúng mật khẩu cũ, hoặc dùng "Quên mật khẩu".
+- Khi xóa người dùng, quản trị viên được hỏi có xóa luôn các tin của người đó không. Xóa người dùng sẽ đánh dấu tài khoản (collection `deleted_users`) để chặn đăng nhập; người đó chỉ dùng lại được khi chủ động bấm "Đăng ký" với email cũ. Muốn xóa hẳn tài khoản đăng nhập thì xóa trong Firebase Console, mục Authentication.
 - Cấp hoặc gỡ quyền quản trị cho người khác.
 - Nạp dữ liệu mẫu để thử nghiệm.
 

@@ -153,10 +153,11 @@ function adminDeleteUser(email) {
   const theirs = loadPets().filter(p => (p.ownerUid && p.ownerUid === u.uid) || (p.ownerEmail && p.ownerEmail === u.email));
   if (theirs.length && !confirm(`Người này đang có ${theirs.length} tin đăng. Xóa luôn các tin đó?`)) return;
   if (theirs.length) { const ids = new Set(theirs.map(p => p.id)); savePets(loadPets().filter(p => !ids.has(p.id))); }
+  if (u.uid && PFDB.markDeleted) PFDB.markDeleted(u.uid, u.email).catch(e => console.warn('markDeleted', e && e.code));   // chặn đăng nhập lại (tài khoản Firebase Auth vẫn còn)
   users.splice(idx, 1);
   saveUsers(users);
   PFSec.log('admin_delete_user', u.email);
-  showToast(`Đã xóa hồ sơ ${u.name}${theirs.length ? ' và ' + theirs.length + ' tin đăng' : ''}. Người này có thể đăng ký lại bằng email cũ (hãy chọn "Đăng nhập" hoặc "Quên mật khẩu"); muốn xóa hẳn tài khoản đăng nhập thì xóa trong Firebase Console → Authentication.`, 8000);
+  showToast(`Đã xóa hồ sơ ${u.name}${theirs.length ? ' và ' + theirs.length + ' tin đăng' : ''}. Người này không đăng nhập được nữa; nếu muốn dùng lại phải bấm "Đăng ký" với email cũ. Muốn xóa hẳn tài khoản đăng nhập thì xóa trong Firebase Console → Authentication.`, 8000);
   renderAdminUsers();
   renderAdminOverview();
 }
