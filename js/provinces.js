@@ -45,16 +45,50 @@ var PF_PROVINCE_KEYS = (function () {
   return out.sort((a, b) => b.key.length - a.key.length);   // khớp tên dài trước (vd "ba ria vung tau" trước "ba ria")
 })();
 
-// Trả về chỉ số tỉnh trong PF_PROVINCES của một tin (ưu tiên chữ trong địa chỉ, sau đó đến tọa độ gần nhất)
-function pfProvinceIndex(pet) {
-  const text = pfNorm([pet.district, pet.location, pet.area].filter(Boolean).join(' , '));
+// Quận/huyện của các thành phố lớn khác (để nhận ra tin chỉ ghi "Cầu Giấy", "Hải Châu", "Ninh Kiều"...)
+var PF_CITY_DISTRICTS = [
+  [0, ['ba dinh', 'hoan kiem', 'hai ba trung', 'dong da', 'tay ho', 'cau giay', 'thanh xuan', 'hoang mai', 'long bien', 'nam tu liem', 'bac tu liem', 'ha dong', 'thanh tri', 'gia lam', 'dong anh', 'soc son', 'me linh', 'son tay', 'hoai duc', 'thanh oai', 'thach that', 'quoc oai', 'dan phuong', 'phuc tho', 'chuong my', 'my duc', 'ung hoa', 'thuong tin', 'phu xuyen', 'ba vi']],
+  [2, ['hai chau', 'thanh khe', 'son tra', 'ngu hanh son', 'lien chieu', 'cam le', 'hoa vang']],
+  [3, ['hong bang', 'ngo quyen', 'le chan', 'hai an', 'kien an', 'do son', 'duong kinh', 'thuy nguyen', 'an duong', 'an lao', 'kien thuy', 'tien lang', 'vinh bao', 'cat hai']],
+  [4, ['ninh kieu', 'cai rang', 'binh thuy', 'o mon', 'thot not', 'phong dien', 'co do', 'vinh thanh', 'thoi lai']]
+];
+// Chuẩn hóa chuỗi ngày nay về mảng đã chuẩn hóa không dấu để so khớp nhanh
+function pfHasWord(text, word) { return text.includes(' ' + word + ' '); }
+function pfMatchProvinceName(text) {
   for (const k of PF_PROVINCE_KEYS) if (text.includes(k.key)) return k.idx;
-  if (PF_HCM_DISTRICTS.some(d => text.includes(' ' + d + ' '))) return 1;
-  const lat = Number(pet.lat), lng = Number(pet.lng);
+  return -1;
+}
+function pfMatchDistrict(text) {
+  if (PF_HCM_DISTRICTS.some(d => pfHasWord(text, d))) return 1;
+  for (const [idx, list] of PF_CITY_DISTRICTS) if (list.some(d => pfHasWord(text, d))) return idx;
+  return -1;
+}
+function pfNearestProvince(lat, lng) {
+  lat = Number(lat); lng = Number(lng);
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return -1;
   let best = -1, bd = Infinity;
   PF_PROVINCES.forEach((p, i) => { const d = (p[1] - lat) ** 2 + ((p[2] - lng) * Math.cos(lat * Math.PI / 180)) ** 2; if (d < bd) { bd = d; best = i; } });
   return best;
+}
+// Trả về chỉ số tỉnh trong PF_PROVINCES của một tin. Thứ tự tin cậy:
+// 1) "Khu vực" người đăng chọn (tên tỉnh/thành, hoặc quận/huyện của thành phố lớn)  2) địa chỉ ghi trong "Địa điểm"
+// 3) tên quận/huyện trong địa chỉ  4) tọa độ GPS/địa chỉ → tỉnh có trung tâm gần nhất
+function pfProvinceIndex(pet) {
+  const areaText = pfNorm(pet.area), locText = pfNorm([pet.district, pet.location].filter(Boolean).join(' , '));
+  let i = pfMatchProvinceName(areaText); if (i >= 0) return i;
+  i = pfMatchDistrict(areaText); if (i >= 0) return i;
+  i = pfMatchProvinceName(locText); if (i >= 0) return i;
+  i = pfMatchDistrict(locText); if (i >= 0) return i;
+  return pfNearestProvince(pet.lat, pet.lng);
+}
+// Từ kết quả định vị ngược (Nominatim address) → { province index, tên quận/huyện nếu thuộc TP.HCM }
+function pfFromAddress(addr) {
+  addr = addr || {};
+  const parts = [addr.state, addr.city, addr.province, addr.region].filter(Boolean).join(' , ');
+  let i = pfMatchProvinceName(pfNorm(parts));
+  const sub = [addr.city_district, addr.suburb, addr.district, addr.county, addr.town, addr.municipality, addr.quarter, addr.neighbourhood].filter(Boolean).join(' , ');
+  if (i < 0) i = pfMatchDistrict(pfNorm(sub));
+  return i;
 }
 
 // Thêm các tỉnh/thành còn thiếu vào ô chọn "Khu vực" (đăng tin #fArea, tìm kiếm #sArea)

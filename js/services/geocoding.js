@@ -60,5 +60,24 @@
     return results;
   }
 
-  global.PetFinderGeocoding = { search };
+  // Định vị ngược: tọa độ → địa chỉ (dùng cho nút "Vị trí của tôi" khi đăng tin)
+  async function reverse(lat, lng) {
+    lat = Number(lat); lng = Number(lng);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) throw new Error('Tọa độ không hợp lệ.');
+    const config = (global.PETFINDER_CONFIG && global.PETFINDER_CONFIG.geocoding) || {};
+    const endpoint = (config.endpoint || 'https://nominatim.openstreetmap.org/search').replace(/\/search$/, '/reverse');
+    const params = new URLSearchParams({ lat: String(lat), lon: String(lng), format: 'jsonv2', addressdetails: '1', zoom: '18', 'accept-language': 'vi' });
+    const waitMs = Math.max(0, 1000 - (Date.now() - lastRequestAt));
+    if (waitMs) await new Promise(resolve => setTimeout(resolve, waitMs));
+    lastRequestAt = Date.now();
+    const controller = new AbortController(); const t = setTimeout(() => controller.abort(), 10000);
+    try {
+      const response = await fetch(`${endpoint}?${params.toString()}`, { signal: controller.signal, headers: { Accept: 'application/json' } });
+      if (!response.ok) throw new Error(`Reverse geocoding trả về HTTP ${response.status}.`);
+      const d = await response.json();
+      return { displayName: d.display_name || '', address: d.address || {} };
+    } finally { clearTimeout(t); }
+  }
+
+  global.PetFinderGeocoding = { search, reverse };
 })(window);

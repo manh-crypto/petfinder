@@ -74,7 +74,7 @@ async function submitPost() {
   const submitButton = document.querySelector('#form .submit-btn');
   const originalButtonText = submitButton ? submitButton.textContent : '';
   if (submitButton) { submitButton.disabled = true; submitButton.textContent = 'Đang xác định vị trí...'; }
-  const coordinates = await geocodePetLocation(location, area);
+  const coordinates = pendingCoords ? { lat: pendingCoords.lat, lng: pendingCoords.lng } : await geocodePetLocation(location, area);
   if (submitButton) { submitButton.disabled = false; submitButton.textContent = originalButtonText; }
   const icon = petIcon(type);
   const displayDate = new Date(date).toLocaleDateString('vi-VN');
@@ -143,6 +143,7 @@ function resetForm() {
   ['fName','fBreed','fLocation','fDesc','fPhone','fZalo'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   ['fType','fGender','fArea','fDate'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('fImagePreview').innerHTML = '';
+  pendingCoords = null; { const gs = document.getElementById('fGeoStatus'); if (gs) gs.textContent = ''; }
   document.getElementById('formError').style.display = 'none';
 }
 
@@ -546,3 +547,65 @@ function addFavButtonsToExistingCards() {
   });
 }
 
+
+// ========== "VỊ TRÍ CỦA TÔI" KHI ĐĂNG TIN ==========
+// Lấy GPS → định vị ngược ra địa chỉ → tự điền "Địa điểm" và "Khu vực"; tọa độ GPS được dùng trực tiếp (không cần tìm lại địa chỉ).
+let pendingCoords = null;          // { lat, lng } lấy từ GPS, bị hủy khi người dùng tự sửa ô "Địa điểm"
+
+function pfSetFormArea(idx, addr) {
+  const sel = document.getElementById('fArea'); if (!sel || idx < 0) return false;
+  const norm = t => (typeof pfNorm === 'function' ? pfNorm(t) : String(t)).trim();
+  const opts = Array.from(sel.options);
+  const pick = txt => opts.find(o => o.value && norm(o.textContent) === norm(txt));
+  let o = null;
+  if (idx === 1) {   // TP.HCM: ưu tiên quận/huyện nếu có trong danh sách, không thì chọn thành phố
+    const subs = [addr.city_district, addr.suburb, addr.district, addr.county, addr.town, addr.quarter].filter(Boolean);
+    for (const t of subs) { const n = norm(t).replace(/^(quan|huyen|thanh pho|tp)\\s+/, ''); o = opts.find(x => x.value && (norm(x.textContent) === norm(t) || norm(x.textContent).replace(/^quan\\s+/, '') === n)); if (o) break; }
+    o = o || pick('TP. Hồ Chí Minh');
+  } else o = pick(PF_PROVINCES[idx][0]);
+  if (!o) return false;
+  sel.value = o.value || o.textContent; sel.dispatchEvent(new Event('change', { bubbles: true }));
+  return true;
+}
+
+function useMyLocationForPost(btn) {
+  const status = document.getElementById('fGeoStatus');
+  const say = (m, bad) => { if (status) { status.textContent = m; status.style.color = bad ? 'var(--red)' : 'var(--green)'; } };
+  if (!navigator.geolocation) return say('Trình duyệt không hỗ trợ định vị. Hãy nhập địa điểm thủ công.', true);
+  btn.disabled = true; btn.classList.add('is-busy'); say('Đang lấy vị trí của bạn...');
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const lat = Math.round(pos.coords.latitude * 1e4) / 1e4, lng = Math.round(pos.coords.longitude * 1e4) / 1e4;   // làm tròn ~11 m
+    pendingCoords = { lat, lng };
+    let text = '', idx = -1, addr = {};
+    try {
+      const r = await window.PetFinderGeocoding.reverse(lat, lng); addr = r.address || {};
+      const street = [addr.house_number, addr.road].filter(Boolean).join(' ');
+      const area = [addr.quarter || addr.neighbourhood, addr.suburb, addr.city_district || addr.district || addr.county, addr.city || addr.state].filter((v, i, a) => v && a.indexOf(v) === i);
+      text = [street].concat(area).filter(Boolean).join(', ') || (r.displayName || '').split(',').slice(0, 4).join(',').trim();
+      idx = typeof pfFromAddress === 'function' ? pfFromAddress(addr) : -1;
+    } catch (e) { console.warn('Không định vị ngược được:', e); }
+    if (idx < 0 && typeof pfNearestProvince === 'function') idx = pfNearestProvince(lat, lng);
+    const loc = document.getElementById('fLocation');
+    if (loc) { loc.value = text || ('Vị trí GPS ' + lat + ', ' + lng); loc.dataset.gps = loc.value; }
+    const okArea = pfSetFormArea(idx, addr);
+    say('✔ Đã lấy vị trí của bạn' + (okArea ? ' và chọn khu vực' : '') + (pos.coords.accuracy ? ' (sai số khoảng ' + Math.round(pos.coords.accuracy) + ' m)' : '') + '. Bạn vẫn có thể sửa lại địa điểm.');
+    btn.disabled = false; btn.classList.remove('is-busy');
+  }, err => {
+    pendingCoords = null; btn.disabled = false; btn.classList.remove('is-busy');
+    say(err && err.code === 1 ? 'Bạn đã từ chối quyền vị trí. Hãy cho phép truy cập vị trí cho trang web trong trình duyệt hoặc nhập địa điểm thủ công.' : 'Không lấy được vị trí. Hãy thử lại hoặc nhập địa điểm thủ công.', true);
+  }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 });
+}
+
+function initPostGeoButton() {
+  const input = document.getElementById('fLocation');
+  if (!input || document.getElementById('fGeoBtn')) return;
+  const group = input.closest('.form-group') || input.parentNode;
+  const box = document.createElement('div');
+  box.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-top:6px';
+  box.innerHTML = '<button type="button" id="fGeoBtn" class="geo-btn" style="padding:7px 14px;border:1.5px solid var(--orange);background:var(--orange-pale);color:var(--orange-dark);border-radius:20px;font-weight:800;font-size:.84rem;cursor:pointer;font-family:inherit">📍 Dùng vị trí của tôi</button><span id="fGeoStatus" style="font-size:.8rem;font-weight:700"></span>';
+  group.appendChild(box);
+  box.querySelector('button').addEventListener('click', e => useMyLocationForPost(e.currentTarget));
+  // Tự sửa địa điểm → bỏ tọa độ GPS cũ (sẽ tìm lại theo địa chỉ mới)
+  input.addEventListener('input', () => { if (pendingCoords && input.value !== input.dataset.gps) { pendingCoords = null; const s = document.getElementById('fGeoStatus'); if (s) s.textContent = ''; } });
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPostGeoButton); else initPostGeoButton();
