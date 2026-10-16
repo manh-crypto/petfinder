@@ -121,7 +121,7 @@
 
         <!-- PETS -->
         <div class="admin-view" id="adminView-pets">
-          <div class="admin-view-title">Quản lý tin đăng thú cưng</div>
+          <div class="admin-view-title">Quản lý tin đăng thú cưng <button type="button" class="abtn abtn-flag" style="margin-left:12px;vertical-align:middle" onclick="cleanOrphanData()" title="Tìm và xóa tin của người dùng đã bị xóa, thông tin liên hệ mồ côi">🧹 Dọn dữ liệu</button></div>
           <div class="admin-toolbar">
             <input type="text" id="adminPetSearch" placeholder="Tìm theo tên thú cưng, người đăng..." oninput="renderAdminPets()"/>
             <select id="adminPetStatusFilter" onchange="renderAdminPets()">

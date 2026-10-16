@@ -321,3 +321,39 @@ function renderAdminNews() {
   `).join('');
 }
 
+
+
+// ========== ADMIN: DỌN DỮ LIỆU ==========
+// Tìm dữ liệu "mồ côi": tin của người dùng đã bị xóa (không còn hồ sơ), tin trùng mã, và thông tin liên hệ không còn tin nào.
+async function cleanOrphanData() {
+  if (!requireAdmin('dọn dữ liệu')) return;
+  const users = loadUsers(), uids = new Set(users.map(u => u.uid).filter(Boolean));
+  if (!uids.size) return showToast('Chưa tải được danh sách người dùng, hãy thử lại sau vài giây.');
+  const pets = loadPets();
+  const seen = new Set(), keep = [], drop = [];
+  pets.forEach(p => {
+    const orphan = !p.ownerUid || !uids.has(p.ownerUid);          // tin đăng bởi tài khoản không còn tồn tại
+    const dup = seen.has(p.id); seen.add(p.id);
+    (orphan || dup ? drop : keep).push(p);
+  });
+  let strayContacts = [];
+  try {
+    const snap = await PFDB.db().collection('pet_contacts').get();
+    const ids = new Set(pets.map(p => p.id));
+    strayContacts = snap.docs.map(d => d.id).filter(id => !ids.has(id) || drop.some(p => p.id === id));
+  } catch (e) { console.warn('Không đọc được pet_contacts:', e && e.code); }
+  if (!drop.length && !strayContacts.length) return showToast('Dữ liệu đã sạch: không có tin hay liên hệ mồ côi.');
+  const list = drop.slice(0, 8).map(p => '• ' + p.name + ' (' + (p.ownerName || 'không rõ người đăng') + ')').join('\n');
+  if (!confirm('Tìm thấy ' + drop.length + ' tin của tài khoản đã bị xóa và ' + strayContacts.length + ' thông tin liên hệ mồ côi.\n\n' + list + (drop.length > 8 ? '\n…' : '') + '\n\nXóa hết? Không thể hoàn tác.')) return;
+  try {
+    if (drop.length) await savePets(keep, { wait: true });
+    for (let i = 0; i < strayContacts.length; i += 400) {
+      const b = PFDB.db().batch(); strayContacts.slice(i, i + 400).forEach(id => b.delete(PFDB.db().collection('pet_contacts').doc(id))); await b.commit();
+    }
+    // dọn bộ nhớ trình duyệt: yêu thích trỏ tới tin không còn
+    try { const ids = new Set(keep.map(p => p.id)); saveFavs(loadFavs().filter(id => ids.has(id))); sessionStorage.removeItem('pf_focus_pet'); } catch (e) { }
+    PFSec.log('admin_clean_data', drop.length + ' tin, ' + strayContacts.length + ' liên hệ');
+    showToast('Đã dọn ' + drop.length + ' tin và ' + strayContacts.length + ' liên hệ mồ côi.', 5000);
+    renderAdminPets(); renderAdminOverview();
+  } catch (e) { showToast('Không dọn được: ' + ((e && e.code) || (e && e.message) || 'lỗi không rõ'), 6000); }
+}
