@@ -1,14 +1,7 @@
 // ===== Map + location priority system + Vet clinic finder =====
 // ========== MAP ==========
-const petMarkers = [
-  { lat: 10.7802, lng: 106.7863, name: 'Bé mèo Anh lông dài (xám trắng)', type: 'Mèo Anh lông dài', status: 'lost', icon: '🐱', district: 'Phú Hữu, TP. Thủ Đức' },
-  { lat: 10.8672, lng: 106.6335, name: 'Bé mèo lạc - Tô Ngọc Vân', type: 'Mèo (chưa rõ giống)', status: 'lost', icon: '🐱', district: 'Thới An, Quận 12' },
-  { lat: 20.9503, lng: 105.7823, name: 'Mèo mướp vằn đen', type: 'Mèo mướp lông xù', status: 'lost', icon: '🐱', district: 'Ngọc Hồi, Thanh Trì, Hà Nội' },
-  { lat: 10.8737, lng: 106.7132, name: 'Bi', type: 'Chó (bị tật ở chân)', status: 'lost', icon: '🐶', district: 'Bình Chiểu, TP. Thủ Đức' },
-  { lat: 10.7965, lng: 106.6438, name: 'Bé mèo cam đang tạm giữ', type: 'Mèo cam', status: 'found', icon: '🐱', district: 'Bùi Thị Xuân, Tân Bình' },
-  { lat: 10.7375, lng: 106.6469, name: 'Cún đi lạc (Poodle)', type: 'Chó Poodle', status: 'lost', icon: '🐶', district: 'Xóm Củi, Quận 8' },
-  { lat: 16.0668, lng: 108.2395, name: 'Cún nhà Cô Nga', type: 'Chó nhỏ', status: 'lost', icon: '🐶', district: 'An Hải, Sơn Trà, Đà Nẵng' }
-];
+// Bản đồ chỉ vẽ tin thật trong cơ sở dữ liệu (xóa tin hoặc xóa người dùng thì điểm trên bản đồ biến mất). Không còn điểm mẫu cố định.
+const petMarkers = [];
 const statusColor = { lost: '#E24B4A', found: '#3DAB6E', adopt: '#F5823A' };
 const statusLabel = { lost: 'Đang thất lạc', found: 'Đã tìm thấy', adopt: 'Chờ nhận nuôi' };
 let leafletMap, mapSearchMarker, allLeafletMarkers = [], mapPoints = [];
