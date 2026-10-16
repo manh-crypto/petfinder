@@ -201,11 +201,11 @@ async function doRegister() {
     catch (e) {
       if (!e || e.code !== 'auth/email-already-in-use') throw e;
       // Email đã có trong Firebase Auth. Nếu hồ sơ đã bị quản trị viên xóa và mật khẩu đúng thì khôi phục hồ sơ, thay vì báo lỗi khó hiểu.
-      try { cred = await PFDB.auth().signInWithEmailAndPassword(email, pw); } catch (e2) { return E('Email này đã có tài khoản. Hãy bấm "Đăng nhập", hoặc "Quên mật khẩu" nếu bạn đã quên mật khẩu cũ.'); }
+      try { cred = await PFDB.auth().signInWithEmailAndPassword(email, pw); } catch (e2) { return E('Email này đã có tài khoản. Hãy bấm "Đăng nhập" (hoặc "Quên mật khẩu" nếu bạn đã quên mật khẩu cũ).'); }
       const existing = await PFDB.whenMe(2500);
       if (existing) { await PFDB.auth().signOut(); return E('Email này đã được đăng ký. Hãy bấm "Đăng nhập".'); }
     }
-    await PFDB.upsertProfile({ uid: cred.user.uid, email, name, phone, area, avatar: '👤', reviveDeleted: true });          // vai trò luôn là 'user' (luật Firestore bắt buộc)
+    await PFDB.upsertProfile({ uid: cred.user.uid, email, name, phone, area, avatar: '👤' });          // vai trò luôn là 'user' (luật Firestore bắt buộc)
     try { await cred.user.updateProfile({ displayName: name }); } catch (e) { }
     let sent = true;
     try { await cred.user.sendEmailVerification(); } catch (e) { sent = false; }
