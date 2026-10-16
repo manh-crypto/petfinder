@@ -138,7 +138,7 @@ async function doLogin() {
   if (!email || !pw) return showAuthError('loginError', 'Vui lòng điền đầy đủ thông tin.');
   if (!PFSec.isEmail(email)) return showAuthError('loginError', 'Vui lòng nhập địa chỉ email đã đăng ký.');
   if (!dbReadyOrError('loginError')) return;
-  loginBusy = true; PFDB.busy++;
+  loginBusy = true;
   try {
     const cred = await PFDB.auth().signInWithEmailAndPassword(email, pw);
     if (!cred.user.emailVerified) {                // email/mật khẩu: bắt buộc xác thực email trước khi dùng tài khoản
@@ -162,7 +162,7 @@ async function doLogin() {
   } catch (e) {
     PFSec.log('login_failed', (e && e.code) || 'lỗi', email);
     showAuthError('loginError', authErr(e));
-  } finally { loginBusy = false; PFDB.busy = Math.max(0, PFDB.busy - 1); }
+  } finally { loginBusy = false; }
 }
 
 // Quên mật khẩu: Firebase gửi email đặt lại mật khẩu
@@ -193,7 +193,7 @@ async function doRegister() {
   const gd = document.getElementById('regGuardian');
   if (gd && !gd.checked) return E('Vui lòng xác nhận độ tuổi: từ 13 tuổi trở lên, hoặc có cha mẹ/người giám hộ đồng ý và giám sát.');
   if (!dbReadyOrError('regError')) return;
-  registerBusy = true; PFDB.busy++;
+  registerBusy = true;
   try {
     const name = t(ho + ' ' + ten, 80);
     let cred;
@@ -216,7 +216,7 @@ async function doRegister() {
     if (form) form.style.display = 'none';
     if (ok) ok.style.display = 'block';
     setTimeout(() => { closeModal('registerModal'); if (form) form.style.display = 'flex'; if (ok) ok.style.display = 'none'; openAuthModal('login'); }, 6000);
-  } catch (e) { E(authErr(e)); try { const cu = PFDB.auth().currentUser; if (cu && !cu.emailVerified) await PFDB.auth().signOut(); } catch (_) { } } finally { registerBusy = false; PFDB.busy = Math.max(0, PFDB.busy - 1); }
+  } catch (e) { E(authErr(e)); } finally { registerBusy = false; }
 }
 function loginSuccess(user) {
   user = stripSecrets(user);                                   // currentUser không bao giờ chứa mật khẩu/hash
