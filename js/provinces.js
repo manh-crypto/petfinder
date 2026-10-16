@@ -105,3 +105,33 @@ function pfPopulateAreaSelects() {
   });
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pfPopulateAreaSelects); else pfPopulateAreaSelects();
+
+
+// ===== Bảng địa danh dùng khi dịch vụ bản đồ trực tuyến lỗi: quận/huyện các thành phố lớn + 63 tỉnh/thành =====
+// Mỗi mục: [tên, vĩ độ, kinh độ, chỉ số tỉnh trong PF_PROVINCES, tên đầy đủ]
+var PF_PLACES = (function () {
+  const D = (prov, list) => list.map(x => [x[0], x[1], x[2], prov]);
+  const rows = []
+    .concat(D(1, [['Quận 1', 10.7769, 106.7009], ['Quận 2', 10.7870, 106.7510], ['Quận 3', 10.7843, 106.6844], ['Quận 4', 10.7578, 106.7013], ['Quận 5', 10.7540, 106.6634], ['Quận 6', 10.7480, 106.6352], ['Quận 7', 10.7340, 106.7220], ['Quận 8', 10.7240, 106.6280], ['Quận 9', 10.8430, 106.8290], ['Quận 10', 10.7730, 106.6670], ['Quận 11', 10.7630, 106.6500], ['Quận 12', 10.8672, 106.6414], ['Bình Thạnh', 10.8106, 106.7091], ['Gò Vấp', 10.8386, 106.6652], ['Tân Bình', 10.8014, 106.6526], ['Tân Phú', 10.7900, 106.6281], ['Phú Nhuận', 10.7991, 106.6802], ['Bình Tân', 10.7654, 106.6034], ['Thủ Đức', 10.8494, 106.7537], ['Hóc Môn', 10.8830, 106.5950], ['Bình Chánh', 10.6870, 106.5740], ['Nhà Bè', 10.6950, 106.7370], ['Củ Chi', 10.9730, 106.4930], ['Cần Giờ', 10.4110, 106.9540]]))
+    .concat(D(0, [['Ba Đình', 21.0340, 105.8140], ['Hoàn Kiếm', 21.0285, 105.8522], ['Hai Bà Trưng', 21.0060, 105.8570], ['Đống Đa', 21.0180, 105.8270], ['Tây Hồ', 21.0700, 105.8230], ['Cầu Giấy', 21.0360, 105.7940], ['Thanh Xuân', 20.9930, 105.8120], ['Hoàng Mai', 20.9740, 105.8640], ['Long Biên', 21.0450, 105.8920], ['Nam Từ Liêm', 21.0120, 105.7650], ['Bắc Từ Liêm', 21.0750, 105.7600], ['Hà Đông', 20.9600, 105.7690], ['Thanh Trì', 20.9380, 105.8400], ['Gia Lâm', 21.0200, 105.9400], ['Đông Anh', 21.1380, 105.8480], ['Sóc Sơn', 21.2590, 105.8480], ['Sơn Tây', 21.1390, 105.5050]]))
+    .concat(D(2, [['Hải Châu', 16.0610, 108.2200], ['Thanh Khê', 16.0680, 108.1900], ['Sơn Trà', 16.1000, 108.2500], ['Ngũ Hành Sơn', 16.0000, 108.2500], ['Liên Chiểu', 16.0900, 108.1500], ['Cẩm Lệ', 16.0150, 108.1900], ['Hòa Vang', 16.0200, 108.0800]]))
+    .concat(D(3, [['Hồng Bàng', 20.8630, 106.6830], ['Ngô Quyền', 20.8550, 106.7070], ['Lê Chân', 20.8420, 106.6750], ['Hải An', 20.8280, 106.7540], ['Kiến An', 20.8100, 106.6300]]))
+    .concat(D(4, [['Ninh Kiều', 10.0340, 105.7870], ['Cái Răng', 9.9990, 105.7690], ['Bình Thủy', 10.0750, 105.7430], ['Ô Môn', 10.1230, 105.6320]]));
+  PF_PROVINCES.forEach((p, i) => rows.push([p[0], p[1], p[2], i]));
+  return rows.map(r => ({ name: r[0], lat: r[1], lng: r[2], prov: r[3], norm: pfNorm(r[0]), isProv: false }))
+    .map((r, i) => { r.isProv = i >= rows.length - PF_PROVINCES.length; r.full = r.isProv ? r.name : r.name + ', ' + PF_PROVINCES[r.prov][0]; return r; });
+})();
+function pfGazetteerSearch(query) {
+  const q = pfNorm(query).trim(); if (q.length < 2) return [];
+  const pad = ' ' + q + ' ';
+  const hit = PF_PLACES.filter(p => p.norm.includes(pad) || (' ' + q + ' ').includes(p.norm) || p.norm.trim() === q);
+  // tên dài khớp sát nhất lên trước; quận/huyện trước tỉnh
+  return hit.sort((a, b) => (a.isProv - b.isProv) || (b.norm.length - a.norm.length)).slice(0, 5)
+    .map(p => ({ lat: p.lat, lng: p.lng, displayName: p.full, type: p.isProv ? 'province' : 'district', approximate: true }));
+}
+function pfGazetteerNearest(lat, lng) {
+  lat = Number(lat); lng = Number(lng); if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  let best = null, bd = Infinity;
+  PF_PLACES.forEach(p => { const d = (p.lat - lat) ** 2 + ((p.lng - lng) * Math.cos(lat * Math.PI / 180)) ** 2; if (d < bd) { bd = d; best = p; } });
+  return best;
+}

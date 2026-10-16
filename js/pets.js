@@ -582,11 +582,13 @@ function useMyLocationForPost(btn) {
       const street = [addr.house_number, addr.road].filter(Boolean).join(' ');
       const area = [addr.quarter || addr.neighbourhood, addr.suburb, addr.city_district || addr.district || addr.county, addr.city || addr.state].filter((v, i, a) => v && a.indexOf(v) === i);
       text = [street].concat(area).filter(Boolean).join(', ') || (r.displayName || '').split(',').slice(0, 4).join(',').trim();
+      if (r.approximate && text) text = 'Gần ' + text;      // chỉ biết quận/huyện gần nhất (dịch vụ địa chỉ lỗi): ghi rõ là khu vực gần đúng
       idx = typeof pfFromAddress === 'function' ? pfFromAddress(addr) : -1;
     } catch (e) { console.warn('Không định vị ngược được:', e); }
     if (idx < 0 && typeof pfNearestProvince === 'function') idx = pfNearestProvince(lat, lng);
     const loc = document.getElementById('fLocation');
-    if (loc) { loc.value = text || ('Vị trí GPS ' + lat + ', ' + lng); loc.dataset.gps = loc.value; }
+    if (!text && typeof pfGazetteerNearest === 'function') { const n = pfGazetteerNearest(lat, lng); if (n) text = 'Gần ' + n.full; }
+    if (loc) { loc.value = text || 'Vị trí hiện tại của tôi'; loc.dataset.gps = loc.value; }
     const okArea = pfSetFormArea(idx, addr);
     say('✔ Đã lấy vị trí của bạn' + (okArea ? ' và chọn khu vực' : '') + (pos.coords.accuracy ? ' (sai số khoảng ' + Math.round(pos.coords.accuracy) + ' m)' : '') + '. Bạn vẫn có thể sửa lại địa điểm.');
     btn.disabled = false; btn.classList.remove('is-busy');

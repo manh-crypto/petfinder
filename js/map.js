@@ -212,9 +212,9 @@ async function searchMapLocation() {
     if (!results.length) { setMapSearchState('Không tìm thấy địa chỉ phù hợp.', true); return; }
     const location = results[0];
     showMapSearchMarker(location.lat, location.lng, location.displayName);
-    setMapSearchState(`Đã tìm thấy: ${location.displayName}`);
+    setMapSearchState(`Đã tìm thấy: ${location.displayName}` + (location.approximate ? ' (vị trí gần đúng theo khu vực)' : ''));
   } catch (error) {
-    if (error.name !== 'AbortError') { setMapSearchState('Không thể kết nối API tìm địa chỉ. Vui lòng thử lại.', true); console.error(error); }
+    if (error.name !== 'AbortError') { setMapSearchState('Không tìm được địa chỉ. Hãy thử nhập tên quận/huyện hoặc tỉnh/thành (ví dụ: Quận 12, Cầu Giấy, Đà Nẵng).', true); console.error(error); }
   } finally {
     if (button) button.disabled = false;
   }
