@@ -18,7 +18,7 @@ Cộng đồng: [Facebook](https://www.facebook.com/share/g/1Db11cVRdx/) · [Tik
 - **Trợ lý chat:** trả lời nhanh các câu hỏi về cách dùng web và chăm sóc thú cưng.
 
 **Dành cho thành viên**
-- Đăng nhập bằng Google, hoặc đăng ký bằng email và mật khẩu (phải xác thực email trước khi dùng; số điện thoại khi đăng ký là tùy chọn).
+- Đăng nhập bằng Google, hoặc đăng ký bằng email và mật khẩu (phải bấm liên kết xác thực trong email mới đăng nhập được; tài khoản chưa xác thực bị tự đăng xuất; số điện thoại khi đăng ký là tùy chọn).
 - Đăng tin thất lạc, nhặt được hoặc cho nhận nuôi, kèm ảnh, mô tả, vị trí, số điện thoại, và liên kết Zalo hoặc Facebook (không bắt buộc). Tin nhặt được và cho nhận nuôi không cần nhập tên thú cưng hay ngày thất lạc.
 - **Poster khẩn cấp:** tạo poster cho tin thất lạc của chính bạn, xem trước và chỉnh nội dung, rồi tải PNG, tải PDF, chia sẻ hoặc xóa poster.
 - Quản lý tin của tôi: sửa, xóa, đổi trạng thái khi đã tìm thấy.
