@@ -70,6 +70,7 @@ function saveAdminEditPet(event) {
   if (!edited) { showToast('Dữ liệu không hợp lệ.'); return false; }
   pets[idx] = edited;
   savePets(pets);
+  if (typeof refreshMapData === 'function') refreshMapData();
   PFSec.log('pet_edited', edited.id);
 
   // Re-render the card in the live grid (chỉ có trên trang có danh sách thú cưng)

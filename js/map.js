@@ -1,5 +1,6 @@
 // ===== Map + location priority system + Vet clinic finder =====
 // ========== MAP ==========
+// Điểm mẫu cố định (luôn hiện, không phụ thuộc tài khoản nào). Tin do người dùng đăng lấy từ cơ sở dữ liệu: xóa tin hoặc xóa người dùng thì điểm đó biến mất, điểm mẫu vẫn còn.
 const petMarkers = [
   { lat: 10.7802, lng: 106.7863, name: 'Bé mèo Anh lông dài (xám trắng)', type: 'Mèo Anh lông dài', status: 'lost', icon: '🐱', district: 'Phú Hữu, TP. Thủ Đức' },
   { lat: 10.8672, lng: 106.6335, name: 'Bé mèo lạc - Tô Ngọc Vân', type: 'Mèo (chưa rõ giống)', status: 'lost', icon: '🐱', district: 'Thới An, Quận 12' },
@@ -24,7 +25,9 @@ function initMap() {
   setupBaseMap(leafletMap, mapEl);
   renderPetMarkers();
   addProvinceControl();
+  mapFitted = allLeafletMarkers.some(m => m._petId);
   applyMapFilters(false);
+  focusNewestOwnPet();
   // Đảm bảo Leaflet tính lại kích thước sau khi bố cục ổn định
   setTimeout(() => { if (leafletMap) { leafletMap.invalidateSize(); applyMapFilters(false); } }, 200);
 }
@@ -42,16 +45,20 @@ function renderPetMarkers() {
         if (pet.lat == null || pet.lng == null || !Number.isFinite(lat) || !Number.isFinite(lng)) {
           // Tin cũ chưa có tọa độ (ví dụ đăng trước khi có chuyển địa chỉ): đặt tạm ở trung tâm tỉnh/thành, lệch nhẹ theo mã tin để không chồng lên nhau
           const i = typeof pfProvinceIndex === 'function' ? pfProvinceIndex(pet) : -1;
-          if (i < 0 || typeof PF_PROVINCES === 'undefined') return null;
+          if (typeof PF_PROVINCES === 'undefined') return null;
+          if (i < 0) { lat = 16.05; lng = 108.2; } else {
           let h = 0; String(pet.id || pet.name).split('').forEach(c => { h = (h * 31 + c.charCodeAt(0)) >>> 0; });
-          lat = PF_PROVINCES[i][1] + ((h % 100) - 50) / 3500; lng = PF_PROVINCES[i][2] + (((h >> 7) % 100) - 50) / 3500;
+          lat = PF_PROVINCES[i][1] + ((h % 100) - 50) / 3500; lng = PF_PROVINCES[i][2] + (((h >> 7) % 100) - 50) / 3500; }
         }
         return { ...pet, lat, lng, district: pet.location || pet.area, type: pet.breed || pet.type, icon: pet.icon || '🐾' };
       }).filter(Boolean)
     : [];
-  mapPoints = [...petMarkers, ...savedMarkers];
+  // Bỏ điểm mẫu trùng tên với tin thật đã nạp từ dữ liệu mẫu (tránh hiện 2 điểm cho cùng một bé)
+  const norm = t => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+  const real = new Set(savedMarkers.map(p => norm(p.name)));
+  mapPoints = [...petMarkers.filter(m => !real.has(norm(m.name))), ...savedMarkers];
 
-  mapPoints.forEach(p => {
+  mapPoints.forEach(p => { try {
     const color = statusColor[p.status] || '#888';
     const icon = L.divIcon({
       html: `<div style="width:36px;height:36px;border-radius:50%;background:${color};border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer">${escapeHtml(p.icon)}</div>`,
@@ -69,19 +76,39 @@ function renderPetMarkers() {
     m._petStatus = p.status;
     m._province = pfProvinceIndex(p);
     m._latlng = [p.lat, p.lng];
+    m._petId = p.id;
     allLeafletMarkers.push(m);
-  });
+  } catch (e) { console.warn('Bỏ qua điểm lỗi trên bản đồ:', p && p.name, e); } });
 }
 
 // Làm mới bản đồ khi có tin mới/đổi/xóa (dữ liệu Firestore về sau khi bản đồ đã mở), giữ nguyên vị trí đang xem
-let mapRefreshTimer = 0;
+let mapRefreshTimer = 0, mapFitted = false;
 function refreshMapData() {
   if (!leafletMap) return;
+  const before = allLeafletMarkers.length;
   renderPetMarkers();
   refreshProvinceControl();
-  applyMapFilters(false, false);
+  // Lần đầu có dữ liệu thật (Firestore về sau khi bản đồ đã mở) → thu phóng để thấy hết các tin; sau đó giữ nguyên vị trí đang xem
+  const hasUserPets = allLeafletMarkers.some(m => m._petId);
+  const firstFit = !mapFitted && hasUserPets;
+  if (firstFit) mapFitted = true;
+  applyMapFilters(false, firstFit);
+  focusNewestOwnPet();
 }
+// Vừa đăng/sửa tin: bay tới điểm của tin đó và mở thông tin (chỉ một lần)
+function focusNewestOwnPet() {
+  let id = ''; try { id = sessionStorage.getItem('pf_focus_pet') || ''; } catch (e) { }
+  if (!id || !leafletMap) return;
+  const m = allLeafletMarkers.find(x => x._petId === id); if (!m) return;
+  try { sessionStorage.removeItem('pf_focus_pet'); } catch (e) { }
+  mapProvinceFilter = -1; mapStatusFilter = 'all'; applyMapFilters(false, false);
+  leafletMap.setView(m._latlng, 15, { animate: true });
+  if (m.openPopup) m.openPopup();
+}
+window.refreshMapData = refreshMapData;
 window.addEventListener('pf:data', () => { clearTimeout(mapRefreshTimer); mapRefreshTimer = setTimeout(refreshMapData, 250); });
+window.addEventListener('pageshow', () => { if (leafletMap) setTimeout(refreshMapData, 50); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && leafletMap) refreshMapData(); });
 
 // ---------- Ảnh nền bản đồ: thử lần lượt nhiều nguồn, tự chuyển khi tải lỗi ----------
 const BASEMAPS = [

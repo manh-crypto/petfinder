@@ -88,7 +88,20 @@ async function submitPost() {
 
   const pets = loadPets();
   pets.unshift(pet);
-  savePets(pets);
+  // Chờ máy chủ xác nhận rồi mới báo thành công (trước đây báo thành công ngay, nếu máy chủ từ chối thì tin biến mất âm thầm)
+  if (submitButton) { submitButton.disabled = true; submitButton.textContent = 'Đang đăng tin...'; }
+  try { await savePets(pets, { wait: true }); }
+  catch (e) {
+    if (submitButton) { submitButton.disabled = false; submitButton.textContent = originalButtonText; }
+    const code = e && e.code;
+    console.error('Đăng tin thất bại:', code, e && e.message);
+    return fail(code === 'permission-denied'
+      ? 'Máy chủ từ chối lưu tin (permission-denied). Hãy kiểm tra: đã bấm liên kết xác thực email chưa (tài khoản email/mật khẩu), tài khoản có bị khóa không, và luật Firestore đã được dán + Publish bản mới nhất chưa. Nếu vừa xác thực email, hãy đăng xuất rồi đăng nhập lại.'
+      : 'Không lưu được tin lên máy chủ (' + (code || 'lỗi mạng') + '). Hãy kiểm tra mạng rồi thử lại.');
+  }
+  if (submitButton) { submitButton.disabled = false; submitButton.textContent = originalButtonText; }
+  try { sessionStorage.setItem('pf_focus_pet', pet.id); } catch (e) { }
+  if (typeof refreshMapData === 'function') refreshMapData();
 
   // Add card to DOM immediately
   addPetCardToGrid(pet, true);

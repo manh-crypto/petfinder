@@ -138,7 +138,7 @@
 
   // ---- ghi: so sánh với bản cũ rồi gửi phần thay đổi lên Firestore
   const MAX_DOC = 950000;
-  function write(col, nextArr) {
+  function write(col, nextArr, opts) {
     if (!db) { toast('Chưa kết nối được cơ sở dữ liệu.'); return false; }
     const ops = []; const nextIds = new Set();
     for (const raw of nextArr) {
@@ -155,9 +155,9 @@
     }
     base[col].forEach((_, id) => { if (!nextIds.has(id)) { ops.push({ type: 'delete', id }); if (col === 'pets') { ops.push({ type: 'delContact', id }); contactBase.delete(id); contactCache.delete(id); } } });
     S[col] = nextArr; emit();                         // cập nhật giao diện ngay (optimistic)
-    if (!ops.length) return true;
+    if (!ops.length) return opts && opts.wait ? Promise.resolve(true) : true;
     const roleOps = col === 'users' ? ops.filter(o => o.type === 'set' && (o.doc.role === 'admin') !== S.adminIds.has(o.id)).map(o => ({ id: o.id, admin: o.doc.role === 'admin' })) : [];
-    (async () => {
+    const done = (async () => {
       for (let i = 0; i < ops.length; i += 400) {
         const b = db.batch();
         ops.slice(i, i + 400).forEach(o => {
@@ -171,9 +171,10 @@
     })().catch(err => {
       console.error('Firestore write failed:', err);
       S[col] = shallow(snap[col]); emit();            // hoàn tác thay đổi trên giao diện
-      toast(err && err.code === 'permission-denied' ? 'Bạn không có quyền thực hiện thao tác này.' : 'Không lưu được lên máy chủ. Hãy kiểm tra mạng rồi thử lại.');
+      if (opts && opts.wait) throw err;               // chế độ chờ: để nơi gọi tự báo lỗi cụ thể
+      toast(err && err.code === 'permission-denied' ? 'Bạn không có quyền thực hiện thao tác này (kiểm tra đã xác thực email chưa, hoặc luật Firestore đã được cập nhật chưa).' : 'Không lưu được lên máy chủ. Hãy kiểm tra mạng rồi thử lại.');
     });
-    return true;
+    return opts && opts.wait ? done.then(() => true) : true;
   }
   function toast(m) { if (typeof w.showToast === 'function') w.showToast(m, 4500); else console.warn(m); }
 

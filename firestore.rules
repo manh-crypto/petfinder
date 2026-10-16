@@ -7,7 +7,11 @@ service cloud.firestore {
     function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
     // Tài khoản email/mật khẩu phải xác thực email (email_verified) mới được ghi/đọc liên hệ; đăng nhập Google luôn có email_verified = true
     function verified() { return request.auth.token.email_verified == true; }
-    function notBanned() { return verified() && !(get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('banned', false)); }
+    // Không bị khóa: chưa có hồ sơ thì coi là không bị khóa (tránh từ chối oan); bị khóa khi hồ sơ có banned = true
+    function notBanned() {
+      return verified() && !(exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('banned', false) == true);
+    }
     function str(v, max) { return v is string && v.size() <= max; }
 
     // Quản trị viên: chỉ admin đang có quyền mới cấp/gỡ được. Admin ĐẦU TIÊN tạo thủ công trong Console (xem README).
@@ -24,11 +28,15 @@ service cloud.firestore {
         && request.resource.data.email == request.auth.token.email
         && request.resource.data.role == 'user'
         && request.resource.data.get('banned', false) == false
-        && str(request.resource.data.name, 80) && str(request.resource.data.avatarPhoto, 200000);
+        && request.resource.data.keys().hasOnly(['uid','name','avatar','avatarPhoto','email','phone','role','banned','area','bio','provider'])
+        && str(request.resource.data.name, 80) && str(request.resource.data.get('phone', ''), 40) && str(request.resource.data.get('area', ''), 80)
+        && str(request.resource.data.get('bio', ''), 500) && str(request.resource.data.get('avatar', ''), 16)
+        && str(request.resource.data.get('avatarPhoto', ''), 200000);
       allow update: if isAdmin()
         || (signedIn() && request.auth.uid == uid
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name','avatar','avatarPhoto','phone','area','bio','provider'])
-            && str(request.resource.data.name, 80) && str(request.resource.data.avatarPhoto, 200000));
+            && str(request.resource.data.name, 80) && str(request.resource.data.get('phone', ''), 40) && str(request.resource.data.get('area', ''), 80)
+            && str(request.resource.data.get('bio', ''), 500) && str(request.resource.data.avatarPhoto, 200000));
       allow delete: if isAdmin();
     }
 
@@ -45,10 +53,10 @@ service cloud.firestore {
       return d.keys().hasOnly(['id','name','type','breed','gender','date','area','location','desc','status','icon','imageData','lat','lng','ownerName','ownerUid','createdAt','flagged'])
         && str(d.name, 80) && str(d.get('type', ''), 30) && str(d.get('breed', ''), 60) && str(d.get('gender', ''), 20)
         && str(d.get('area', ''), 80) && str(d.get('location', ''), 200) && str(d.get('date', ''), 32)
-        && str(d.desc, 1500) && str(d.get('icon', ''), 8) && str(d.get('ownerName', ''), 80)
+        && str(d.get('desc', ''), 1500) && str(d.get('icon', ''), 8) && str(d.get('ownerName', ''), 80)
         && d.status in ['lost','found','adopt']
-        && d.imageData is list && d.imageData.size() <= 5
-        && imgOk(d.imageData, 0) && imgOk(d.imageData, 1) && imgOk(d.imageData, 2) && imgOk(d.imageData, 3) && imgOk(d.imageData, 4);
+        && d.get('imageData', []) is list && d.get('imageData', []).size() <= 5
+        && imgOk(d.get('imageData', []), 0) && imgOk(d.get('imageData', []), 1) && imgOk(d.get('imageData', []), 2) && imgOk(d.get('imageData', []), 3) && imgOk(d.get('imageData', []), 4);
     }
     // Mỗi ảnh là chuỗi, tối đa ~900 KB (giới hạn tài liệu Firestore là 1 MiB)
     function imgOk(l, i) { return l.size() <= i || (l[i] is string && l[i].size() <= 900000); }
@@ -74,8 +82,8 @@ service cloud.firestore {
       allow create, update: if (isAdmin() || (signedIn() && notBanned()
           && getAfter(/databases/$(database)/documents/pets/$(id)).data.ownerUid == request.auth.uid))
         && request.resource.data.keys().hasOnly(['phone','zalo','email','ownerUid'])
-        && str(request.resource.data.phone, 40) && str(request.resource.data.zalo, 200)
-        && str(request.resource.data.email, 120) && str(request.resource.data.ownerUid, 128);
+        && str(request.resource.data.get('phone', ''), 40) && str(request.resource.data.get('zalo', ''), 200)
+        && str(request.resource.data.get('email', ''), 120) && str(request.resource.data.get('ownerUid', ''), 128);
       allow delete: if isAdmin() || (signedIn() && get(/databases/$(database)/documents/pets/$(id)).data.ownerUid == request.auth.uid);
     }
 

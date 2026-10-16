@@ -141,7 +141,7 @@ function toggleBanUser(email) {
   renderAdminOverview();
 }
 
-function adminDeleteUser(email) {
+async function adminDeleteUser(email) {
   if (!requireAdmin('xóa tài khoản')) return;
   const users = loadUsers();
   const idx = users.findIndex(x => x.email === email);
@@ -149,15 +149,16 @@ function adminDeleteUser(email) {
   const u = users[idx];
   if (currentUser && u.email === currentUser.email) { showToast('Bạn không thể tự xóa tài khoản của chính mình'); return; }
   if (u.role === 'admin' && users.filter(x => x.role === 'admin').length <= 1) { showToast('Không thể xóa quản trị viên cuối cùng.'); return; }
-  if (!confirm(`Xóa hồ sơ "${u.name}" (${u.email}) khỏi cơ sở dữ liệu? Hành động này không thể hoàn tác.`)) return;
   const theirs = loadPets().filter(p => (p.ownerUid && p.ownerUid === u.uid) || (p.ownerEmail && p.ownerEmail === u.email));
-  if (theirs.length && !confirm(`Người này đang có ${theirs.length} tin đăng. Xóa luôn các tin đó?`)) return;
+  if (!confirm(`Xóa "${u.name}" (${u.email})?\nSẽ xóa hồ sơ và chặn đăng nhập${theirs.length ? ' và ' + theirs.length + ' tin đăng' : ''}. Không thể hoàn tác.`)) return;
+
+  // Xóa hồ sơ + tin, đánh dấu để chặn đăng nhập lại
   if (theirs.length) { const ids = new Set(theirs.map(p => p.id)); savePets(loadPets().filter(p => !ids.has(p.id))); }
-  if (u.uid && PFDB.markDeleted) PFDB.markDeleted(u.uid, u.email).catch(e => console.warn('markDeleted', e && e.code));   // chặn đăng nhập lại (tài khoản Firebase Auth vẫn còn)
+  if (u.uid && PFDB.markDeleted) PFDB.markDeleted(u.uid, u.email).catch(err => console.warn('markDeleted', err && err.code));
   users.splice(idx, 1);
   saveUsers(users);
   PFSec.log('admin_delete_user', u.email);
-  showToast(`Đã xóa hồ sơ ${u.name}${theirs.length ? ' và ' + theirs.length + ' tin đăng' : ''}. Người này không đăng nhập được nữa; nếu muốn dùng lại phải bấm "Đăng ký" với email cũ. Muốn xóa hẳn tài khoản đăng nhập thì xóa trong Firebase Console → Authentication.`, 8000);
+  showToast(`Đã xóa hồ sơ ${u.name}${theirs.length ? ' và ' + theirs.length + ' tin đăng' : ''}. Tài khoản đăng nhập bị chặn; muốn xóa hẳn thì xóa trong Firebase Console, mục Authentication.`, 8000);
   renderAdminUsers();
   renderAdminOverview();
 }

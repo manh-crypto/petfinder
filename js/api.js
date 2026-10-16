@@ -4,7 +4,7 @@
 // ========== PETS (Firestore) ==========
 // Dữ liệu thật nằm trên Firestore (xem js/db.js). loadPets() đọc bản sao trong bộ nhớ, savePets() tự đẩy phần thay đổi lên máy chủ.
 function loadPets() { return PFDB.state.pets; }
-function savePets(arr) { return PFDB.write('pets', arr); }
+function savePets(arr, opts) { return PFDB.write('pets', arr, opts); }
 
 // ========== FAVORITES ==========
 function loadFavs() {

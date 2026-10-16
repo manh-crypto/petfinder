@@ -57,6 +57,7 @@ Giới hạn còn lại: một tài khoản Google bất kỳ vẫn có thể l�
 ## Rủi ro đã chấp nhận (và cách giảm thiểu)
 
 - **`script-src 'unsafe-inline'`**: giao diện còn dùng thuộc tính `onclick=` nên CSP chưa chặn được XSS nội tuyến. Bù lại, mọi dữ liệu người dùng đều được escape và làm sạch khi đọc. Hướng xử lý: chuyển sang `addEventListener`, sau đó dùng nonce/hash và bỏ `'unsafe-inline'`.
+- **Leaflet tải từ `unpkg.com` không có SRI**: nếu unpkg bị chiếm, mã lạ có thể chạy trên web. Nên tự lưu `leaflet.js`, `leaflet.css`, `images/` vào `assets/vendor/leaflet/` (hoặc thêm thuộc tính `integrity` đã kiểm tra), rồi bỏ `https://unpkg.com` khỏi CSP.
 - **`connect-src` cho phép `http://localhost:11434`**: để trợ lý AI chạy cục bộ bằng Ollama. Mã chỉ chấp nhận endpoint localhost/127.0.0.1 và hiển thị câu trả lời bằng `textContent`. Nếu không dùng AI, đặt `ai.enabled=false` trong `js/config.js` **và** xóa hai mục `localhost` khỏi CSP (`vercel.json`, `_headers`, thẻ meta).
 - **Firebase `apiKey`/`appId`** trong `js/config.js` là định danh công khai theo thiết kế. Bảo vệ bằng: *Authorized domains*, hạn chế khóa theo HTTP referrer trong Google Cloud Console và App Check.
 
@@ -69,6 +70,13 @@ Giới hạn còn lại: một tài khoản Google bất kỳ vẫn có thể l�
 4. **Hạn chế API key:** Google Cloud Console → APIs & Services → Credentials → khóa trình duyệt → *HTTP referrers* chỉ gồm tên miền Vercel của bạn.
 5. **Kiểm tra truy vấn ẩn danh** (không đăng nhập) tới `pet_contacts`, `users`, `feedback`, `tx` phải trả `PERMISSION_DENIED`, và tài liệu `pets` không còn trường `phone`, `zalo`, `ownerEmail`.
 6. **Đặt thông tin liên hệ của chính website** (`CONTACT_INFO` trong `js/feedback.js`) là hộp thư dành riêng cho dự án, không dùng thư cá nhân.
+
+## Tài khoản, xác thực email và xóa người dùng
+
+- **Chưa xác thực email thì chưa được dùng:** tài khoản email/mật khẩu chưa bấm liên kết xác thực bị đăng xuất ngay khi Firebase báo trạng thái đăng nhập (`isUnverified` trong `js/db.js`); `PFDB.me()` cũng không coi họ là người dùng. Luật Firestore vẫn chặn ghi tin và đọc liên hệ với tài khoản chưa xác thực (`verified()`).
+- **Xóa người dùng:** admin xóa sẽ ghi dấu `deleted_users/{uid}` để chặn đăng nhập (kể cả phiên đang lưu), chỉ chính chủ mới xóa được dấu khi chủ động đăng ký lại. Dự án không dùng hàm máy chủ (không có `api/` hay `functions/`); muốn xóa hẳn tài khoản đăng nhập thì xóa trong Firebase Console, mục Authentication.
+- **Hồ sơ người dùng (`users`):** luật Firestore giới hạn danh sách trường và độ dài (tên, SĐT, khu vực, giới thiệu, ảnh) khi tạo và khi sửa; vai trò luôn là `user`, chỉ `admins/{uid}` quyết định quyền quản trị.
+- **Trẻ em:** đăng ký yêu cầu xác nhận từ đủ 13 tuổi hoặc có người giám hộ đồng ý và giám sát; xem `pages/terms.html` và `pages/privacy.html`.
 
 ## Liên kết ngoài
 
