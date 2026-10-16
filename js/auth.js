@@ -138,7 +138,7 @@ async function doLogin() {
   if (!email || !pw) return showAuthError('loginError', 'Vui lòng điền đầy đủ thông tin.');
   if (!PFSec.isEmail(email)) return showAuthError('loginError', 'Vui lòng nhập địa chỉ email đã đăng ký.');
   if (!dbReadyOrError('loginError')) return;
-  loginBusy = true;
+  loginBusy = true; PFDB.busy++;
   try {
     const cred = await PFDB.auth().signInWithEmailAndPassword(email, pw);
     if (!cred.user.emailVerified) {                // email/mật khẩu: bắt buộc xác thực email trước khi dùng tài khoản
@@ -162,7 +162,7 @@ async function doLogin() {
   } catch (e) {
     PFSec.log('login_failed', (e && e.code) || 'lỗi', email);
     showAuthError('loginError', authErr(e));
-  } finally { loginBusy = false; }
+  } finally { loginBusy = false; PFDB.busy = Math.max(0, PFDB.busy - 1); }
 }
 
 // Quên mật khẩu: Firebase gửi email đặt lại mật khẩu
@@ -179,7 +179,7 @@ async function doRegister() {
   if (registerBusy) return;
   const t = PFSec.cleanText;
   const ho = t(document.getElementById('regHo').value, 40), ten = t(document.getElementById('regTen').value, 40);
-  const email = t(document.getElementById('regEmail').value, 120).toLowerCase(), phone = t(document.getElementById('regPhone').value, 40);
+  const area = t((document.getElementById('regCity') || {}).value || '', 80), email = t(document.getElementById('regEmail').value, 120).toLowerCase(), phone = t(document.getElementById('regPhone').value, 40);
   const pw = document.getElementById('regPw').value, pw2 = document.getElementById('regPw2').value;
   document.getElementById('regError').style.display = 'none';
   const E = m => showAuthError('regError', m);
@@ -190,12 +190,22 @@ async function doRegister() {
   const issues = PFSec.passwordIssues(pw, { email });
   if (issues.length) return E('' + issues[0]);
   if (pw !== pw2) return E('Mật khẩu xác nhận không khớp.');
+  const gd = document.getElementById('regGuardian');
+  if (gd && !gd.checked) return E('Vui lòng xác nhận độ tuổi: từ 13 tuổi trở lên, hoặc có cha mẹ/người giám hộ đồng ý và giám sát.');
   if (!dbReadyOrError('regError')) return;
-  registerBusy = true;
+  registerBusy = true; PFDB.busy++;
   try {
     const name = t(ho + ' ' + ten, 80);
-    const cred = await PFDB.auth().createUserWithEmailAndPassword(email, pw);
-    await PFDB.upsertProfile({ uid: cred.user.uid, email, name, phone, avatar: '👤' });          // vai trò luôn là 'user' (luật Firestore bắt buộc)
+    let cred;
+    try { cred = await PFDB.auth().createUserWithEmailAndPassword(email, pw); }
+    catch (e) {
+      if (!e || e.code !== 'auth/email-already-in-use') throw e;
+      // Email đã có trong Firebase Auth. Nếu hồ sơ đã bị quản trị viên xóa và mật khẩu đúng thì khôi phục hồ sơ, thay vì báo lỗi khó hiểu.
+      try { cred = await PFDB.auth().signInWithEmailAndPassword(email, pw); } catch (e2) { return E('Email này đã có tài khoản. Hãy bấm "Đăng nhập", hoặc "Quên mật khẩu" nếu bạn đã quên mật khẩu cũ.'); }
+      const existing = await PFDB.whenMe(2500);
+      if (existing) { await PFDB.auth().signOut(); return E('Email này đã được đăng ký. Hãy bấm "Đăng nhập".'); }
+    }
+    await PFDB.upsertProfile({ uid: cred.user.uid, email, name, phone, area, avatar: '👤', reviveDeleted: true });          // vai trò luôn là 'user' (luật Firestore bắt buộc)
     try { await cred.user.updateProfile({ displayName: name }); } catch (e) { }
     let sent = true;
     try { await cred.user.sendEmailVerification(); } catch (e) { sent = false; }
@@ -206,7 +216,7 @@ async function doRegister() {
     if (form) form.style.display = 'none';
     if (ok) ok.style.display = 'block';
     setTimeout(() => { closeModal('registerModal'); if (form) form.style.display = 'flex'; if (ok) ok.style.display = 'none'; openAuthModal('login'); }, 6000);
-  } catch (e) { E(authErr(e)); } finally { registerBusy = false; }
+  } catch (e) { E(authErr(e)); try { const cu = PFDB.auth().currentUser; if (cu && !cu.emailVerified) await PFDB.auth().signOut(); } catch (_) { } } finally { registerBusy = false; PFDB.busy = Math.max(0, PFDB.busy - 1); }
 }
 function loginSuccess(user) {
   user = stripSecrets(user);                                   // currentUser không bao giờ chứa mật khẩu/hash
@@ -334,3 +344,93 @@ function autoOpenAuthPage() {
   openAuthModal(which);
 }
 window.addEventListener('load', () => PFDB.ready.then(() => { syncCurrentUser(); setTimeout(autoOpenAuthPage, 60); }));
+
+// ===== Hiệu ứng nâng cấp cho đăng nhập / đăng ký =====
+(function PFAuthFx() {
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = id => document.getElementById(id);
+  const authIds = ['loginModal', 'registerModal'];
+
+  // 1) Chuyển qua lại: trượt ngang, đóng mượt
+  const baseClose = window.closeModal;
+  window.closeModal = function (id) {
+    const el = $(id);
+    if (!el || !authIds.includes(id) || !el.classList.contains('open') || reduce) return baseClose(id);
+    el.classList.add('fx-closing');
+    setTimeout(() => { el.classList.remove('fx-closing'); baseClose(id); }, 220);
+  };
+  window.switchAuth = function (type) {
+    const from = $(type === 'login' ? 'registerModal' : 'loginModal'), to = $(type + 'Modal');
+    if (!from || !to) return;
+    const dir = type === 'register' ? 'left' : 'right';
+    if (reduce || !from.classList.contains('open')) { baseClose(from.id); openAuthModal(type); return; }
+    from.classList.add('fx-out-' + dir);
+    setTimeout(() => {
+      from.classList.remove('open', 'fx-out-' + dir);
+      to.classList.add('fx-in-' + dir); openAuthModal(type);
+      setTimeout(() => to.classList.remove('fx-in-' + dir), 560);
+    }, 250);
+  };
+
+  // 2) Nút: vòng quay khi xử lý + gợn sóng; ô sai: viền đỏ
+  const forms = { doLogin: ['loginModal', 'loginError'], doRegister: ['registerModal', 'regError'] };
+  Object.keys(forms).forEach(fn => {
+    const orig = window[fn]; if (typeof orig !== 'function') return;
+    window[fn] = async function () {
+      const [modal, errId] = forms[fn], root = $(modal), btn = root && root.querySelector('.auth-btn');
+      if (btn) btn.classList.add('is-busy');
+      root && root.querySelectorAll('.auth-input.invalid').forEach(i => i.classList.remove('invalid'));
+      try { return await orig.apply(this, arguments); }
+      finally {
+        if (btn) btn.classList.remove('is-busy');
+        const err = $(errId);
+        if (root && err && err.style.display !== 'none' && err.textContent) {
+          err.style.animation = 'none'; void err.offsetWidth; err.style.animation = '';
+          root.querySelectorAll('.auth-form input.auth-input:not([type=checkbox])').forEach(i => { if (!i.value.trim() && !/\(không bắt buộc\)/.test((i.closest('.auth-field') || {}).textContent || '')) i.classList.add('invalid'); });
+        }
+      }
+    };
+  });
+  document.addEventListener('input', e => { if (e.target.classList && e.target.classList.contains('invalid')) e.target.classList.remove('invalid'); });
+  document.addEventListener('pointerdown', e => {
+    const b = e.target.closest && e.target.closest('.auth-wide .auth-btn'); if (!b || reduce) return;
+    const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height), sp = document.createElement('span');
+    sp.className = 'fx-ripple'; sp.style.cssText = `width:${s}px;height:${s}px;left:${e.clientX - r.left - s / 2}px;top:${e.clientY - r.top - s / 2}px`;
+    b.appendChild(sp); setTimeout(() => sp.remove(), 650);
+  });
+
+  // 3) Thành công: tick vẽ nét + hoa giấy
+  const CHECK = '<svg viewBox="0 0 76 76" aria-hidden="true"><circle cx="38" cy="38" r="30"/><path d="M25 39l9 9 18-20"/></svg>';
+  const EMOJI = ['🐾', '🐶', '🐱', '🧡', '✨', '🐰', '🦴'];
+  function celebrate(box) {
+    const icon = box.querySelector('.auth-success-icon');
+    if (icon && box.id === 'loginSuccess') { icon.classList.add('fx-check'); icon.innerHTML = CHECK; }
+    if (reduce) return;
+    const host = box.closest('.auth-main') || box; host.style.position = 'relative';
+    const c = document.createElement('div'); c.className = 'fx-confetti';
+    for (let i = 0; i < 18; i++) {
+      const el = document.createElement('i'), a = (i / 18) * Math.PI * 2 + Math.random() * .4, d = 90 + Math.random() * 110;
+      el.textContent = EMOJI[i % EMOJI.length];
+      el.style.cssText = `--x:${Math.cos(a) * d}px;--y:${Math.sin(a) * d - 40}px;--r:${(Math.random() - .5) * 360}deg;animation-delay:${Math.random() * .15}s`;
+      c.appendChild(el);
+    }
+    host.appendChild(c); setTimeout(() => c.remove(), 1700);
+  }
+  ['loginSuccess', 'registerSuccess'].forEach(id => {
+    const el = $(id); if (!el) return;
+    new MutationObserver(() => { if (el.style.display === 'block' && !el.dataset.fx) { el.dataset.fx = '1'; celebrate(el); } else if (el.style.display !== 'block') delete el.dataset.fx; })
+      .observe(el, { attributes: true, attributeFilter: ['style'] });
+  });
+
+  // 4) Cảnh bên phải nghiêng theo chuột (chỉ máy tính)
+  if (!reduce && window.matchMedia('(hover: hover)').matches) {
+    document.addEventListener('pointermove', e => {
+      const sc = e.target.closest && e.target.closest('.auth-scene'); if (!sc) return;
+      const r = sc.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      const svg = sc.querySelector('.rn-scene'), cp = sc.querySelector('.scene-copy');
+      if (svg) svg.style.transform = `translate(${-x * 14}px,${-y * 8}px) scale(1.04)`;
+      if (cp) cp.style.transform = `translate(${x * 8}px,${y * 5}px)`;
+    });
+    document.addEventListener('pointerleave', () => document.querySelectorAll('.auth-scene .rn-scene, .auth-scene .scene-copy').forEach(n => n.style.transform = ''), true);
+  }
+})();

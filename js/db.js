@@ -184,24 +184,38 @@
     attachPublic();
     auth.onAuthStateChanged(user => {
       detachUser();
+      if (isUnverified(user)) {                         // email/mật khẩu chưa xác thực: không coi là đã đăng nhập, đăng xuất ngay
+        auth.signOut().catch(() => { }); user = null;
+      }
       if (user) { attachUser(user); } else { emit('pf:auth'); }
+      if (user && !PFDB.busy) {                         // tài khoản đã bị admin xóa: đăng xuất ngay (kể cả phiên còn lưu trên máy)
+        db.collection('deleted_users').doc(user.uid).get().then(d => { if (d.exists && !PFDB.busy) { auth.signOut().catch(() => { }); toast('Tài khoản này đã bị quản trị viên xóa.'); } }).catch(() => { });
+      }
       authKnown = true; got('auth'); emit('pf:auth');
     });
     // me/admin đổi (ví dụ vừa đăng ký xong) → báo cho giao diện
     w.addEventListener('pf:data', () => { const k = S.me ? S.me.uid + ':' + S.me.role + ':' + !!S.me.banned : ''; if (k !== PFDB._k) { PFDB._k = k; emit('pf:auth'); } });
   }).catch(e => { console.error('Firebase init failed:', e); S.error = String(e && e.message || e); authKnown = true; pending.clear(); finish(); });
 
+  // Tài khoản email/mật khẩu chưa bấm liên kết xác thực email. 'busy' bật trong lúc đăng ký/đăng nhập để luồng đó tự xử lý.
+  function isUnverified(u) {
+    return !!(u && !u.emailVerified && !PFDB.busy && (u.providerData || []).some(p => p && p.providerId === 'password'));
+  }
   const PFDB = {
-    ready, state: S, _k: '',
+    ready, busy: 0, state: S, _k: '',
     get ok() { return !!db && !S.error; }, get error() { return S.error; },
     auth: () => auth, db: () => db, fb: () => w.firebase,
     write, emit, getContact,
+    markDeleted: (uid, email) => db.collection('deleted_users').doc(uid).set({ email: String(email || ''), at: Date.now() }),
     users: () => S.users,
-    me: () => S.me ? { ...S.me, role: S.isAdmin ? 'admin' : 'user' } : null,
+    me: () => (S.me && !isUnverified(auth && auth.currentUser)) ? { ...S.me, role: S.isAdmin ? 'admin' : 'user' } : null,
     whenMe(ms) { return new Promise(res => { const t0 = Date.now(); const tick = () => { if (S.me && S.adminChecked) return res(PFDB.me()); if (Date.now() - t0 > (ms || 6000)) return res(null); setTimeout(tick, 80); }; tick(); }); },
     async upsertProfile(profile) {                    // tạo hồ sơ nếu chưa có (đăng ký / đăng nhập Google lần đầu)
       const ref = db.collection('users').doc(profile.uid); const d = await ref.get();
       if (d.exists) return d.data();
+      const gone = db.collection('deleted_users').doc(profile.uid);
+      if (profile.reviveDeleted) { try { await gone.delete(); } catch (e) { } }   // đăng ký lại một cách chủ động: xóa dấu "đã xóa"
+      else { let g = null; try { g = await gone.get(); } catch (e) { } if (g && g.exists) { try { await auth.signOut(); } catch (e) { } const err = new Error('Tài khoản này đã bị quản trị viên xóa. Nếu muốn dùng lại, hãy bấm "Đăng ký" với email này.'); err.code = 'pf/deleted'; throw err; } }
       await ref.set(userDoc({ ...profile, role: 'user', banned: false })); return profile;
     }
   };

@@ -37,10 +37,17 @@ function renderPetMarkers() {
   allLeafletMarkers = [];
   // Tin do người dùng đăng (đã được chuyển địa chỉ → tọa độ khi đăng tin) cũng hiện trên bản đồ
   const savedMarkers = typeof loadPets === 'function'
-    ? loadPets().filter(pet => Number.isFinite(Number(pet.lat)) && Number.isFinite(Number(pet.lng))).map(pet => ({
-        ...pet, lat: Number(pet.lat), lng: Number(pet.lng),
-        district: pet.location || pet.area, type: pet.breed || pet.type, icon: pet.icon || '🐾'
-      }))
+    ? loadPets().map(pet => {
+        let lat = Number(pet.lat), lng = Number(pet.lng);
+        if (pet.lat == null || pet.lng == null || !Number.isFinite(lat) || !Number.isFinite(lng)) {
+          // Tin cũ chưa có tọa độ (ví dụ đăng trước khi có chuyển địa chỉ): đặt tạm ở trung tâm tỉnh/thành, lệch nhẹ theo mã tin để không chồng lên nhau
+          const i = typeof pfProvinceIndex === 'function' ? pfProvinceIndex(pet) : -1;
+          if (i < 0 || typeof PF_PROVINCES === 'undefined') return null;
+          let h = 0; String(pet.id || pet.name).split('').forEach(c => { h = (h * 31 + c.charCodeAt(0)) >>> 0; });
+          lat = PF_PROVINCES[i][1] + ((h % 100) - 50) / 3500; lng = PF_PROVINCES[i][2] + (((h >> 7) % 100) - 50) / 3500;
+        }
+        return { ...pet, lat, lng, district: pet.location || pet.area, type: pet.breed || pet.type, icon: pet.icon || '🐾' };
+      }).filter(Boolean)
     : [];
   mapPoints = [...petMarkers, ...savedMarkers];
 
