@@ -18,7 +18,7 @@ Cộng đồng: [Facebook](https://www.facebook.com/share/g/1Db11cVRdx/) · [Tik
 - **Trợ lý chat:** trả lời nhanh các câu hỏi về cách dùng web và chăm sóc thú cưng.
 
 **Dành cho thành viên**
-- Đăng nhập bằng Google, hoặc đăng ký bằng email và mật khẩu (phải bấm liên kết xác thực trong email mới đăng nhập được; tài khoản chưa xác thực bị tự đăng xuất; số điện thoại khi đăng ký là tùy chọn).
+- Đăng nhập bằng Google, hoặc đăng ký bằng email và mật khẩu (phải xác thực email trước khi dùng; số điện thoại khi đăng ký là tùy chọn).
 - Đăng tin thất lạc, nhặt được hoặc cho nhận nuôi, kèm ảnh, mô tả, vị trí, số điện thoại, và liên kết Zalo hoặc Facebook (không bắt buộc). Tin nhặt được và cho nhận nuôi không cần nhập tên thú cưng hay ngày thất lạc.
 - **Poster khẩn cấp:** tạo poster cho tin thất lạc của chính bạn, xem trước và chỉnh nội dung, rồi tải PNG, tải PDF, chia sẻ hoặc xóa poster.
 - Quản lý tin của tôi: sửa, xóa, đổi trạng thái khi đã tìm thấy.
@@ -26,9 +26,7 @@ Cộng đồng: [Facebook](https://www.facebook.com/share/g/1Db11cVRdx/) · [Tik
 - Cài đặt tài khoản: ảnh đại diện, tên, thông tin liên hệ.
 
 **Dành cho quản trị viên**
-- Bảng điều khiển, quản lý người dùng, tin tức, góp ý.
-- **Không duyệt tin trước khi đăng:** vì tính khẩn cấp của tin tìm thú cưng, tin xuất hiện ngay khi đăng. Quản trị viên chỉ kiểm tra sau: sửa, đánh dấu nghi vấn hoặc xóa tin vi phạm.
-- Khi xóa người dùng, quản trị viên được hỏi có xóa luôn các tin của người đó không. Xóa hồ sơ không xóa tài khoản đăng nhập Firebase; người đó đăng ký lại bằng email cũ sẽ được khôi phục hồ sơ nếu nhập đúng mật khẩu cũ, hoặc dùng "Quên mật khẩu".
+- Bảng điều khiển, duyệt và xóa tin, quản lý người dùng, tin tức, góp ý.
 - Cấp hoặc gỡ quyền quản trị cho người khác.
 - Nạp dữ liệu mẫu để thử nghiệm.
 
@@ -93,7 +91,6 @@ Trợ lý chat có thể dùng mô hình chạy cục bộ qua [Ollama](https://
 
 ## Bảo mật và quyền riêng tư
 
-- **Trẻ em:** khi đăng ký phải xác nhận từ đủ 13 tuổi, hoặc có cha mẹ/người giám hộ đồng ý và giám sát. Chính sách bảo mật nêu rõ điều này.
 - Quyền quản trị do Firestore quyết định (`admins/{uid}`) và được kiểm tra ở phía máy chủ bằng luật Firestore.
 - Số điện thoại, Zalo, email của tin được lưu riêng (`pet_contacts`), chỉ người đã đăng nhập và đã xác thực email mới xem được khi bấm Liên hệ; tin công khai không chứa các thông tin này.
 - Poster được tạo ngay trên máy bạn, không lưu và không gửi đi đâu. Thông tin in trên poster do bạn tự chọn.

@@ -373,19 +373,18 @@ function openPetModal(name, breed, area, phone, date, icon, desc, zalo, imageDat
     galleryHint.style.display = 'none';
     galleryBox.innerHTML = '';
   }
-  {
+  if (desc) {
     let descEl = document.getElementById('modalDesc');
-    if (!descEl && desc) {
+    if (!descEl) {
       descEl = document.createElement('div');
       descEl.id = 'modalDesc';
       descEl.className = 'modal-detail';
-      document.querySelector('.modal-pet-info > div:not(.modal-pet-img)').appendChild(descEl);
+      descEl.style.marginTop = '8px';
+      document.querySelector('.modal-pet-info').after(descEl);
     }
-    if (descEl) {
-      descEl.textContent = '';
-      if (desc) { const lbl = document.createElement('strong'); lbl.textContent = 'Đặc điểm:'; const v = document.createElement('span'); v.textContent = desc; descEl.append(lbl, v); }
-      descEl.style.display = desc ? '' : 'none';
-    }
+    descEl.textContent = '';
+    if (desc) { const lbl = document.createElement('strong'); lbl.textContent = 'Đặc điểm:'; descEl.append(lbl, ' ' + desc); }
+    descEl.style.display = desc ? 'block' : 'none';
   }
   // Store phone + zalo for contact buttons
   const callBtn = document.getElementById('modalCall');

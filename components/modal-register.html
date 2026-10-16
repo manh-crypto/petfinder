@@ -32,9 +32,16 @@
         <input class="auth-input" id="regPhone" type="tel" placeholder="0901 234 567" autocomplete="tel"/>
       </div>
       <div class="auth-field">
-        <label>Tỉnh / Thành phố</label>
+        <label>Quận / Thành phố</label>
         <select class="auth-input" id="regCity">
-          <option value="">Chọn tỉnh / thành phố</option>
+          <option value="">Chọn khu vực của bạn</option>
+          <option>TP. Hồ Chí Minh</option>
+          <option>Quận 1, 3, 4</option>
+          <option>Quận 6, Quận 8, Quận 11</option>
+          <option>Quận Tân Bình, Quận Tân Phú, Quận Bình Tân</option>
+          <option>Quận Bình Thạnh, Quận Gò Vấp, Quận Phú Nhuận</option>
+          <option>Thành phố Thủ Đức</option>
+          <option>Quận 12</option> 
         </select>
       </div>
       <div class="auth-field">
@@ -55,8 +62,7 @@
       </div>
       <div id="regError" style="display:none;background:var(--red-light);color:var(--red);padding:10px 14px;border-radius:var(--radius-sm);font-size:0.88rem;font-weight:700"></div>
       <button class="auth-btn" onclick="doRegister()">Tạo tài khoản</button>
-      <label class="auth-terms" style="display:flex;gap:8px;align-items:flex-start;text-align:left;cursor:pointer"><input type="checkbox" id="regGuardian" style="margin-top:3px;flex-shrink:0"/><span>Tôi từ đủ 13 tuổi trở lên. Nếu dưới 13 tuổi, tôi chỉ dùng PetFinder khi có cha mẹ hoặc người giám hộ đồng ý và giám sát.</span></label>
-      <div class="auth-terms">Bằng cách đăng ký, bạn đồng ý với <a href="pages/terms.html" target="_blank" rel="noopener">Điều khoản dịch vụ</a> và <a href="pages/privacy.html" target="_blank" rel="noopener">Chính sách bảo mật</a> của PetFinder.</div>
+      <div class="auth-terms">Bằng cách đăng ký, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a> của PetFinder.</div>
       <div class="auth-switch">Đã có tài khoản? <a onclick="switchAuth('login')">Đăng nhập</a></div>
     </div>
 
